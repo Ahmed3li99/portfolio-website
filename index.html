@@ -269,6 +269,22 @@ footer span{color:var(--blue)}
 
 /* Light theme variables (toggle via body.light) */
 body.light{--bg:#f7fafc;--bg2:rgba(10,20,40,.02);--card:rgba(255,255,255,.95);--blue:#0ea5e9;--cyan:#06b6d4;--border:rgba(14,165,233,.12);--glow:0 0 12px rgba(14,165,233,.08);--txt:#061126;--txt2:rgba(6,17,38,.6);--panel:rgba(255,255,255,.95);--panel-weak:rgba(255,255,255,.9);--panel-strong:rgba(255,255,255,.85)}
+
+/* CREATIVE ENHANCEMENTS */
+.hero-background{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 30% 30%,#00cfff55,#00ffcc00 70%);
+  filter:blur(120px);
+  animation:blob 20s infinite;
+}
+@keyframes blob{
+  0%,100%{transform:translate(0,0);}
+  33%{transform:translate(30px,-20px);}
+  66%{transform:translate(-20px,30px);}
+}
+.tilt{transform-style:preserve-3d;transition:transform .2s;will-change:transform;}
+
+/* Light theme variables (toggle via body.light) */
 </style>
 </head>
 <body>
@@ -310,6 +326,7 @@ body.light{--bg:#f7fafc;--bg2:rgba(10,20,40,.02);--card:rgba(255,255,255,.95);--
 
 <!-- ===== HERO ===== -->
 <section id="hero">
+  <div class="hero-background" aria-hidden="true"></div>
   <div class="hero-grid">
 
     <!-- text -->
@@ -396,13 +413,13 @@ body.light{--bg:#f7fafc;--bg2:rgba(10,20,40,.02);--card:rgba(255,255,255,.95);--
   <h2 class="h2">What I've Done</h2>
   <div class="tl">
     <div class="tli card sr">
-      <div class="tdate">2024 — Present</div>
+      <div class="tdate">2025 — Present</div>
       <div class="ttitle">Data Analysis &amp; Machine Learning Projects</div>
       <p class="ttext">Worked on multiple real-world data analysis and machine learning projects. Experienced in data preprocessing, visualization, and model building using Python. Applied end-to-end ML workflows from raw data to final evaluation with clean, documented notebooks.</p>
       <div style="margin-top:12px"><span class="tt">Python</span><span class="tt">Pandas</span><span class="tt">Scikit-learn</span><span class="tt">TensorFlow</span><span class="tt">Matplotlib</span></div>
     </div>
     <div class="tli card sr d1">
-      <div class="tdate">2024</div>
+      <div class="tdate">2025</div>
       <div class="ttitle">AI &amp; Machine Learning — Route Academy</div>
       <p class="ttext">Completed comprehensive AI and machine learning training covering supervised learning, model evaluation, and deep learning fundamentals. Strengthened practical skills in Python, NumPy, Pandas, and TensorFlow.</p>
       <div style="margin-top:12px"><span class="tt">AI Fundamentals</span><span class="tt">Deep Learning</span><span class="tt">Model Evaluation</span></div>
@@ -622,6 +639,61 @@ if('IntersectionObserver' in window){
   srs.forEach(function(el){ io.observe(el); });
   setTimeout(revealAll,800);
 } else { revealAll(); }
+
+/* creative scripts */
+// typewriter cycle for hero role
+(function(){
+  var roles=['Data Analyst','Machine Learning','AI Student','ML Enthusiast'];
+  var el=document.querySelector('.hero-role');
+  if(el){
+    var idx=0;
+    function showRole(){
+      el.textContent='';
+      var role=roles[idx];
+      var i=0;
+      function type(){
+        if(i<role.length){ el.textContent+=role[i++]; setTimeout(type,80); }
+        else setTimeout(function(){ idx=(idx+1)%roles.length; showRole(); },2000);
+      }
+      type();
+    }
+    showRole();
+  }
+})();
+
+// tilt effect for cards
+(function(){
+  function enableTilt(selector,max){
+    max = max||15;
+    document.querySelectorAll(selector).forEach(function(el){
+      el.classList.add('tilt');
+      el.addEventListener('mousemove',function(e){
+        var r=el.getBoundingClientRect();
+        var x=(e.clientX - r.left)/r.width -0.5;
+        var y=(e.clientY - r.top)/r.height -0.5;
+        el.style.transform='perspective(600px) rotateX('+(-y*max)+'deg) rotateY('+(x*max)+'deg)';
+      });
+      el.addEventListener('mouseleave',function(){ el.style.transform=''; });
+    });
+  }
+  enableTilt('.pcard, .sk');
+})();
 </script>
+
+<!-- floating CTA -->
+<a href="#contact" class="float-cta" aria-label="Hire me now">Hire Me</a>
+
+<style>
+.float-cta{
+  position:fixed;bottom:24px;right:24px;z-index:1000;
+  background:var(--blue);color:#000;font-family:var(--disp);
+  padding:12px 20px;border-radius:50px;box-shadow:0 6px 20px rgba(0,207,255,.4);
+  text-decoration:none;font-weight:700;letter-spacing:1px;
+  animation:pulse 2s infinite;
+  transition:transform .2s;
+}
+.float-cta:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(0,207,255,.6);}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+</style>
 </body>
 </html>
