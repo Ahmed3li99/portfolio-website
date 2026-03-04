@@ -25,6 +25,7 @@
   --body:    'Rajdhani',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+*:focus-visible{outline:2px solid var(--blue);outline-offset:3px;}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);font-family:var(--body);font-size:16px;overflow-x:hidden;line-height:1.6}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -58,7 +59,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:cen
 .navul a:hover{color:var(--blue);text-shadow:var(--glow)}
 .navul a i{font-size:.78rem;opacity:.8;transition:transform .25s ease,opacity .25s ease}
 .navul a:hover i{opacity:1;transform:translateY(-1px)}
-.ham{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:transparent;border:none;padding:0}
 .ham span{display:block;width:24px;height:2px;background:var(--blue);border-radius:2px}
 
 /* HELPERS */
@@ -346,7 +347,7 @@ body.light{--bg:#f7fafc;--bg2:rgba(10,20,40,.02);--card:rgba(255,255,255,.95);--
   <a href="#hero" class="logo">Ahmed Ali</a>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" title="Toggle dark / light mode" style="font-size:.82rem;padding:8px 12px">🌙</button>
-    <div class="ham" id="ham"><span></span><span></span><span></span></div>
+    <button class="ham" id="ham" aria-label="Toggle navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
   <ul class="navul" id="navul">
     <li><a href="#about"><i class="fa-regular fa-user"></i> About</a></li>
@@ -631,13 +632,20 @@ model = tf.keras.Sequential([
 var ham = document.getElementById('ham');
 if (ham) {
   ham.addEventListener('click', function() {
-    document.getElementById('navul').classList.toggle('open');
+    var navul = document.getElementById('navul');
+    navul.classList.toggle('open');
+    var isOpen = navul.classList.contains('open');
+    ham.setAttribute('aria-expanded', isOpen);
   });
 }
 
 document.querySelectorAll('#navul a').forEach(function(a) {
   a.addEventListener('click', function() {
-    document.getElementById('navul').classList.remove('open');
+    var navul = document.getElementById('navul');
+    navul.classList.remove('open');
+    if (ham) {
+      ham.setAttribute('aria-expanded', 'false');
+    }
   });
 });
 
