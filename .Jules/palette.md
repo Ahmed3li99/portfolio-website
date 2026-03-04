@@ -1,0 +1,3 @@
+## 2024-05-18 - Semantic Buttons for Interactive Elements
+**Learning:** Using `<div>` elements for interactive elements like hamburger menus prevents keyboard navigation and lacks semantics for screen readers. In this app, a hamburger menu was implemented as a `<div>`, leading to accessibility issues.
+**Action:** Always use `<button>` for interactive controls that trigger actions (rather than navigating like `<a>`). Ensure they have appropriate `aria-label`s and manage state dynamically (like `aria-expanded`) via JavaScript. Also ensure global `:focus-visible` styles are set for keyboard users.
