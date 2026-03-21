@@ -639,6 +639,7 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   background:rgba(255,255,255,.15);
   border:1px solid var(--border);
   cursor:pointer;transition:all .3s;
+  padding:0;
 }
 .gdot.active{
   background:var(--pink);
@@ -1270,9 +1271,9 @@ for name, layer in models.items():
     <button class="gallery-btn" id="nextSlide" aria-label="Next project">&#8594;</button>
   </div>
   <div class="gallery-dots" id="galleryDots">
-    <span class="gdot active" data-idx="0"></span>
-    <span class="gdot" data-idx="1"></span>
-    <span class="gdot" data-idx="2"></span>
+    <button type="button" class="gdot active" data-idx="0" aria-label="Go to project 1"></button>
+    <button type="button" class="gdot" data-idx="1" aria-label="Go to project 2"></button>
+    <button type="button" class="gdot" data-idx="2" aria-label="Go to project 3"></button>
   </div>
 </div>
 </div>
