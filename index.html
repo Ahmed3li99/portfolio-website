@@ -662,7 +662,7 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
 }
 
 /* ===========================
-   ABOUT (old grid - keep for sidebar sticky) 
+   ABOUT (old grid - keep for sidebar sticky)
    =========================== */
 .about-grid{display:grid;grid-template-columns:260px 1fr;gap:56px;align-items:start}
 .about-side{
@@ -989,7 +989,7 @@ body.light{
   <a href="#hero" class="logo">Ahmed Ali</a>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" title="Toggle dark / light mode" style="font-size:.82rem;padding:8px 12px">🌙</button>
-    <button class="ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button type="button" class="ham" id="ham" aria-label="Menu" aria-expanded="false" aria-controls="navul"><span></span><span></span><span></span></button>
   </div>
   <ul class="navul" id="navul">
     <li><a href="#about" data-section="about"><i class="fa-regular fa-user"></i> About</a></li>
@@ -1532,9 +1532,6 @@ if (typeof gsap !== 'undefined') {
   showAllContent();
 }
 
-  scrollReveal('.gsap-scale', { scale: .88 });
-
-
 /* -----------------------------------------------
    HERO DATA FLOW CANVAS
 ----------------------------------------------- */
@@ -1777,8 +1774,20 @@ if (typeof gsap !== 'undefined') {
    HAMBURGER MENU
 ----------------------------------------------- */
 var ham = document.getElementById('ham');
-if (ham) ham.addEventListener('click', function() { document.getElementById('navul').classList.toggle('open'); });
-document.querySelectorAll('#navul a').forEach(a => a.addEventListener('click', () => document.getElementById('navul').classList.remove('open')));
+if (ham) {
+  ham.addEventListener('click', function() {
+    var navul = document.getElementById('navul');
+    navul.classList.toggle('open');
+    var isExpanded = navul.classList.contains('open');
+    ham.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+  });
+}
+document.querySelectorAll('#navul a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navul').classList.remove('open');
+    if (ham) ham.setAttribute('aria-expanded', 'false');
+  });
+});
 
 /* -----------------------------------------------
    THEME TOGGLE
