@@ -989,7 +989,7 @@ body.light{
   <a href="#hero" class="logo">Ahmed Ali</a>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" title="Toggle dark / light mode" style="font-size:.82rem;padding:8px 12px">🌙</button>
-    <button class="ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button type="button" class="ham" id="ham" aria-expanded="false" aria-controls="navul" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
   <ul class="navul" id="navul">
     <li><a href="#about" data-section="about"><i class="fa-regular fa-user"></i> About</a></li>
@@ -1777,8 +1777,20 @@ if (typeof gsap !== 'undefined') {
    HAMBURGER MENU
 ----------------------------------------------- */
 var ham = document.getElementById('ham');
-if (ham) ham.addEventListener('click', function() { document.getElementById('navul').classList.toggle('open'); });
-document.querySelectorAll('#navul a').forEach(a => a.addEventListener('click', () => document.getElementById('navul').classList.remove('open')));
+var navul = document.getElementById('navul');
+if (ham && navul) {
+  ham.addEventListener('click', function() {
+    navul.classList.toggle('open');
+    var isOpen = navul.classList.contains('open');
+    ham.setAttribute('aria-expanded', isOpen);
+  });
+  document.querySelectorAll('#navul a').forEach(a => {
+    a.addEventListener('click', () => {
+      navul.classList.remove('open');
+      ham.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
 
 /* -----------------------------------------------
    THEME TOGGLE
