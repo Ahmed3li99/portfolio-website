@@ -7,3 +7,7 @@
 ## 2024-05-25 - Semantic Tags for Interactive UI Components
 **Learning:** Found custom UI elements like carousel gallery dots implemented using generic `<span>` tags. Even with `cursor: pointer` and JavaScript event listeners, non-semantic tags lack default keyboard focusability, enter/space key activation, and essential screen reader support. This creates a hidden accessibility trap.
 **Action:** When creating or updating interactive UI components (like carousel dots, tabs, or custom toggles), always use semantic `<button type="button">` tags. Make sure to reset default styles (like padding or borders) via CSS, and add descriptive `aria-label` attributes to ensure the component is fully accessible.
+
+## 2024-05-26 - Hamburger Menu Accessibility State
+**Learning:** Found an issue where the mobile hamburger menu did not correctly indicate its open/close state to screen readers. While visual users could see the menu opening or closing, keyboard and screen reader users were not provided context because `aria-expanded` and `aria-controls` were missing, and the ARIA state was not dynamically updated when the menu's class toggled.
+**Action:** When refactoring interactive toggle components like hamburger menus or dropdowns, ensure `type="button"` is set, and add `aria-controls` to link to the controlled element. Crucially, the associated JavaScript event listeners must dynamically update the `aria-expanded` state based on the current class or visual state, not just toggle classes.
