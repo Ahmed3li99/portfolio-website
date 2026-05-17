@@ -2970,122 +2970,234 @@ if (cvLink) {
   /* ============================================
      1. HERO — 3D ROBOT
      ============================================ */
-  (function heroRobot(){
-    var container = document.getElementById('three-hero-nn');
-    if(!container) return;
+	  (function heroRobot(){
+	    var container = document.getElementById('three-hero-nn');
+	    if(!container) return;
 
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
-    camera.position.z = 8;
+	    var scene = new THREE.Scene();
+	    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+	    camera.position.set(0, 1.2, 8);
 
-    var renderer = makeRenderer(container, true);
+	    var renderer = makeRenderer(container, true);
+	    renderer.outputEncoding = THREE.sRGBEncoding;
+	    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	    renderer.toneMappingExposure = 1.1;
 
-    // Robot animation constants
-    var BODY_SWAY_SPEED = 0.5;
-    var BODY_SWAY_AMPLITUDE = 0.05;
-    var HEAD_TRACKING_SENSITIVITY = 0.4;
-    var HEAD_TRACKING_SMOOTHING = 0.1;
-    var ARM_WAVE_SPEED = 3;
-    var ARM_WAVE_AMPLITUDE = 0.6;
-    var ARM_WAVE_OFFSET = 0.3;
-    var LEG_WALK_SPEED = 2;
-    var LEG_WALK_AMPLITUDE = 0.2;
-    var ROBOT_TIME_DELTA = 0.016;
+	    // Robot animation constants
+	    var BODY_SWAY_SPEED = 0.7;
+	    var BODY_SWAY_AMPLITUDE = 0.04;
+	    var HEAD_TRACKING_SENSITIVITY = 0.55;
+	    var HEAD_TRACKING_SMOOTHING = 0.08;
+	    var ARM_WAVE_SPEED = 2.2;
+	    var ARM_WAVE_AMPLITUDE = 0.35;
+	    var ARM_WAVE_OFFSET = 0.15;
+	    var LEG_WALK_SPEED = 1.8;
+	    var LEG_WALK_AMPLITUDE = 0.12;
+	    var ROBOT_TIME_DELTA = 0.016;
 
-    // Create robot
-    var robot = new THREE.Group();
-    
-    // Body (main torso)
-    var bodyGeo = new THREE.BoxGeometry(1, 1.5, 0.6);
-    var bodyMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
-    var body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0;
-    robot.add(body);
+	    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
 
-    // Head group (for look-at rotation)
-    var headGroup = new THREE.Group();
-    headGroup.position.set(0, 1.2, 0);
-    robot.add(headGroup);
+	    // Lighting (gives the robot real 3D shading instead of flat colors)
+	    var hemi = new THREE.HemisphereLight(0x9bdcff, 0x0b1020, 0.7);
+	    hemi.position.set(0, 10, 0);
+	    scene.add(hemi);
+	    var key = new THREE.DirectionalLight(0xffffff, 1.15);
+	    key.position.set(6, 7, 8);
+	    scene.add(key);
+	    var fill = new THREE.DirectionalLight(0xf472b6, 0.35);
+	    fill.position.set(-7, 3, 6);
+	    scene.add(fill);
+	    var rim = new THREE.PointLight(0x22d3ee, 0.9, 30);
+	    rim.position.set(0, 5, -8);
+	    scene.add(rim);
 
-    // Head (cube)
-    var headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-    var headMat = new THREE.MeshBasicMaterial({color: 0xf472b6});
-    var head = new THREE.Mesh(headGeo, headMat);
-    headGroup.add(head);
+	    // Create robot
+	    var robot = new THREE.Group();
+	    robot.position.y = -0.2;
+	    
+	    var bodyMat = new THREE.MeshStandardMaterial({color: 0x38bdf8, metalness: 0.75, roughness: 0.28});
+	    var accentMat = new THREE.MeshStandardMaterial({color: 0xf472b6, metalness: 0.45, roughness: 0.25});
+	    var glowMat = new THREE.MeshStandardMaterial({color: 0x22d3ee, metalness: 0.1, roughness: 0.2, emissive: 0x22d3ee, emissiveIntensity: 0.55});
+	    var darkMat = new THREE.MeshStandardMaterial({color: 0x0b1020, metalness: 0.2, roughness: 0.7});
 
-    // Eyes
-    var eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
-    var eyeMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
-    var leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-    leftEye.position.set(-0.2, 0.15, 0.45);
-    head.add(leftEye);
-    var rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-    rightEye.position.set(0.2, 0.15, 0.45);
-    head.add(rightEye);
+	    // Torso (more humanoid silhouette)
+	    var torso = new THREE.Mesh(new THREE.BoxGeometry(1.15, 1.55, 0.7), bodyMat);
+	    torso.position.y = 0.35;
+	    robot.add(torso);
+	    var chest = new THREE.Mesh(new THREE.SphereGeometry(0.62, 22, 18), accentMat);
+	    chest.scale.set(1.0, 0.85, 0.7);
+	    chest.position.set(0, 0.55, 0.18);
+	    robot.add(chest);
+	    var pelvis = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.45, 0.55), darkMat);
+	    pelvis.position.set(0, -0.55, 0);
+	    robot.add(pelvis);
 
-    // Antenna
-    var antennaGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6);
-    var antennaMat = new THREE.MeshBasicMaterial({color: 0xfb923c});
-    var antenna = new THREE.Mesh(antennaGeo, antennaMat);
-    antenna.position.set(0, 0.5, 0);
-    head.add(antenna);
+	    // Head group (for look-at rotation)
+	    var headGroup = new THREE.Group();
+	    headGroup.position.set(0, 1.45, 0);
+	    robot.add(headGroup);
 
-    // Arms
-    var armGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
-    var armMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
-    var leftArm = new THREE.Mesh(armGeo, armMat);
-    leftArm.position.set(-0.65, 0.3, 0);
-    robot.add(leftArm);
-    var rightArm = new THREE.Mesh(armGeo, armMat);
-    rightArm.position.set(0.65, 0.3, 0);
-    robot.add(rightArm);
+	    // Neck + head (rounded)
+	    var neck = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.25, 20), darkMat);
+	    neck.position.y = -0.55;
+	    headGroup.add(neck);
+	    var head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 26, 20), bodyMat);
+	    head.scale.set(1.0, 0.92, 0.9);
+	    headGroup.add(head);
 
-    // Legs
-    var legGeo = new THREE.BoxGeometry(0.3, 0.9, 0.3);
-    var legMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
-    var leftLeg = new THREE.Mesh(legGeo, legMat);
-    leftLeg.position.set(-0.3, -1.1, 0);
-    robot.add(leftLeg);
-    var rightLeg = new THREE.Mesh(legGeo, legMat);
-    rightLeg.position.set(0.3, -1.1, 0);
-    robot.add(rightLeg);
+	    // Visor plate
+	    var visor = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.34, 0.08), darkMat);
+	    visor.position.set(0, 0.05, 0.5);
+	    head.add(visor);
+	    var visorGlow = new THREE.Mesh(new THREE.PlaneGeometry(0.78, 0.26), glowMat);
+	    visorGlow.position.set(0, 0.05, 0.545);
+	    head.add(visorGlow);
 
-    scene.add(robot);
+	    // Eyes
+	    var eyeGroup = new THREE.Group();
+	    eyeGroup.position.set(0, 0.05, 0.48);
+	    head.add(eyeGroup);
+	    var eyeSocketGeo = new THREE.SphereGeometry(0.135, 18, 18);
+	    var eyeSocketMat = new THREE.MeshStandardMaterial({color: 0xe5e7eb, metalness: 0.2, roughness: 0.35});
+	    var leftEye = new THREE.Mesh(eyeSocketGeo, eyeSocketMat);
+	    leftEye.position.set(-0.24, 0.02, 0);
+	    eyeGroup.add(leftEye);
+	    var rightEye = new THREE.Mesh(eyeSocketGeo, eyeSocketMat);
+	    rightEye.position.set(0.24, 0.02, 0);
+	    eyeGroup.add(rightEye);
+	    var pupilGeo = new THREE.SphereGeometry(0.05, 14, 14);
+	    var pupilMat = new THREE.MeshStandardMaterial({color: 0x05070f, metalness: 0.0, roughness: 0.35});
+	    var leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
+	    var rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
+	    leftPupil.position.set(0, 0, 0.115);
+	    rightPupil.position.set(0, 0, 0.115);
+	    leftEye.add(leftPupil);
+	    rightEye.add(rightPupil);
 
-    // Mouse tracking
-    var mouseX = 0.5, mouseY = 0.5;
+	    // Antenna
+	    var antennaGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6);
+	    var antennaMat = new THREE.MeshStandardMaterial({color: 0xfb923c, metalness: 0.3, roughness: 0.35, emissive: 0xfb923c, emissiveIntensity: 0.25});
+	    var antenna = new THREE.Mesh(antennaGeo, antennaMat);
+	    antenna.position.set(0, 0.65, 0);
+	    head.add(antenna);
+	    var antennaTip = new THREE.Mesh(new THREE.SphereGeometry(0.085, 14, 14), antennaMat);
+	    antennaTip.position.set(0, 0.35, 0);
+	    antenna.add(antennaTip);
+
+	    // Arms
+	    var shoulderGeo = new THREE.SphereGeometry(0.18, 18, 18);
+	    var upperArmGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.75, 18);
+	    var foreArmGeo = new THREE.CylinderGeometry(0.11, 0.11, 0.65, 18);
+	    var handGeo = new THREE.SphereGeometry(0.13, 16, 14);
+
+	    function buildArm(side){
+	      var g = new THREE.Group();
+	      g.position.set(0.72 * side, 0.7, 0);
+	      robot.add(g);
+
+	      var shoulder = new THREE.Mesh(shoulderGeo, accentMat);
+	      g.add(shoulder);
+
+	      var upperArm = new THREE.Mesh(upperArmGeo, bodyMat);
+	      upperArm.rotation.z = Math.PI / 2;
+	      upperArm.position.x = 0.35 * side;
+	      g.add(upperArm);
+
+	      var elbow = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 14), darkMat);
+	      elbow.position.x = 0.72 * side;
+	      g.add(elbow);
+
+	      var foreArm = new THREE.Mesh(foreArmGeo, bodyMat);
+	      foreArm.rotation.z = Math.PI / 2;
+	      foreArm.position.x = 1.02 * side;
+	      g.add(foreArm);
+
+	      var hand = new THREE.Mesh(handGeo, glowMat);
+	      hand.position.x = 1.35 * side;
+	      g.add(hand);
+
+	      return g;
+	    }
+	    var leftArm = buildArm(-1);
+	    var rightArm = buildArm(1);
+
+	    // Legs
+	    var thighGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.85, 18);
+	    var shinGeo = new THREE.CylinderGeometry(0.13, 0.13, 0.8, 18);
+	    var footGeo = new THREE.BoxGeometry(0.34, 0.16, 0.6);
+	    function buildLeg(side){
+	      var g = new THREE.Group();
+	      g.position.set(0.34 * side, -0.75, 0);
+	      robot.add(g);
+
+	      var hip = new THREE.Mesh(new THREE.SphereGeometry(0.16, 18, 16), accentMat);
+	      g.add(hip);
+	      var thigh = new THREE.Mesh(thighGeo, bodyMat);
+	      thigh.position.y = -0.45;
+	      g.add(thigh);
+
+	      var knee = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 14), darkMat);
+	      knee.position.y = -0.9;
+	      g.add(knee);
+
+	      var shin = new THREE.Mesh(shinGeo, bodyMat);
+	      shin.position.y = -1.28;
+	      g.add(shin);
+
+	      var foot = new THREE.Mesh(footGeo, darkMat);
+	      foot.position.set(0, -1.72, 0.12);
+	      g.add(foot);
+	      return g;
+	    }
+	    var leftLeg = buildLeg(-1);
+	    var rightLeg = buildLeg(1);
+
+	    scene.add(robot);
+
+	    // Mouse tracking
+	    var mouseX = 0.5, mouseY = 0.5;
     document.addEventListener('mousemove', function(e){
       mouseX = e.clientX / window.innerWidth;
       mouseY = e.clientY / window.innerHeight;
     });
 
     var t = 0;
-    function animate(){
-      t += ROBOT_TIME_DELTA;
-      
-      // Subtle body sway
-      robot.rotation.z = Math.sin(t * BODY_SWAY_SPEED) * BODY_SWAY_AMPLITUDE;
-      
-      // Head follows mouse
-      // Note: This follows Three.js Euler angle conventions where X-rotation controls pitch (vertical tilt)
-      // and Y-rotation controls yaw (horizontal rotation). Mouse Y (vertical) controls rotation X, 
-      // mouse X (horizontal) controls rotation Y.
-      var targetRotX = (mouseY - 0.5) * HEAD_TRACKING_SENSITIVITY;
-      var targetRotY = (mouseX - 0.5) * HEAD_TRACKING_SENSITIVITY;
-      headGroup.rotation.x += (targetRotX - headGroup.rotation.x) * HEAD_TRACKING_SMOOTHING;
-      headGroup.rotation.y += (targetRotY - headGroup.rotation.y) * HEAD_TRACKING_SMOOTHING;
-      
-      // Arm wave
-      leftArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED) * ARM_WAVE_AMPLITUDE - ARM_WAVE_OFFSET;
-      rightArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED + Math.PI) * ARM_WAVE_AMPLITUDE + ARM_WAVE_OFFSET;
-      
-      // Leg walk
-      leftLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED) * LEG_WALK_AMPLITUDE;
-      rightLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED + Math.PI) * LEG_WALK_AMPLITUDE;
+	    function animate(){
+	      t += ROBOT_TIME_DELTA;
+	      
+	      // Subtle body sway
+	      robot.rotation.z = Math.sin(t * BODY_SWAY_SPEED) * BODY_SWAY_AMPLITUDE;
+	      robot.position.y = -0.2 + Math.sin(t * 0.9) * 0.07;
+	      robot.rotation.y = Math.sin(t * 0.25) * 0.12;
+	      
+	      // Head follows mouse
+	      // Note: This follows Three.js Euler angle conventions where X-rotation controls pitch (vertical tilt)
+	      // and Y-rotation controls yaw (horizontal rotation). Mouse Y (vertical) controls rotation X, 
+	      // mouse X (horizontal) controls rotation Y.
+	      var targetRotX = clamp((mouseY - 0.5) * HEAD_TRACKING_SENSITIVITY, -0.35, 0.35);
+	      var targetRotY = clamp((mouseX - 0.5) * HEAD_TRACKING_SENSITIVITY, -0.55, 0.55);
+	      headGroup.rotation.x += (targetRotX - headGroup.rotation.x) * HEAD_TRACKING_SMOOTHING;
+	      headGroup.rotation.y += (targetRotY - headGroup.rotation.y) * HEAD_TRACKING_SMOOTHING;
 
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    }
+	      // Pupils track the cursor too (adds "looking at mouse" feel even on small head rotations)
+	      var pupilX = clamp((mouseX - 0.5) * 0.14, -0.045, 0.045);
+	      var pupilY = clamp((0.5 - mouseY) * 0.14, -0.04, 0.04);
+	      leftPupil.position.x += (pupilX - leftPupil.position.x) * 0.18;
+	      leftPupil.position.y += (pupilY - leftPupil.position.y) * 0.18;
+	      rightPupil.position.x += (pupilX - rightPupil.position.x) * 0.18;
+	      rightPupil.position.y += (pupilY - rightPupil.position.y) * 0.18;
+	      
+	      // Arm wave
+	      leftArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED) * ARM_WAVE_AMPLITUDE - ARM_WAVE_OFFSET;
+	      rightArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED + Math.PI) * ARM_WAVE_AMPLITUDE + ARM_WAVE_OFFSET;
+	      
+	      // Leg walk
+	      leftLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED) * LEG_WALK_AMPLITUDE;
+	      rightLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED + Math.PI) * LEG_WALK_AMPLITUDE;
+
+	      renderer.render(scene, camera);
+	      requestAnimationFrame(animate);
+	    }
     animate();
     window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
   })();
