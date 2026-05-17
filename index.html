@@ -961,6 +961,157 @@ footer span{color:var(--pink)}
 .sec{scroll-margin-top:92px}
 
 /* ===========================
+   MATRIX RAIN BACKGROUND
+   =========================== */
+#matrix-rain{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.12;mix-blend-mode:screen;
+}
+
+/* ===========================
+   FLOATING CODE SNIPPETS (Hero)
+   =========================== */
+.floating-code{
+  position:absolute;font-family:var(--mono);
+  font-size:.65rem;color:rgba(56,189,248,.25);
+  letter-spacing:.5px;white-space:nowrap;
+  pointer-events:none;z-index:1;
+  text-shadow:0 0 8px rgba(56,189,248,.3);
+  animation:floatCode 15s linear infinite;
+}
+.floating-code:nth-child(odd){color:rgba(244,114,182,.22);text-shadow:0 0 8px rgba(244,114,182,.3)}
+@keyframes floatCode{
+  0%{transform:translateY(100vh) translateX(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-20vh) translateX(20px);opacity:0}
+}
+
+/* ===========================
+   TYPED CURSOR
+   =========================== */
+.typed-cursor{
+  display:inline-block;width:3px;height:1em;
+  background:var(--cyan);margin-left:4px;vertical-align:-2px;
+  animation:typedBlink .8s infinite;
+  box-shadow:0 0 8px var(--cyan);
+}
+@keyframes typedBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* ===========================
+   MAGNETIC BUTTONS
+   =========================== */
+.btn{will-change:transform;transition:transform .2s ease-out,box-shadow .3s,background .3s}
+.magnetic{display:inline-block;transition:transform .15s ease-out}
+
+/* ===========================
+   3D TILT
+   =========================== */
+.tilt-3d{
+  transform-style:preserve-3d;will-change:transform;
+  transition:transform .3s ease-out;
+}
+.tilt-3d > *{transform:translateZ(20px)}
+
+/* ===========================
+   GLITCH ENHANCED (on hover)
+   =========================== */
+.glitch-hover{position:relative;display:inline-block}
+.glitch-hover:hover::before,.glitch-hover:hover::after{
+  content:attr(data-text);position:absolute;left:0;top:0;
+  width:100%;height:100%;
+}
+.glitch-hover:hover::before{
+  text-shadow:-2px 0 var(--pink);clip:rect(0,900px,0,0);
+  animation:gh1 .6s infinite linear alternate-reverse;
+}
+.glitch-hover:hover::after{
+  text-shadow:2px 0 var(--cyan);clip:rect(0,900px,0,0);
+  animation:gh2 .8s infinite linear alternate-reverse;
+}
+@keyframes gh1{0%{clip:rect(20px,9999px,30px,0)}100%{clip:rect(50px,9999px,60px,0)}}
+@keyframes gh2{0%{clip:rect(10px,9999px,20px,0)}100%{clip:rect(40px,9999px,50px,0)}}
+
+/* ===========================
+   CURSOR TRAIL
+   =========================== */
+.cursor-trail{
+  position:fixed;width:8px;height:8px;border-radius:50%;
+  background:var(--cyan);pointer-events:none;z-index:9997;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--cyan);
+  mix-blend-mode:screen;
+  transition:opacity .5s;
+}
+
+/* ===========================
+   HEXAGON SKILLS (override)
+   =========================== */
+.sk{
+  animation:hexFloat 6s ease-in-out infinite;
+}
+.sk:nth-child(2){animation-delay:.5s}
+.sk:nth-child(3){animation-delay:1s}
+.sk:nth-child(4){animation-delay:1.5s}
+.sk:nth-child(5){animation-delay:2s}
+.sk:nth-child(6){animation-delay:2.5s}
+.sk:nth-child(7){animation-delay:3s}
+.sk:nth-child(8){animation-delay:3.5s}
+@keyframes hexFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+.sk:hover{animation-play-state:paused}
+
+/* ===========================
+   LIQUID PROGRESS BARS
+   =========================== */
+.sb-fill{position:relative;overflow:hidden}
+.sb-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  animation:liquidShine 2.5s linear infinite;
+}
+@keyframes liquidShine{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+
+/* ===========================
+   LIVE DATA BARS (About card)
+   =========================== */
+.dv-bar{
+  animation:barLive 3s ease-in-out infinite,barPulse 2s ease-in-out infinite;
+}
+@keyframes barLive{
+  0%,100%{height:var(--h)}
+  25%{height:calc(var(--h) * 0.7)}
+  50%{height:calc(var(--h) * 1.1)}
+  75%{height:calc(var(--h) * 0.85)}
+}
+
+/* ===========================
+   SECTION REVEAL ENHANCEMENT
+   =========================== */
+.gsap-slide-up,.gsap-slide-left,.gsap-slide-right,.gsap-scale{
+  will-change:transform,opacity;
+}
+
+/* ===========================
+   GALLERY 3D CARD STACK
+   =========================== */
+.gallery-slide{transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
+.gallery-slide:hover{transform:perspective(1000px) rotateY(-2deg)}
+
+/* ===========================
+   PHOTO TILT
+   =========================== */
+.photo-wrap{
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  will-change:transform;
+}
+
+/* ===========================
    SKELETON LOADER
    =========================== */
 #skeleton-loader{
@@ -1234,6 +1385,9 @@ body.light{
 <!-- SKIP LINK (accessibility) -->
 <a class="skip-link" href="#hero">Skip to content</a>
 
+<!-- MATRIX RAIN BACKGROUND -->
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
+
 <!-- CURSOR -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
@@ -1266,6 +1420,18 @@ body.light{
   <div class="hero-layer hero-layer-3" id="parallax-3"></div>
   <canvas id="hero-data-canvas" aria-hidden="true"></canvas>
 
+  <!-- Floating code snippets -->
+  <div id="hero-floating-code" aria-hidden="true">
+    <span class="floating-code" style="left:5%;animation-delay:0s">import tensorflow as tf</span>
+    <span class="floating-code" style="left:15%;animation-delay:3s">model.fit(X_train, y_train)</span>
+    <span class="floating-code" style="left:70%;animation-delay:1.5s">accuracy: 0.97</span>
+    <span class="floating-code" style="left:85%;animation-delay:4s">df.groupby('label').mean()</span>
+    <span class="floating-code" style="left:35%;animation-delay:6s">loss: 0.0231</span>
+    <span class="floating-code" style="left:55%;animation-delay:2s">epochs=50, batch_size=32</span>
+    <span class="floating-code" style="left:25%;animation-delay:8s">from sklearn import metrics</span>
+    <span class="floating-code" style="left:75%;animation-delay:5s">[0.92, 0.88, 0.95]</span>
+  </div>
+
   <!-- Cityscape silhouette -->
   <svg class="hero-city" viewBox="0 0 1440 280" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0,280 L0,200 L40,200 L40,160 L60,160 L60,140 L80,140 L80,160 L100,160 L100,120 L120,120 L120,80 L140,80 L140,120 L160,120 L160,100 L180,100 L180,120 L200,120 L200,200 L220,200 L220,160 L240,160 L240,100 L260,100 L260,60 L280,60 L280,100 L300,100 L300,160 L320,160 L320,140 L360,140 L360,80 L380,80 L380,140 L400,140 L400,180 L420,180 L420,120 L440,120 L440,70 L460,70 L460,120 L480,120 L480,180 L500,180 L500,160 L540,160 L540,100 L560,100 L560,60 L580,60 L580,100 L600,100 L600,160 L620,160 L620,140 L660,140 L660,200 L680,200 L680,160 L720,160 L720,100 L740,100 L740,160 L760,160 L760,200 L800,200 L800,140 L840,140 L840,180 L880,180 L880,120 L900,120 L900,80 L920,80 L920,120 L940,120 L940,180 L960,180 L960,160 L1000,160 L1000,100 L1020,100 L1020,60 L1040,60 L1040,100 L1060,100 L1060,160 L1080,160 L1080,140 L1120,140 L1120,200 L1160,200 L1160,160 L1200,160 L1200,100 L1220,100 L1220,160 L1240,160 L1240,200 L1280,200 L1280,140 L1320,140 L1320,180 L1360,180 L1360,160 L1400,160 L1400,200 L1440,200 L1440,280 Z" fill="currentColor"/>
@@ -1280,10 +1446,10 @@ body.light{
       <p class="hero-role" id="hero-role">Data Analyst</p>
       <p class="hero-desc gsap-slide-up">Computer Science student specializing in Artificial Intelligence. Building predictive models, analyzing real-world data, and implementing deep learning architectures — turning data into practical solutions.</p>
       <div class="hero-btns gsap-slide-up">
-        <a href="#projects" class="btn btn-blue">
+        <a href="#projects" class="btn btn-blue magnetic">
           <i class="fa-solid fa-diagram-project"></i> View Projects
         </a>
-        <a href="#contact" class="btn btn-ghost"><i class="fa-regular fa-paper-plane"></i> Contact Me</a>
+        <a href="#contact" class="btn btn-ghost magnetic"><i class="fa-regular fa-paper-plane"></i> Contact Me</a>
       </div>
       <div class="hero-stats gsap-slide-up">
         <div>
@@ -1302,7 +1468,7 @@ body.light{
     </div>
 
     <!-- photo -->
-    <div class="photo-wrap gsap-scale">
+    <div class="photo-wrap gsap-scale tilt-3d" data-tilt>
       <img src="profile_avatar.jpeg" alt="Ahmed Ali — Data Analyst & ML Student" loading="eager" />
       <div class="scan"></div>
       <div class="scan-line"></div>
@@ -1328,7 +1494,7 @@ body.light{
 
   <!-- Character Cards Grid (GTA VI style) -->
   <div class="char-grid">
-    <article class="char-card gsap-slide-up">
+    <article class="char-card gsap-slide-up tilt-3d" data-tilt>
       <div class="char-img-wrap">
         <img src="profile_avatar.jpeg" alt="Ahmed Ali profile photo" loading="lazy" />
         <div class="char-scan"></div>
@@ -1357,7 +1523,7 @@ body.light{
       </div>
     </article>
 
-    <article class="char-card gsap-slide-up">
+    <article class="char-card gsap-slide-up tilt-3d" data-tilt>
       <div class="char-img-wrap char-img-data">
         <div class="char-img-placeholder">
           <div class="data-viz">
@@ -1381,7 +1547,7 @@ body.light{
       </div>
     </article>
 
-    <article class="char-card gsap-slide-up">
+    <article class="char-card gsap-slide-up tilt-3d" data-tilt>
       <div class="char-img-wrap char-img-ml">
         <div class="char-img-placeholder">
           <div class="ml-viz">
@@ -1666,6 +1832,157 @@ for name, layer in models.items():
      JAVASCRIPT
      =========================== -->
 <script>
+/* -----------------------------------------------
+   MATRIX RAIN BACKGROUND
+----------------------------------------------- */
+(function(){
+  var canvas = document.getElementById('matrix-rain');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var w, h, columns, drops;
+  var chars = '01アイウエオカキクケコサシスセソタチツテト{}[]()=><+-*/AhmedAli'.split('');
+
+  function init(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    var fontSize = 14;
+    columns = Math.floor(w / fontSize);
+    drops = [];
+    for(var i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+  }
+  init();
+  window.addEventListener('resize', init);
+
+  function draw(){
+    ctx.fillStyle = 'rgba(3,9,26,0.06)';
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = '14px JetBrains Mono, monospace';
+    for(var i = 0; i < drops.length; i++){
+      var text = chars[Math.floor(Math.random() * chars.length)];
+      var x = i * 14;
+      var y = drops[i] * 14;
+      var grad = Math.random();
+      ctx.fillStyle = grad > 0.97 ? '#f472b6' : (grad > 0.5 ? '#38bdf8' : '#22d3ee');
+      ctx.fillText(text, x, y);
+      if(y > h && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw, 60);
+})();
+
+/* -----------------------------------------------
+   TYPED TEXT EFFECT (Hero Role)
+----------------------------------------------- */
+(function(){
+  var el = document.getElementById('hero-role');
+  if(!el) return;
+  var roles = [
+    'Data Analyst',
+    'Machine Learning Engineer',
+    'AI Researcher',
+    'Python Developer',
+    'Deep Learning Specialist'
+  ];
+  var roleIdx = 0, charIdx = 0, deleting = false;
+  el.innerHTML = '<span id="typed-text"></span><span class="typed-cursor"></span>';
+  var textEl = document.getElementById('typed-text');
+
+  function tick(){
+    var current = roles[roleIdx];
+    if(deleting){
+      charIdx--;
+      textEl.textContent = current.substring(0, charIdx);
+      if(charIdx === 0){
+        deleting = false;
+        roleIdx = (roleIdx + 1) % roles.length;
+        setTimeout(tick, 400);
+        return;
+      }
+      setTimeout(tick, 40);
+    } else {
+      charIdx++;
+      textEl.textContent = current.substring(0, charIdx);
+      if(charIdx === current.length){
+        deleting = true;
+        setTimeout(tick, 2000);
+        return;
+      }
+      setTimeout(tick, 90);
+    }
+  }
+  setTimeout(tick, 800);
+})();
+
+/* -----------------------------------------------
+   MAGNETIC BUTTONS
+----------------------------------------------- */
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  document.querySelectorAll('.magnetic').forEach(function(btn){
+    btn.addEventListener('mousemove', function(e){
+      var rect = btn.getBoundingClientRect();
+      var x = e.clientX - rect.left - rect.width/2;
+      var y = e.clientY - rect.top - rect.height/2;
+      btn.style.transform = 'translate(' + (x * 0.25) + 'px,' + (y * 0.25) + 'px)';
+    });
+    btn.addEventListener('mouseleave', function(){
+      btn.style.transform = 'translate(0,0)';
+    });
+  });
+})();
+
+/* -----------------------------------------------
+   3D TILT EFFECT
+----------------------------------------------- */
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  document.querySelectorAll('[data-tilt]').forEach(function(el){
+    el.addEventListener('mousemove', function(e){
+      var rect = el.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width;
+      var y = (e.clientY - rect.top) / rect.height;
+      var rotateX = (y - 0.5) * -12;
+      var rotateY = (x - 0.5) * 12;
+      el.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.02,1.02,1.02)';
+    });
+    el.addEventListener('mouseleave', function(){
+      el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+    });
+  });
+})();
+
+/* -----------------------------------------------
+   CURSOR TRAIL
+----------------------------------------------- */
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  var trails = [];
+  var trailCount = 8;
+  for(var i = 0; i < trailCount; i++){
+    var dot = document.createElement('div');
+    dot.className = 'cursor-trail';
+    dot.style.opacity = (1 - i/trailCount) * 0.5;
+    dot.style.width = dot.style.height = (8 - i*0.7) + 'px';
+    document.body.appendChild(dot);
+    trails.push({el: dot, x: 0, y: 0});
+  }
+  var mx = 0, my = 0;
+  document.addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; });
+  function animate(){
+    var x = mx, y = my;
+    trails.forEach(function(t){
+      t.x += (x - t.x) * 0.35;
+      t.y += (y - t.y) * 0.35;
+      t.el.style.left = t.x + 'px';
+      t.el.style.top = t.y + 'px';
+      x = t.x; y = t.y;
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
 /* -----------------------------------------------
    SKELETON LOADER — Particle System & Dismiss
 ----------------------------------------------- */
