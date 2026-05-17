@@ -350,54 +350,132 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   letter-spacing:1.5px;text-transform:uppercase;
 }
 
-/* photo */
-.photo-wrap{
-  position:relative;height:520px;border-radius:18px;
-  overflow:hidden;border:1px solid var(--border);
-  box-shadow:0 0 80px rgba(0,207,255,.10);
+/* ===========================
+   ROBOT SHOWCASE (Hero Right)
+   =========================== */
+.robot-showcase{
+  position:relative;height:560px;border-radius:18px;
+  overflow:hidden;
+  background:rgba(0,4,16,.92);
+  border:1px solid rgba(0,207,255,.18);
+  box-shadow:0 0 60px rgba(0,207,255,.08), 0 0 0 1px rgba(0,207,255,.06);
+  will-change:transform;
 }
-.photo-wrap::before{
-  content:'';position:absolute;top:14px;right:14px;
-  width:50px;height:50px;
-  border-top:2px solid var(--pink);border-right:2px solid var(--pink);
-  border-radius:0 8px 0 0;z-index:4;
+.robot-showcase canvas{
+  position:absolute;inset:0;width:100%!important;height:100%!important;
+  display:block;
 }
-.photo-wrap::after{
-  content:'';position:absolute;bottom:14px;left:14px;
-  width:50px;height:50px;
-  border-bottom:2px solid var(--cyan);border-left:2px solid var(--cyan);
-  border-radius:0 0 0 8px;z-index:4;
+
+/* Scanline overlay on showcase */
+.robot-showcase::before{
+  content:'';position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 2px,rgba(0,0,0,.10) 2px,rgba(0,0,0,.10) 4px
+  );
+  border-radius:18px;
 }
-.photo-wrap img{
-  width:100%;height:100%;object-fit:cover;
-  object-position:center 15%;display:block;
-  filter:contrast(1.05) brightness(.92) saturate(1.1);
+
+/* Corner brackets */
+.rsh-corner{position:absolute;z-index:8;pointer-events:none;width:36px;height:36px}
+.rsh-corner.tl{top:14px;left:14px;border-top:2px solid rgba(0,207,255,.65);border-left:2px solid rgba(0,207,255,.65);border-radius:4px 0 0 0}
+.rsh-corner.tr{top:14px;right:14px;border-top:2px solid rgba(0,207,255,.45);border-right:2px solid rgba(0,207,255,.45);border-radius:0 4px 0 0}
+.rsh-corner.bl{bottom:14px;left:14px;border-bottom:2px solid rgba(0,207,255,.45);border-left:2px solid rgba(0,207,255,.45);border-radius:0 0 0 4px}
+.rsh-corner.br{bottom:14px;right:14px;border-bottom:2px solid rgba(244,114,182,.35);border-right:2px solid rgba(244,114,182,.35);border-radius:0 0 4px 0}
+
+/* HUD top-left panel */
+.rsh-hud-tl{
+  position:absolute;top:22px;left:22px;z-index:9;pointer-events:none;
 }
-.scan{
-  position:absolute;inset:0;z-index:2;border-radius:18px;
-  pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,207,255,.018) 3px,rgba(0,207,255,.018) 4px);
+.rsh-status{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(0,4,16,.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(0,207,255,.22);border-radius:6px;
+  padding:5px 12px;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(0,207,255,.85);
 }
-/* animated scan line */
-.scan-line{
-  position:absolute;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(0,207,255,.6),transparent);
-  z-index:3;animation:scanMove 3s linear infinite;
+.rsh-status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#00f0a0;box-shadow:0 0 6px #00f0a0;
+  animation:blink 1.6s ease-in-out infinite;
 }
-@keyframes scanMove{0%{top:0;opacity:1}100%{top:100%;opacity:0}}
-.fade{
-  position:absolute;bottom:0;left:0;right:0;height:42%;
-  background:linear-gradient(to top,var(--panel-weak),transparent);
-  border-radius:0 0 18px 18px;z-index:3;
+
+/* HUD bottom-left — unit ID */
+.rsh-hud-bl{
+  position:absolute;bottom:22px;left:22px;z-index:9;pointer-events:none;
 }
-.nametag{
-  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
-  z-index:5;white-space:nowrap;text-align:center;
-  background:var(--panel-strong);backdrop-filter:blur(10px);
-  border:1px solid rgba(244,114,182,.3);border-radius:9px;padding:8px 18px;
+.rsh-unit{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:2px;
+  color:rgba(0,207,255,.45);text-transform:uppercase;
+  line-height:1.8;
 }
-.nt-name{font-family:var(--disp);font-size:.75rem;font-weight:700;color:var(--pink);letter-spacing:2px}
-.nt-role{font-family:var(--mono);font-size:.58rem;color:var(--txt2);letter-spacing:1.5px;margin-top:2px}
+
+/* HUD bottom-right — threat level */
+.rsh-hud-br{
+  position:absolute;bottom:22px;right:22px;z-index:9;pointer-events:none;
+  text-align:right;
+}
+.rsh-threat{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:2px;
+  color:rgba(244,114,182,.5);text-transform:uppercase;
+  line-height:1.8;
+}
+
+/* HUD top-right — FPS / signal indicators */
+.rsh-hud-tr{
+  position:absolute;top:22px;right:22px;z-index:9;pointer-events:none;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px;
+}
+.rsh-signal{
+  display:flex;align-items:flex-end;gap:3px;height:14px;
+}
+.rsh-signal span{
+  width:4px;background:rgba(0,207,255,.5);border-radius:1px;
+  display:block;
+}
+.rsh-signal span:nth-child(1){height:4px}
+.rsh-signal span:nth-child(2){height:7px}
+.rsh-signal span:nth-child(3){height:10px;background:rgba(0,207,255,.8)}
+.rsh-signal span:nth-child(4){height:14px;background:rgba(0,207,255,.9);box-shadow:0 0 5px rgba(0,207,255,.5)}
+.rsh-fps{font-family:var(--mono);font-size:.55rem;color:rgba(0,207,255,.4);letter-spacing:1.5px}
+
+/* Horizontal scan-sweep line */
+.rsh-sweep{
+  position:absolute;left:0;right:0;height:1px;z-index:7;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,207,255,.25) 30%,rgba(0,207,255,.5) 50%,rgba(0,207,255,.25) 70%,transparent 100%);
+  animation:rshSweep 5s ease-in-out infinite;
+  opacity:.7;
+}
+@keyframes rshSweep{
+  0%{top:15%;opacity:0}
+  10%{opacity:.7}
+  90%{opacity:.4}
+  100%{top:88%;opacity:0}
+}
+
+/* Bottom gradient fade */
+.rsh-vignette{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 40%,transparent 50%,rgba(0,4,16,.6) 100%),
+    linear-gradient(to top,rgba(0,4,16,.8) 0%,transparent 25%);
+  border-radius:18px;
+}
+
+/* PHOTO TILT override for robot showcase */
+.robot-showcase{
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  will-change:transform;
+}
+
+/* Legacy photo-wrap stubs (keep for GSAP refs) */
+.photo-wrap{display:none}
+.scan{display:none}
+.scan-line{display:none}
+.fade{display:none}
+.nametag{display:none}
+.nt-name{}
+.nt-role{}
 
 /* scroll hint */
 .scroll-hint{
@@ -940,6 +1018,7 @@ footer span{color:var(--pink)}
   .ham{display:flex}
   #hero{padding:80px 22px 60px}
   .hero-grid{grid-template-columns:1fr;gap:36px}
+  .robot-showcase{height:360px;max-width:340px;margin:0 auto;order:-1}
   .photo-wrap{height:360px;max-width:300px;margin:0 auto;order:-1}
   .hero-stats{gap:20px}
   .sec{padding:72px 22px}
@@ -957,6 +1036,7 @@ footer span{color:var(--pink)}
   .stats{grid-template-columns:1fr 1fr}
   .skgrid{grid-template-columns:repeat(2,1fr)}
   .photo-wrap{height:300px}
+  .robot-showcase{height:300px}
   .hero-stats{flex-wrap:wrap;gap:16px}
 }
 
@@ -1106,9 +1186,9 @@ footer span{color:var(--pink)}
 .gallery-slide:hover{transform:perspective(1000px) rotateY(-2deg)}
 
 /* ===========================
-   PHOTO TILT
+   ROBOT SHOWCASE TILT
    =========================== */
-.photo-wrap{
+.robot-showcase{
   transition:transform .4s cubic-bezier(.34,1.56,.64,1);
   will-change:transform;
 }
@@ -1180,6 +1260,92 @@ footer span{color:var(--pink)}
   font-family:var(--mono);font-size:.6rem;
   color:var(--txt2);letter-spacing:2px;
   opacity:.6;
+}
+
+/* ===========================
+   DESK SHOWCASE HUD
+   =========================== */
+.desk-showcase-wrap{
+  position:relative;height:460px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid rgba(0,207,255,.12);
+  background:#010812;
+}
+/* FPS box — top right */
+.dsk-hud-tl{
+  position:absolute;top:14px;right:14px;z-index:10;pointer-events:none;
+}
+.dsk-fps-box{
+  display:flex;flex-direction:column;align-items:center;
+  border:1px solid rgba(0,207,255,.35);
+  padding:4px 10px;background:rgba(0,4,16,.75);
+  font-family:var(--mono);line-height:1.1;
+  backdrop-filter:blur(6px);
+}
+.dsk-fps-label{font-size:.5rem;letter-spacing:2px;color:rgba(0,207,255,.5);text-transform:uppercase}
+.dsk-fps-val{font-size:1.2rem;font-weight:700;color:rgba(0,207,255,.9);letter-spacing:1px}
+
+/* Checkboxes — bottom left */
+.dsk-hud-bl{
+  position:absolute;bottom:18px;left:16px;z-index:10;
+  display:flex;flex-direction:column;gap:6px;pointer-events:none;
+}
+.dsk-check{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.58rem;letter-spacing:2px;
+  color:rgba(0,207,255,.55);text-transform:uppercase;cursor:default;
+}
+.dsk-cb{
+  display:inline-block;width:12px;height:12px;
+  border:1px solid rgba(0,207,255,.4);
+  background:rgba(0,0,0,.6);flex-shrink:0;
+}
+.dsk-cb.active{
+  background:rgba(0,207,255,.2);
+  border-color:rgba(0,207,255,.8);
+  box-shadow:0 0 6px rgba(0,207,255,.4);
+}
+
+/* Open to work — bottom right */
+.dsk-hud-br{
+  position:absolute;bottom:18px;right:16px;z-index:10;
+}
+.dsk-ow-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(0,207,255,.55);
+  padding:7px 16px;background:rgba(0,4,16,.75);
+  font-family:var(--mono);font-size:.6rem;letter-spacing:2px;
+  color:rgba(0,207,255,.85);text-transform:uppercase;
+  text-decoration:none;backdrop-filter:blur(6px);
+  transition:background .2s,box-shadow .2s;
+}
+.dsk-ow-btn:hover{
+  background:rgba(0,207,255,.08);
+  box-shadow:0 0 14px rgba(0,207,255,.3);
+}
+
+/* Links bar — bottom center */
+.dsk-hud-bc{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  z-index:10;display:flex;align-items:center;gap:18px;
+  font-family:var(--mono);font-size:.58rem;letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.dsk-links-label{color:rgba(255,255,255,.3)}
+.dsk-link{
+  color:rgba(0,207,255,.5);text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;
+  transition:color .2s;
+}
+.dsk-link:hover{color:rgba(0,207,255,.9)}
+
+/* Scanline */
+.dsk-scanline{
+  position:absolute;inset:0;z-index:9;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px
+  );
+  border-radius:16px;
 }
 
 /* ===========================
@@ -1663,16 +1829,55 @@ body.light{
       </div>
     </div>
 
-    <!-- photo -->
-    <div class="photo-wrap gsap-scale tilt-3d" data-tilt>
-      <img src="profile_avatar.jpeg" alt="Ahmed Ali — Data Analyst & ML Student" loading="eager" />
-      <div class="scan"></div>
-      <div class="scan-line"></div>
-      <div class="fade"></div>
-      <div class="nametag">
-        <div class="nt-name">Ahmed Ali</div>
-        <div class="nt-role">AI · Data Analysis · ML</div>
+    <!-- CINEMATIC ROBOT SHOWCASE -->
+    <div class="robot-showcase gsap-scale" id="robot-showcase" aria-label="3D Armored AI Operator">
+      <!-- Three.js canvas renders here -->
+
+      <!-- Corner brackets -->
+      <div class="rsh-corner tl" aria-hidden="true"></div>
+      <div class="rsh-corner tr" aria-hidden="true"></div>
+      <div class="rsh-corner bl" aria-hidden="true"></div>
+      <div class="rsh-corner br" aria-hidden="true"></div>
+
+      <!-- HUD — top left -->
+      <div class="rsh-hud-tl" aria-hidden="true">
+        <div class="rsh-status">
+          <span class="rsh-status-dot"></span>
+          SYSTEM ONLINE
+        </div>
       </div>
+
+      <!-- HUD — top right -->
+      <div class="rsh-hud-tr" aria-hidden="true">
+        <div class="rsh-signal">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="rsh-fps" id="rsh-fps">60 FPS</div>
+      </div>
+
+      <!-- HUD — bottom left -->
+      <div class="rsh-hud-bl" aria-hidden="true">
+        <div class="rsh-unit">
+          UNIT-7X / ARMORED-AI<br>
+          TACTICAL MODE: ACTIVE<br>
+          THREAT LEVEL: ████░░
+        </div>
+      </div>
+
+      <!-- HUD — bottom right -->
+      <div class="rsh-hud-br" aria-hidden="true">
+        <div class="rsh-threat">
+          CURSOR LOCK: ON<br>
+          TRACKING: ENABLED<br>
+          v2.7.1-ALPHA
+        </div>
+      </div>
+
+      <!-- Horizontal sweep line -->
+      <div class="rsh-sweep" aria-hidden="true"></div>
+
+      <!-- Vignette overlay -->
+      <div class="rsh-vignette" aria-hidden="true"></div>
     </div>
   </div>
 
@@ -1848,11 +2053,29 @@ body.light{
   <span class="tag gsap-slide-up">// 03. Projects</span>
   <h2 class="h2 glitch" data-text="Featured Work">Featured Work</h2>
 
-  <!-- 3D Projects Card Stack -->
-  <div class="three-3d-section" aria-label="3D project cards">
-    <span class="three-label">// 3D Showcase</span>
+  <!-- 3D Desk Showcase -->
+  <div class="three-3d-section desk-showcase-wrap" aria-label="3D developer workspace">
     <div id="three-projects-stack"></div>
-    <span class="three-hint">move mouse to rotate</span>
+    <!-- HUD Overlays (CSS only) -->
+    <div class="dsk-hud-tl" aria-hidden="true">
+      <div class="dsk-fps-box"><span class="dsk-fps-label">FPS</span><span class="dsk-fps-val" id="dsk-fps">120</span></div>
+    </div>
+    <div class="dsk-hud-bl" aria-hidden="true">
+      <label class="dsk-check"><span class="dsk-cb active"></span>SOUND EFFECT</label>
+      <label class="dsk-check"><span class="dsk-cb"></span>HIGH GRAPHICS</label>
+      <label class="dsk-check"><span class="dsk-cb"></span>MAP NAVIGATION</label>
+    </div>
+    <div class="dsk-hud-br" aria-hidden="true">
+      <a href="#contact" class="dsk-ow-btn">OPEN TO WORK <i class="fa-solid fa-bullhorn"></i></a>
+    </div>
+    <div class="dsk-hud-bc" aria-hidden="true">
+      <span class="dsk-links-label">LINKS</span>
+      <a href="https://www.linkedin.com/in/ahmed-ali-09ba01320/" target="_blank" rel="noopener" class="dsk-link">LINKEDIN <i class="fa-brands fa-linkedin"></i></a>
+      <a href="https://github.com/A7med3li99" target="_blank" rel="noopener" class="dsk-link">GITHUB <i class="fa-brands fa-github"></i></a>
+      <a href="mailto:aly86933@gmail.com" class="dsk-link">EMAIL <i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <!-- Scanline -->
+    <div class="dsk-scanline" aria-hidden="true"></div>
   </div>
 
   <!-- Gallery Carousel -->
@@ -2506,14 +2729,14 @@ if (typeof gsap !== 'undefined') {
       .to('.hero-desc',   { opacity: 1, y: 0, duration: .6 }, '-=.4')
       .to('.hero-btns',   { opacity: 1, y: 0, duration: .5 }, '-=.4')
       .to('.hero-stats',  { opacity: 1, y: 0, duration: .5 }, '-=.3')
-      .to('.photo-wrap',  { opacity: 1, scale: 1, x: 0, duration: 1, ease: 'power3.out' }, '-=.8');
+      .to('#robot-showcase',  { opacity: 1, scale: 1, x: 0, duration: 1.2, ease: 'power3.out' }, '-=.8');
 
     // Parallax
     gsap.to('#parallax-1', { yPercent: -30, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
     gsap.to('#parallax-2', { yPercent: -15, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 } });
     gsap.to('#parallax-3', { yPercent: -8,  ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 3 } });
     gsap.to('.hero-city',  { yPercent: 20,  ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 } });
-    gsap.to('.photo-wrap', { y: -40, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('#robot-showcase', { y: -40, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
 
     // Section reveals
     scrollReveal('.gsap-slide-up');
@@ -2987,238 +3210,585 @@ if (cvLink) {
   }
 
   /* ============================================
-     1. HERO — 3D ROBOT
+     1. HERO — CINEMATIC ARMORED ROBOT SHOWCASE
      ============================================ */
-	  (function heroRobot(){
-	    var container = document.getElementById('three-hero-nn');
-	    if(!container) return;
+  (function cinematicRobot(){
+    var showcase = document.getElementById('robot-showcase');
+    if(!showcase) return;
 
-	    var scene = new THREE.Scene();
-	    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
-	    camera.position.set(0, 1.2, 8);
+    /* --- Create canvas inside showcase --- */
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;';
+    showcase.insertBefore(canvas, showcase.firstChild);
 
-	    var renderer = makeRenderer(container, true);
-	    renderer.outputEncoding = THREE.sRGBEncoding;
-	    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-	    renderer.toneMappingExposure = 1.1;
+    var W = showcase.clientWidth, H = showcase.clientHeight;
 
-	    // Robot animation constants
-	    var BODY_SWAY_SPEED = 0.7;
-	    var BODY_SWAY_AMPLITUDE = 0.04;
-	    var HEAD_TRACKING_SENSITIVITY = 0.55;
-	    var HEAD_TRACKING_SMOOTHING = 0.08;
-	    var ARM_WAVE_SPEED = 2.2;
-	    var ARM_WAVE_AMPLITUDE = 0.35;
-	    var ARM_WAVE_OFFSET = 0.15;
-	    var LEG_WALK_SPEED = 1.8;
-	    var LEG_WALK_AMPLITUDE = 0.12;
-	    var ROBOT_TIME_DELTA = 0.016;
+    /* --- Scene & Renderer --- */
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x02060f);
+    scene.fog = new THREE.FogExp2(0x02060f, 0.08);
 
-	    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+    var camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 200);
+    camera.position.set(0, 0.8, 7.5);
+    camera.lookAt(0, 0.5, 0);
 
-	    // Lighting (gives the robot real 3D shading instead of flat colors)
-	    var hemi = new THREE.HemisphereLight(0x9bdcff, 0x0b1020, 0.7);
-	    hemi.position.set(0, 10, 0);
-	    scene.add(hemi);
-	    var key = new THREE.DirectionalLight(0xffffff, 1.15);
-	    key.position.set(6, 7, 8);
-	    scene.add(key);
-	    var fill = new THREE.DirectionalLight(0xf472b6, 0.35);
-	    fill.position.set(-7, 3, 6);
-	    scene.add(fill);
-	    var rim = new THREE.PointLight(0x22d3ee, 0.9, 30);
-	    rim.position.set(0, 5, -8);
-	    scene.add(rim);
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W, H);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
-	    // Create robot
-	    var robot = new THREE.Group();
-	    robot.position.y = -0.2;
-	    
-	    var bodyMat = new THREE.MeshStandardMaterial({color: 0x38bdf8, metalness: 0.75, roughness: 0.28});
-	    var accentMat = new THREE.MeshStandardMaterial({color: 0xf472b6, metalness: 0.45, roughness: 0.25});
-	    var glowMat = new THREE.MeshStandardMaterial({color: 0x22d3ee, metalness: 0.1, roughness: 0.2, emissive: 0x22d3ee, emissiveIntensity: 0.55});
-	    var darkMat = new THREE.MeshStandardMaterial({color: 0x0b1020, metalness: 0.2, roughness: 0.7});
-
-	    // Torso (more humanoid silhouette)
-	    var torso = new THREE.Mesh(new THREE.BoxGeometry(1.15, 1.55, 0.7), bodyMat);
-	    torso.position.y = 0.35;
-	    robot.add(torso);
-	    var chest = new THREE.Mesh(new THREE.SphereGeometry(0.62, 22, 18), accentMat);
-	    chest.scale.set(1.0, 0.85, 0.7);
-	    chest.position.set(0, 0.55, 0.18);
-	    robot.add(chest);
-	    var pelvis = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.45, 0.55), darkMat);
-	    pelvis.position.set(0, -0.55, 0);
-	    robot.add(pelvis);
-
-	    // Head group (for look-at rotation)
-	    var headGroup = new THREE.Group();
-	    headGroup.position.set(0, 1.45, 0);
-	    robot.add(headGroup);
-
-	    // Neck + head (rounded)
-	    var neck = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.25, 20), darkMat);
-	    neck.position.y = -0.55;
-	    headGroup.add(neck);
-	    var head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 26, 20), bodyMat);
-	    head.scale.set(1.0, 0.92, 0.9);
-	    headGroup.add(head);
-
-	    // Visor plate
-	    var visor = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.34, 0.08), darkMat);
-	    visor.position.set(0, 0.05, 0.5);
-	    head.add(visor);
-	    var visorGlow = new THREE.Mesh(new THREE.PlaneGeometry(0.78, 0.26), glowMat);
-	    visorGlow.position.set(0, 0.05, 0.545);
-	    head.add(visorGlow);
-
-	    // Eyes
-	    var eyeGroup = new THREE.Group();
-	    eyeGroup.position.set(0, 0.05, 0.48);
-	    head.add(eyeGroup);
-	    var eyeSocketGeo = new THREE.SphereGeometry(0.135, 18, 18);
-	    var eyeSocketMat = new THREE.MeshStandardMaterial({color: 0xe5e7eb, metalness: 0.2, roughness: 0.35});
-	    var leftEye = new THREE.Mesh(eyeSocketGeo, eyeSocketMat);
-	    leftEye.position.set(-0.24, 0.02, 0);
-	    eyeGroup.add(leftEye);
-	    var rightEye = new THREE.Mesh(eyeSocketGeo, eyeSocketMat);
-	    rightEye.position.set(0.24, 0.02, 0);
-	    eyeGroup.add(rightEye);
-	    var pupilGeo = new THREE.SphereGeometry(0.05, 14, 14);
-	    var pupilMat = new THREE.MeshStandardMaterial({color: 0x05070f, metalness: 0.0, roughness: 0.35});
-	    var leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
-	    var rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
-	    leftPupil.position.set(0, 0, 0.115);
-	    rightPupil.position.set(0, 0, 0.115);
-	    leftEye.add(leftPupil);
-	    rightEye.add(rightPupil);
-
-	    // Antenna
-	    var antennaGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6);
-	    var antennaMat = new THREE.MeshStandardMaterial({color: 0xfb923c, metalness: 0.3, roughness: 0.35, emissive: 0xfb923c, emissiveIntensity: 0.25});
-	    var antenna = new THREE.Mesh(antennaGeo, antennaMat);
-	    antenna.position.set(0, 0.65, 0);
-	    head.add(antenna);
-	    var antennaTip = new THREE.Mesh(new THREE.SphereGeometry(0.085, 14, 14), antennaMat);
-	    antennaTip.position.set(0, 0.35, 0);
-	    antenna.add(antennaTip);
-
-	    // Arms
-	    var shoulderGeo = new THREE.SphereGeometry(0.18, 18, 18);
-	    var upperArmGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.75, 18);
-	    var foreArmGeo = new THREE.CylinderGeometry(0.11, 0.11, 0.65, 18);
-	    var handGeo = new THREE.SphereGeometry(0.13, 16, 14);
-
-	    function buildArm(side){
-	      var g = new THREE.Group();
-	      g.position.set(0.72 * side, 0.7, 0);
-	      robot.add(g);
-
-	      var shoulder = new THREE.Mesh(shoulderGeo, accentMat);
-	      g.add(shoulder);
-
-	      var upperArm = new THREE.Mesh(upperArmGeo, bodyMat);
-	      upperArm.rotation.z = Math.PI / 2;
-	      upperArm.position.x = 0.35 * side;
-	      g.add(upperArm);
-
-	      var elbow = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 14), darkMat);
-	      elbow.position.x = 0.72 * side;
-	      g.add(elbow);
-
-	      var foreArm = new THREE.Mesh(foreArmGeo, bodyMat);
-	      foreArm.rotation.z = Math.PI / 2;
-	      foreArm.position.x = 1.02 * side;
-	      g.add(foreArm);
-
-	      var hand = new THREE.Mesh(handGeo, glowMat);
-	      hand.position.x = 1.35 * side;
-	      g.add(hand);
-
-	      return g;
-	    }
-	    var leftArm = buildArm(-1);
-	    var rightArm = buildArm(1);
-
-	    // Legs
-	    var thighGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.85, 18);
-	    var shinGeo = new THREE.CylinderGeometry(0.13, 0.13, 0.8, 18);
-	    var footGeo = new THREE.BoxGeometry(0.34, 0.16, 0.6);
-	    function buildLeg(side){
-	      var g = new THREE.Group();
-	      g.position.set(0.34 * side, -0.75, 0);
-	      robot.add(g);
-
-	      var hip = new THREE.Mesh(new THREE.SphereGeometry(0.16, 18, 16), accentMat);
-	      g.add(hip);
-	      var thigh = new THREE.Mesh(thighGeo, bodyMat);
-	      thigh.position.y = -0.45;
-	      g.add(thigh);
-
-	      var knee = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 14), darkMat);
-	      knee.position.y = -0.9;
-	      g.add(knee);
-
-	      var shin = new THREE.Mesh(shinGeo, bodyMat);
-	      shin.position.y = -1.28;
-	      g.add(shin);
-
-	      var foot = new THREE.Mesh(footGeo, darkMat);
-	      foot.position.set(0, -1.72, 0.12);
-	      g.add(foot);
-	      return g;
-	    }
-	    var leftLeg = buildLeg(-1);
-	    var rightLeg = buildLeg(1);
-
-	    scene.add(robot);
-
-	    // Mouse tracking
-	    var mouseX = 0.5, mouseY = 0.5;
-    document.addEventListener('mousemove', function(e){
-      mouseX = e.clientX / window.innerWidth;
-      mouseY = e.clientY / window.innerHeight;
+    /* --- MATERIALS (dark military aesthetic) --- */
+    // Main armor: dark gunmetal titanium
+    var armorMat = new THREE.MeshStandardMaterial({
+      color: 0x1c2230, metalness: 0.92, roughness: 0.32
+    });
+    // Secondary plates: slightly lighter gunmetal
+    var plateMat = new THREE.MeshStandardMaterial({
+      color: 0x252d3a, metalness: 0.95, roughness: 0.28
+    });
+    // Dark recessed areas
+    var voidMat = new THREE.MeshStandardMaterial({
+      color: 0x070b12, metalness: 0.5, roughness: 0.8
+    });
+    // Cyan glowing emissive (eyes, accents)
+    var cyanGlowMat = new THREE.MeshStandardMaterial({
+      color: 0x00f0ff, metalness: 0.0, roughness: 0.0,
+      emissive: 0x00e5ff, emissiveIntensity: 3.5
+    });
+    // Dim cyan trim
+    var cyanTrimMat = new THREE.MeshStandardMaterial({
+      color: 0x003344, metalness: 0.8, roughness: 0.4,
+      emissive: 0x004466, emissiveIntensity: 0.6
+    });
+    // Orange accent (subtle)
+    var orangeMat = new THREE.MeshStandardMaterial({
+      color: 0x1a0800, metalness: 0.7, roughness: 0.5,
+      emissive: 0xff4400, emissiveIntensity: 0.4
     });
 
+    /* ============================================
+       ROBOT GEOMETRY — heavy armored humanoid
+    ============================================ */
+    var robot = new THREE.Group();
+    robot.position.y = -1.4;
+
+    /* ---- TORSO ---- */
+    var torsoGroup = new THREE.Group();
+    torsoGroup.position.y = 1.8;
+    robot.add(torsoGroup);
+
+    // Main torso block
+    var torsoMain = new THREE.Mesh(
+      new THREE.BoxGeometry(1.3, 1.6, 0.8),
+      armorMat
+    );
+    torsoGroup.add(torsoMain);
+
+    // Chest plate (angled forward)
+    var chestPlate = new THREE.Mesh(
+      new THREE.BoxGeometry(0.9, 0.8, 0.15),
+      plateMat
+    );
+    chestPlate.position.set(0, 0.2, 0.47);
+    chestPlate.rotation.x = -0.08;
+    torsoGroup.add(chestPlate);
+
+    // Chest center emissive line
+    var chestLine = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 0.55, 0.06),
+      cyanGlowMat
+    );
+    chestLine.position.set(0, 0.22, 0.55);
+    torsoGroup.add(chestLine);
+
+    // Chest side vents (left & right)
+    [-1, 1].forEach(function(s){
+      var vent = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.55, 0.08), voidMat);
+      vent.position.set(0.35 * s, 0.2, 0.52);
+      torsoGroup.add(vent);
+      // Vent glow slit
+      var ventGlow = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 0.04), cyanTrimMat);
+      ventGlow.position.set(0.35 * s, 0.2, 0.56);
+      torsoGroup.add(ventGlow);
+    });
+
+    // Abdominal plates (3 rows)
+    for(var i = 0; i < 3; i++){
+      var abRow = new THREE.Mesh(
+        new THREE.BoxGeometry(0.75, 0.16, 0.1),
+        plateMat
+      );
+      abRow.position.set(0, -0.15 - i * 0.22, 0.42);
+      torsoGroup.add(abRow);
+    }
+
+    // Collar/neck guard
+    var collar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.42, 0.55, 0.22, 8),
+      plateMat
+    );
+    collar.position.y = 0.9;
+    torsoGroup.add(collar);
+
+    // Back booster pack
+    var backPack = new THREE.Mesh(
+      new THREE.BoxGeometry(0.8, 0.9, 0.35),
+      plateMat
+    );
+    backPack.position.set(0, 0.2, -0.55);
+    torsoGroup.add(backPack);
+    var boosterL = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.5, 8), voidMat);
+    var boosterR = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.5, 8), voidMat);
+    boosterL.rotation.x = Math.PI / 2;
+    boosterR.rotation.x = Math.PI / 2;
+    boosterL.position.set(-0.22, 0, -0.72);
+    boosterR.position.set(0.22, 0, -0.72);
+    torsoGroup.add(boosterL); torsoGroup.add(boosterR);
+
+    /* ---- PELVIS ---- */
+    var pelvis = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.42, 0.7), armorMat);
+    pelvis.position.set(0, 0.95, 0);
+    robot.add(pelvis);
+    var pelvisPlate = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.26, 0.12), plateMat);
+    pelvisPlate.position.set(0, 0.95, 0.41);
+    robot.add(pelvisPlate);
+
+    /* ---- HEAD GROUP ---- */
+    var headGroup = new THREE.Group();
+    headGroup.position.set(0, 3.05, 0);
+    robot.add(headGroup);
+
+    // Neck
+    var neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 0.38, 8), voidMat);
+    neck.position.y = -0.45;
+    headGroup.add(neck);
+    var neckRing = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.08, 16), cyanTrimMat);
+    neckRing.position.y = -0.28;
+    headGroup.add(neckRing);
+
+    // Head base (angular helmet)
+    var headBase = new THREE.Mesh(
+      new THREE.BoxGeometry(0.9, 0.85, 0.82),
+      armorMat
+    );
+    headGroup.add(headBase);
+
+    // Helmet top plate
+    var helmTop = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.18, 0.76), plateMat);
+    helmTop.position.y = 0.5;
+    headGroup.add(helmTop);
+
+    // Visor housing (dark sunken area)
+    var visorHousing = new THREE.Mesh(
+      new THREE.BoxGeometry(0.7, 0.3, 0.1),
+      voidMat
+    );
+    visorHousing.position.set(0, 0.05, 0.42);
+    headGroup.add(visorHousing);
+
+    // Visor glass (dark tinted with cyan tint)
+    var visorGlass = new THREE.Mesh(
+      new THREE.BoxGeometry(0.62, 0.22, 0.04),
+      new THREE.MeshStandardMaterial({
+        color: 0x001a22, metalness: 0.1, roughness: 0.05,
+        emissive: 0x002233, emissiveIntensity: 0.3, transparent: true, opacity: 0.85
+      })
+    );
+    visorGlass.position.set(0, 0.05, 0.46);
+    headGroup.add(visorGlass);
+
+    // EYES (glowing cyan)
+    var eyeGeo = new THREE.SphereGeometry(0.08, 16, 12);
+    var eyeL = new THREE.Mesh(eyeGeo, cyanGlowMat);
+    var eyeR = new THREE.Mesh(eyeGeo, cyanGlowMat);
+    eyeL.position.set(-0.17, 0.07, 0.45);
+    eyeR.position.set(0.17, 0.07, 0.45);
+    headGroup.add(eyeL);
+    headGroup.add(eyeR);
+
+    // Eye glow rings (larger, dimmer)
+    var eyeRingGeo = new THREE.SphereGeometry(0.12, 16, 12);
+    var eyeRingMat = new THREE.MeshStandardMaterial({
+      color: 0x001a22, metalness: 0, roughness: 1,
+      emissive: 0x00c8ff, emissiveIntensity: 0.8, transparent: true, opacity: 0.3
+    });
+    var eyeRingL = new THREE.Mesh(eyeRingGeo, eyeRingMat);
+    var eyeRingR = new THREE.Mesh(eyeRingGeo, eyeRingMat);
+    eyeRingL.position.copy(eyeL.position);
+    eyeRingR.position.copy(eyeR.position);
+    headGroup.add(eyeRingL);
+    headGroup.add(eyeRingR);
+
+    // Cheek armor pieces
+    [-1,1].forEach(function(s){
+      var cheek = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.55, 0.12), plateMat);
+      cheek.position.set(0.38*s, 0.0, 0.37);
+      cheek.rotation.y = -0.15 * s;
+      headGroup.add(cheek);
+    });
+
+    // Forehead plate
+    var forehead = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.2, 0.1), plateMat);
+    forehead.position.set(0, 0.32, 0.41);
+    headGroup.add(forehead);
+    // Forehead sensor dot
+    var sensor = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), cyanGlowMat);
+    sensor.position.set(0, 0.32, 0.47);
+    headGroup.add(sensor);
+
+    // Chin guard
+    var chin = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.18, 0.14), armorMat);
+    chin.position.set(0, -0.22, 0.41);
+    headGroup.add(chin);
+
+    /* ---- SHOULDERS / PAULDRONS ---- */
+    function buildShoulder(side){
+      var g = new THREE.Group();
+      g.position.set(0.75 * side, 0.45, 0);
+      torsoGroup.add(g);
+
+      // Main pauldron (large angular plate)
+      var pMain = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.48, 0.55), plateMat);
+      pMain.position.set(0.12*side, 0.1, 0);
+      g.add(pMain);
+
+      // Pauldron top cap
+      var pCap = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.12, 0.5), armorMat);
+      pCap.position.set(0.1*side, 0.36, 0);
+      g.add(pCap);
+
+      // Edge trim
+      var pTrim = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.04, 0.57), cyanTrimMat);
+      pTrim.position.set(0.12*side, 0.32, 0);
+      g.add(pTrim);
+
+      // Shoulder joint sphere
+      var joint = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 14), voidMat);
+      joint.position.y = -0.02;
+      g.add(joint);
+
+      return g;
+    }
+    buildShoulder(-1); buildShoulder(1);
+
+    /* ---- ARMS ---- */
+    function buildArm(side){
+      var g = new THREE.Group();
+      g.position.set(0.78 * side, 0.25, 0);
+      torsoGroup.add(g);
+
+      // Upper arm
+      var ua = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.82, 8), armorMat);
+      ua.position.set(0.28*side, -0.42, 0);
+      g.add(ua);
+      // Upper arm plate
+      var uaP = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.65, 0.08), plateMat);
+      uaP.position.set(0.28*side, -0.4, 0.18);
+      g.add(uaP);
+
+      // Elbow
+      var elbow = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), voidMat);
+      elbow.position.set(0.28*side, -0.88, 0);
+      g.add(elbow);
+
+      // Forearm
+      var fa = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.72, 8), armorMat);
+      fa.position.set(0.28*side, -1.28, 0);
+      g.add(fa);
+      // Gauntlet plate
+      var gaunt = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.55, 0.1), plateMat);
+      gaunt.position.set(0.28*side, -1.24, 0.18);
+      g.add(gaunt);
+
+      // Wrist
+      var wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.14, 8), cyanTrimMat);
+      wrist.position.set(0.28*side, -1.68, 0);
+      g.add(wrist);
+
+      // Hand/fist
+      var hand = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 0.22), armorMat);
+      hand.position.set(0.28*side, -1.92, 0);
+      g.add(hand);
+
+      return g;
+    }
+    var lArm = buildArm(-1); var rArm = buildArm(1);
+
+    /* ---- LEGS ---- */
+    function buildLeg(side){
+      var g = new THREE.Group();
+      g.position.set(0.38 * side, 0.95, 0);
+      robot.add(g);
+
+      // Hip joint
+      var hip = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 12), voidMat);
+      g.add(hip);
+
+      // Thigh
+      var thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.9, 8), armorMat);
+      thigh.position.y = -0.5;
+      g.add(thigh);
+      // Thigh plate
+      var thighP = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.7, 0.1), plateMat);
+      thighP.position.set(0, -0.48, 0.2);
+      g.add(thighP);
+
+      // Knee
+      var knee = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 10), voidMat);
+      knee.position.y = -1.02;
+      g.add(knee);
+      var kneeP = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.26, 0.12), plateMat);
+      kneeP.position.set(0, -1.0, 0.18);
+      g.add(kneeP);
+
+      // Shin
+      var shin = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.82, 8), armorMat);
+      shin.position.y = -1.48;
+      g.add(shin);
+      // Shin plate (greave)
+      var greave = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.65, 0.12), plateMat);
+      greave.position.set(0, -1.45, 0.2);
+      g.add(greave);
+
+      // Ankle
+      var ankle = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.2, 0.28), voidMat);
+      ankle.position.y = -1.94;
+      g.add(ankle);
+
+      // Boot
+      var boot = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.62), armorMat);
+      boot.position.set(0, -2.15, 0.12);
+      g.add(boot);
+      // Boot toe plate
+      var toeP = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.2), plateMat);
+      toeP.position.set(0, -2.1, 0.45);
+      g.add(toeP);
+
+      return g;
+    }
+    buildLeg(-1); buildLeg(1);
+
+    scene.add(robot);
+
+    /* ---- SCI-FI GRID FLOOR ---- */
+    var gridSize = 20, gridDivisions = 20;
+    var gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x003355, 0x001122);
+    gridHelper.position.y = -2.65;
+    gridHelper.material.opacity = 0.55;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+
+    // Floor plane with subtle glow
+    var floorGeo = new THREE.PlaneGeometry(20, 20);
+    var floorMat = new THREE.MeshStandardMaterial({
+      color: 0x000810, metalness: 0.6, roughness: 0.8,
+      emissive: 0x001122, emissiveIntensity: 0.08
+    });
+    var floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -2.65;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // Glowing center ring on floor
+    var ringGeo = new THREE.RingGeometry(0.8, 1.0, 48);
+    var ringMat = new THREE.MeshBasicMaterial({
+      color: 0x004466, side: THREE.DoubleSide, transparent: true, opacity: 0.5
+    });
+    var floorRing = new THREE.Mesh(ringGeo, ringMat);
+    floorRing.rotation.x = -Math.PI / 2;
+    floorRing.position.y = -2.64;
+    scene.add(floorRing);
+
+    var ring2Geo = new THREE.RingGeometry(1.6, 1.75, 48);
+    var ring2 = new THREE.Mesh(ring2Geo, new THREE.MeshBasicMaterial({
+      color: 0x002233, side: THREE.DoubleSide, transparent: true, opacity: 0.3
+    }));
+    ring2.rotation.x = -Math.PI / 2;
+    ring2.position.y = -2.63;
+    scene.add(ring2);
+
+    /* ---- FLOATING PARTICLES ---- */
+    var particleCount = 60;
+    var particleGeo = new THREE.BufferGeometry();
+    var positions = new Float32Array(particleCount * 3);
+    for(var i = 0; i < particleCount; i++){
+      positions[i*3]   = (Math.random() - 0.5) * 8;
+      positions[i*3+1] = (Math.random() - 0.5) * 6 + 1;
+      positions[i*3+2] = (Math.random() - 0.5) * 4 - 1;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    var particleMat = new THREE.PointsMaterial({
+      color: 0x00c8ff, size: 0.028, transparent: true, opacity: 0.55
+    });
+    var particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+
+    /* ---- LIGHTING (cinematic military) ---- */
+    // Ambient — very dark blue
+    var ambient = new THREE.AmbientLight(0x05101a, 0.5);
+    scene.add(ambient);
+
+    // Key light — upper left, warm white
+    var keyLight = new THREE.DirectionalLight(0xd0deff, 1.4);
+    keyLight.position.set(-5, 8, 5);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    keyLight.shadow.camera.near = 1;
+    keyLight.shadow.camera.far = 30;
+    keyLight.shadow.bias = -0.0015;
+    scene.add(keyLight);
+
+    // Cyan rim light — back right (HERO: strong edge glow)
+    var rimLight = new THREE.DirectionalLight(0x00e5ff, 3.5);
+    rimLight.position.set(6, 4, -8);
+    scene.add(rimLight);
+
+    // Secondary rim — left side
+    var rimLight2 = new THREE.DirectionalLight(0x0088aa, 1.2);
+    rimLight2.position.set(-6, 3, -6);
+    scene.add(rimLight2);
+
+    // Subtle fill — front low
+    var fillLight = new THREE.DirectionalLight(0x101828, 0.4);
+    fillLight.position.set(0, -2, 8);
+    scene.add(fillLight);
+
+    // Eye glow point lights
+    var eyeGlowL = new THREE.PointLight(0x00e5ff, 0.8, 1.2);
+    eyeGlowL.position.copy(eyeL.position.clone().applyEuler(headGroup.rotation));
+    scene.add(eyeGlowL);
+    var eyeGlowR = new THREE.PointLight(0x00e5ff, 0.8, 1.2);
+    eyeGlowR.position.copy(eyeR.position.clone().applyEuler(headGroup.rotation));
+    scene.add(eyeGlowR);
+
+    // Floor bounce — subtle warm glow under feet
+    var groundLight = new THREE.PointLight(0x002244, 1.5, 5);
+    groundLight.position.set(0, -2.4, 0.5);
+    scene.add(groundLight);
+
+    /* ---- MOUSE TRACKING ---- */
+    var rawMouseX = 0.5, rawMouseY = 0.5;
+    var smoothMouseX = 0.5, smoothMouseY = 0.5;
+    var torsoSmoothX = 0.5, torsoSmoothY = 0.5;
+
+    function onMouseMove(e){
+      var rect = showcase.getBoundingClientRect();
+      // Use window mouse for broader tracking range
+      rawMouseX = e.clientX / window.innerWidth;
+      rawMouseY = e.clientY / window.innerHeight;
+    }
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+    function lerp(a, b, t){ return a + (b - a) * t; }
+
+    /* ---- FPS COUNTER ---- */
+    var fpsDisplay = document.getElementById('rsh-fps');
+    var fpsFrames = 0, fpsLast = performance.now(), fpsVal = 60;
+
+    /* ---- ANIMATION CLOCK ---- */
+    var clock = new THREE.Clock();
     var t = 0;
-	    function animate(){
-	      t += ROBOT_TIME_DELTA;
-	      
-	      // Subtle body sway
-	      robot.rotation.z = Math.sin(t * BODY_SWAY_SPEED) * BODY_SWAY_AMPLITUDE;
-	      robot.position.y = -0.2 + Math.sin(t * 0.9) * 0.07;
-	      robot.rotation.y = Math.sin(t * 0.25) * 0.12;
-	      
-	      // Head follows mouse
-	      // Note: This follows Three.js Euler angle conventions where X-rotation controls pitch (vertical tilt)
-	      // and Y-rotation controls yaw (horizontal rotation). Mouse Y (vertical) controls rotation X, 
-	      // mouse X (horizontal) controls rotation Y.
-	      var targetRotX = clamp((mouseY - 0.5) * HEAD_TRACKING_SENSITIVITY, -0.35, 0.35);
-	      var targetRotY = clamp((mouseX - 0.5) * HEAD_TRACKING_SENSITIVITY, -0.55, 0.55);
-	      headGroup.rotation.x += (targetRotX - headGroup.rotation.x) * HEAD_TRACKING_SMOOTHING;
-	      headGroup.rotation.y += (targetRotY - headGroup.rotation.y) * HEAD_TRACKING_SMOOTHING;
+    var isVisible = true;
 
-	      // Pupils track the cursor too (adds "looking at mouse" feel even on small head rotations)
-	      var pupilX = clamp((mouseX - 0.5) * 0.14, -0.045, 0.045);
-	      var pupilY = clamp((0.5 - mouseY) * 0.14, -0.04, 0.04);
-	      leftPupil.position.x += (pupilX - leftPupil.position.x) * 0.18;
-	      leftPupil.position.y += (pupilY - leftPupil.position.y) * 0.18;
-	      rightPupil.position.x += (pupilX - rightPupil.position.x) * 0.18;
-	      rightPupil.position.y += (pupilY - rightPupil.position.y) * 0.18;
-	      
-	      // Arm wave
-	      leftArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED) * ARM_WAVE_AMPLITUDE - ARM_WAVE_OFFSET;
-	      rightArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED + Math.PI) * ARM_WAVE_AMPLITUDE + ARM_WAVE_OFFSET;
-	      
-	      // Leg walk
-	      leftLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED) * LEG_WALK_AMPLITUDE;
-	      rightLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED + Math.PI) * LEG_WALK_AMPLITUDE;
+    // Intersection observer for performance
+    var observer = new IntersectionObserver(function(entries){
+      isVisible = entries[0].isIntersecting;
+    }, { threshold: 0.1 });
+    observer.observe(showcase);
 
-	      renderer.render(scene, camera);
-	      requestAnimationFrame(animate);
-	    }
+    function animate(){
+      requestAnimationFrame(animate);
+      if(!isVisible) return;
+
+      var dt = clock.getDelta();
+      t += dt;
+
+      // FPS tracking
+      fpsFrames++;
+      var now = performance.now();
+      if(now - fpsLast >= 1000){
+        fpsVal = fpsFrames;
+        fpsFrames = 0;
+        fpsLast = now;
+        if(fpsDisplay) fpsDisplay.textContent = fpsVal + ' FPS';
+      }
+
+      /* Smooth mouse lerp — head faster, torso slower */
+      smoothMouseX = lerp(smoothMouseX, rawMouseX, 0.055);
+      smoothMouseY = lerp(smoothMouseY, rawMouseY, 0.055);
+      torsoSmoothX = lerp(torsoSmoothX, rawMouseX, 0.018);
+      torsoSmoothY = lerp(torsoSmoothY, rawMouseY, 0.018);
+
+      /* Head cursor-follow — limited angles, no free rotation */
+      var headTargetY = clamp((smoothMouseX - 0.5) *  0.5, -0.28, 0.28); // yaw
+      var headTargetX = clamp((smoothMouseY - 0.5) * -0.32, -0.2, 0.2);  // pitch
+      headGroup.rotation.y = headTargetY;
+      headGroup.rotation.x = headTargetX;
+
+      /* Tiny torso follow */
+      torsoGroup.rotation.y = clamp((torsoSmoothX - 0.5) * 0.12, -0.06, 0.06);
+      torsoGroup.rotation.x = clamp((torsoSmoothY - 0.5) * -0.08, -0.04, 0.04);
+
+      /* Idle breathing — body float */
+      var breathe = Math.sin(t * 0.9) * 0.06;
+      robot.position.y = -1.4 + breathe;
+      torsoGroup.rotation.z = Math.sin(t * 0.45) * 0.012;
+
+      /* Arms idle (very subtle hang sway) */
+      lArm.rotation.z = Math.sin(t * 0.4) * 0.025 + 0.04;
+      rArm.rotation.z = Math.sin(t * 0.4 + Math.PI) * 0.025 - 0.04;
+
+      /* Eye glow pulse */
+      var eyePulse = 2.8 + Math.sin(t * 2.2) * 0.5;
+      cyanGlowMat.emissiveIntensity = eyePulse;
+      eyeRingMat.emissiveIntensity = 0.4 + Math.sin(t * 2.2) * 0.2;
+
+      /* Update eye glow lights to follow head */
+      var headWorldPos = new THREE.Vector3();
+      headGroup.getWorldPosition(headWorldPos);
+      eyeGlowL.position.set(headWorldPos.x - 0.17, headWorldPos.y + 0.07, headWorldPos.z + 3.5);
+      eyeGlowR.position.set(headWorldPos.x + 0.17, headWorldPos.y + 0.07, headWorldPos.z + 3.5);
+
+      /* Chest line pulse */
+      chestLine.material.emissiveIntensity = 1.5 + Math.sin(t * 1.8) * 0.4;
+
+      /* Sensor pulse */
+      sensor.material.emissiveIntensity = 2.5 + Math.sin(t * 3.5) * 1.0;
+
+      /* Particles slow drift */
+      var pos = particles.geometry.attributes.position.array;
+      for(var i = 0; i < particleCount; i++){
+        pos[i*3+1] += 0.003;
+        if(pos[i*3+1] > 4) pos[i*3+1] = -3;
+      }
+      particles.geometry.attributes.position.needsUpdate = true;
+
+      /* Floor ring slow rotation */
+      floorRing.rotation.z += 0.003;
+      ring2.rotation.z -= 0.002;
+
+      renderer.render(scene, camera);
+    }
     animate();
-    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+
+    /* Resize */
+    function onResize(){
+      var W2 = showcase.clientWidth, H2 = showcase.clientHeight;
+      if(!W2 || !H2) return;
+      camera.aspect = W2 / H2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(W2, H2);
+    }
+    window.addEventListener('resize', onResize, { passive: true });
+    // Initial resize after paint
+    setTimeout(onResize, 100);
   })();
 
   /* ============================================
@@ -3441,294 +4011,534 @@ if (cvLink) {
   })();
 
   /* ============================================
-     4. PROJECTS — 3D DESK SCENE
+     4. PROJECTS — PREMIUM DESK SHOWCASE
      ============================================ */
 	  (function deskScene(){
 	    var container = document.getElementById('three-projects-stack');
 	    if(!container) return;
 
 	    var scene = new THREE.Scene();
-	    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
-	    camera.position.set(0, 2.15, 6.4);
-	    camera.lookAt(0, 1.1, 0);
+	    scene.background = new THREE.Color(0x010812);
+	    scene.fog = new THREE.FogExp2(0x010812, 0.045);
 
-	    var renderer = makeRenderer(container, true);
+	    // Isometric-style camera: elevated, from front-right
+	    var camera = new THREE.PerspectiveCamera(42, container.clientWidth/container.clientHeight, 0.1, 200);
+	    camera.position.set(5.5, 4.2, 7.5);
+	    camera.lookAt(0, 0.8, 0);
+
+	    var renderer = makeRenderer(container, false);
 	    renderer.outputEncoding = THREE.sRGBEncoding;
 	    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-	    renderer.toneMappingExposure = 1.05;
+	    renderer.toneMappingExposure = 1.2;
+	    renderer.shadowMap.enabled = true;
+	    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-	    // Animation constants
-	    var INITIAL_ROTATION_X = 0.2;
-	    var INITIAL_ROTATION_Y = -0.5;
-	    var DRAG_SENSITIVITY = 0.01;
-	    var AUTO_ROTATION_SPEED = 0.003;
-	    var ROTATION_SMOOTHING = 0.08;
 	    var DESK_TIME_DELTA = 0.015;
 
-	    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+	    function clampD(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+	    function lerpD(a, b, t){ return a + (b - a) * t; }
 
-	    // Lighting (desk lamp vibe + cool rim)
-	    var hemi = new THREE.HemisphereLight(0xaad7ff, 0x080a12, 0.55);
-	    hemi.position.set(0, 12, 0);
-	    scene.add(hemi);
-	    var keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
-	    keyLight.position.set(7, 9, 7);
+	    /* ---- LIGHTING ---- */
+	    var ambient = new THREE.AmbientLight(0x0a1428, 0.6);
+	    scene.add(ambient);
+	    // Key — upper left warm
+	    var keyLight = new THREE.DirectionalLight(0xc8d8f0, 1.1);
+	    keyLight.position.set(-6, 10, 6);
+	    keyLight.castShadow = true;
+	    keyLight.shadow.mapSize.width = 1024;
+	    keyLight.shadow.mapSize.height = 1024;
+	    keyLight.shadow.bias = -0.001;
 	    scene.add(keyLight);
-	    var lampLight = new THREE.PointLight(0xffcc88, 1.0, 18);
-	    lampLight.position.set(-2.6, 3.2, 1.4);
-	    scene.add(lampLight);
-	    var rimLight = new THREE.PointLight(0x22d3ee, 0.65, 22);
-	    rimLight.position.set(2.8, 2.4, -6);
+	    // Cyan rim from back-right
+	    var rimLight = new THREE.DirectionalLight(0x00e5ff, 2.8);
+	    rimLight.position.set(8, 5, -10);
 	    scene.add(rimLight);
+	    // Screen glow point
+	    var screenGlow = new THREE.PointLight(0x00f0ff, 2.5, 8);
+	    screenGlow.position.set(-0.8, 1.8, 0.5);
+	    scene.add(screenGlow);
+	    // Under-desk fill
+	    var groundFill = new THREE.PointLight(0x001a33, 1.2, 6);
+	    groundFill.position.set(0, -1, 0);
+	    scene.add(groundFill);
 
-	    // Materials
-	    var woodMat = new THREE.MeshStandardMaterial({color: 0x7b5b3d, roughness: 0.78, metalness: 0.05});
-	    var darkMat = new THREE.MeshStandardMaterial({color: 0x0b1020, roughness: 0.65, metalness: 0.25});
-	    var metalMat = new THREE.MeshStandardMaterial({color: 0x64748b, roughness: 0.25, metalness: 0.85});
-	    var plasticMat = new THREE.MeshStandardMaterial({color: 0x111827, roughness: 0.55, metalness: 0.1});
-	    var accentMat = new THREE.MeshStandardMaterial({color: 0xf472b6, roughness: 0.35, metalness: 0.2, emissive: 0xf472b6, emissiveIntensity: 0.1});
+	    /* ---- MATERIALS ---- */
+	    var bodyMat  = new THREE.MeshStandardMaterial({color:0x0e1520, metalness:0.9, roughness:0.3});
+	    var plateMat = new THREE.MeshStandardMaterial({color:0x1a2030, metalness:0.92, roughness:0.25});
+	    var voidMat  = new THREE.MeshStandardMaterial({color:0x060a10, metalness:0.5, roughness:0.8});
+	    var cyanGlow = new THREE.MeshStandardMaterial({color:0x00f0ff, emissive:0x00e5ff, emissiveIntensity:4, roughness:0, metalness:0});
+	    var screenBg = new THREE.MeshStandardMaterial({color:0x001a22, emissive:0x003344, emissiveIntensity:0.5, roughness:0.05, metalness:0, transparent:true, opacity:0.92});
 
-	    // Create desk group
-	    var desk = new THREE.Group();
-	    scene.add(desk);
+	    /* ---- SCENE ROOT (mouse parallax target) ---- */
+	    var sceneRoot = new THREE.Group();
+	    scene.add(sceneRoot);
 
-	    // Desk surface
-	    var deskTopGeo = new THREE.BoxGeometry(5.2, 0.28, 3.1);
-	    var deskTop = new THREE.Mesh(deskTopGeo, woodMat);
-	    deskTop.position.y = 0.8;
-	    desk.add(deskTop);
+	    /* ==============================
+	       FLOOR — dark + cross markers
+	    ================================ */
+	    var floorGeo = new THREE.PlaneGeometry(30, 30);
+	    var floorMat = new THREE.MeshStandardMaterial({color:0x010a14, metalness:0.4, roughness:0.9, emissive:0x000d1a, emissiveIntensity:0.12});
+	    var floor = new THREE.Mesh(floorGeo, floorMat);
+	    floor.rotation.x = -Math.PI/2;
+	    floor.position.y = -0.01;
+	    floor.receiveShadow = true;
+	    sceneRoot.add(floor);
 
-	    // Desk legs
-	    var legGeo = new THREE.BoxGeometry(0.16, 0.82, 0.16);
-	    var legPositions = [[-2, 0.4, -1], [2, 0.4, -1], [-2, 0.4, 1], [2, 0.4, 1]];
-	    legPositions.forEach(function(pos){
-	      var leg = new THREE.Mesh(legGeo, woodMat);
-	      leg.position.set(pos[0], pos[1], pos[2]);
-	      desk.add(leg);
-	    });
+	    // Grid lines (thin, dark)
+	    var gridHelper = new THREE.GridHelper(30, 30, 0x001e2e, 0x000e1a);
+	    gridHelper.material.opacity = 0.65;
+	    gridHelper.material.transparent = true;
+	    sceneRoot.add(gridHelper);
 
-	    // Monitor stand
-	    var stand = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.2, 0.42), metalMat);
-	    stand.position.set(1.5, 0.6, 0);
-	    desk.add(stand);
-	    var standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.65, 0.08, 26), metalMat);
-	    standBase.position.set(1.5, 0.87, 0);
-	    desk.add(standBase);
+	    // Cross markers at grid intersections
+	    var crossMat = new THREE.LineBasicMaterial({color:0x00344d, transparent:true, opacity:0.7});
+	    var crossSize = 0.18;
+	    for(var ci = -7; ci <= 7; ci += 2){
+	      for(var cj = -7; cj <= 7; cj += 2){
+	        var crossGeo = new THREE.BufferGeometry();
+	        var crossVerts = new Float32Array([
+	          ci-crossSize,0,cj, ci+crossSize,0,cj,
+	          ci,0,cj-crossSize, ci,0,cj+crossSize
+	        ]);
+	        crossGeo.setAttribute('position', new THREE.BufferAttribute(crossVerts,3));
+	        crossGeo.setIndex([0,1,2,3]);
+	        var cross = new THREE.LineSegments(crossGeo, crossMat);
+	        cross.position.y = 0.01;
+	        sceneRoot.add(cross);
+	      }
+	    }
 
-	    // Monitor (screen frame)
-	    var screenFrameGeo = new THREE.BoxGeometry(1.92, 1.28, 0.12);
-	    var screenFrame = new THREE.Mesh(screenFrameGeo, darkMat);
-	    screenFrame.position.set(1.5, 1.8, 0);
-	    desk.add(screenFrame);
+	    /* ==============================
+	       DESK (sleek matte black)
+	    ================================ */
+	    var deskGroup = new THREE.Group();
+	    sceneRoot.add(deskGroup);
 
-	    // Monitor screen (display)
-	    var screenCanvas = document.createElement('canvas');
-	    screenCanvas.width = 768; screenCanvas.height = 480;
-	    var sctx = screenCanvas.getContext('2d');
+	    // Main top surface
+	    var dTop = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.14, 2.8), bodyMat);
+	    dTop.position.y = 1.45;
+	    dTop.castShadow = true; dTop.receiveShadow = true;
+	    deskGroup.add(dTop);
 
-	    var codeLines = [
-	      'const api = createClient({ baseURL: \"https://api.example.com\" });',
+	    // Front face (thick angular edge)
+	    var dFront = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.55, 0.1), plateMat);
+	    dFront.position.set(0, 1.18, 1.45);
+	    deskGroup.add(dFront);
+	    // Front edge glow line
+	    var dEdge = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.025, 0.025), new THREE.MeshStandardMaterial({emissive:0x003344, emissiveIntensity:0.8, color:0x001a22}));
+	    dEdge.position.set(0, 1.38, 1.48);
+	    deskGroup.add(dEdge);
+
+	    // Desk panel/cabinet (right side)
+	    var dPanel = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 2.8), bodyMat);
+	    dPanel.position.set(2.43, 0.73, 0);
+	    deskGroup.add(dPanel);
+	    // Left panel
+	    var dPanelL = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 2.8), bodyMat);
+	    dPanelL.position.set(-2.43, 0.73, 0);
+	    deskGroup.add(dPanelL);
+
+	    // Desk back panel
+	    var dBack = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.45, 0.1), bodyMat);
+	    dBack.position.set(0, 0.73, -1.4);
+	    deskGroup.add(dBack);
+
+	    /* ==============================
+	       MONITOR (ultra-wide cyan glow)
+	    ================================ */
+	    var monitorGroup = new THREE.Group();
+	    monitorGroup.position.set(-0.8, 1.45, -0.5);
+	    deskGroup.add(monitorGroup);
+
+	    // Monitor stand base
+	    var mBase = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.06, 16), bodyMat);
+	    mBase.position.y = 0.03;
+	    monitorGroup.add(mBase);
+	    // Stand neck
+	    var mNeck = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.55, 0.08), voidMat);
+	    mNeck.position.y = 0.35;
+	    monitorGroup.add(mNeck);
+
+	    // Monitor frame
+	    var mFrame = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.52, 0.09), bodyMat);
+	    mFrame.position.y = 1.26;
+	    mFrame.castShadow = true;
+	    monitorGroup.add(mFrame);
+
+	    // Screen canvas — with bright cyan glow
+	    var scrCanvas = document.createElement('canvas');
+	    scrCanvas.width = 600; scrCanvas.height = 360;
+	    var scrCtx = scrCanvas.getContext('2d');
+
+	    var scrLines = [
+	      'import numpy as np',
+	      'import pandas as pd',
+	      'from sklearn.model_selection import train_test_split',
+	      'from sklearn.preprocessing import StandardScaler',
 	      '',
-	      'export async function trainModel(dataset) {',
-	      '  const features = dataset.map(r => [r.x1, r.x2, r.x3]);',
-	      '  const labels = dataset.map(r => r.y);',
-	      '  const model = tf.sequential();',
-	      '  model.add(tf.layers.dense({ units: 64, activation: \"relu\", inputShape: [3] }));',
-	      '  model.add(tf.layers.dropout({ rate: 0.2 }));',
-	      '  model.add(tf.layers.dense({ units: 32, activation: \"relu\" }));',
-	      '  model.add(tf.layers.dense({ units: 1, activation: \"sigmoid\" }));',
-	      '  model.compile({ optimizer: \"adam\", loss: \"binaryCrossentropy\", metrics: [\"accuracy\"] });',
+	      'df = pd.read_csv("dataset.csv")',
+	      'X = df.drop("target", axis=1)',
+	      'y = df["target"]',
 	      '',
-	      '  const history = await model.fit(tf.tensor2d(features), tf.tensor(labels), {',
-	      '    epochs: 50, batchSize: 32, validationSplit: 0.2, shuffle: true,',
-	      '    callbacks: { onEpochEnd: (e, l) => log(e, l) }',
-	      '  });',
+	      'X_train, X_test, y_train, y_test = train_test_split(',
+	      '    X, y, test_size=0.2, random_state=42)',
 	      '',
-	      '  return { model, history };',
-	      '}',
+	      'scaler = StandardScaler()',
+	      'X_train = scaler.fit_transform(X_train)',
+	      'X_test  = scaler.transform(X_test)',
 	      '',
-	      'function log(epoch, logs) {',
-	      '  console.log(`epoch=${epoch} loss=${logs.loss.toFixed(4)} acc=${(logs.acc||logs.accuracy).toFixed(4)}`);',
-	      '}',
+	      '# Train model',
+	      'from sklearn.ensemble import RandomForestClassifier',
+	      'model = RandomForestClassifier(n_estimators=100)',
+	      'model.fit(X_train, y_train)',
 	      '',
-	      '/* streaming inference */',
-	      'for await (const row of streamRows()) {',
-	      '  const pred = model.predict(tf.tensor2d([[row.x1, row.x2, row.x3]])).dataSync()[0];',
-	      '  if (pred > 0.85) alerts.push({ id: row.id, pred });',
-	      '}'
+	      'accuracy = model.score(X_test, y_test)',
+	      'print(f"Accuracy: {accuracy:.4f}")',
+	      '# >> Accuracy: 0.9742'
 	    ];
-	    var codeText = codeLines.join('\n');
-	    var TYPE_SPEED = 28; // characters per tick (based on DESK_TIME_DELTA)
-	    var PAUSE_TICKS = 120;
-	    var cycleLen = codeText.length + PAUSE_TICKS;
+	    var scrText = scrLines.join('\n');
+	    var scrCycleLen = scrText.length + 80;
 
-	    function drawScreen(typedCount, blink){
-	      var w = screenCanvas.width, h = screenCanvas.height;
-	      sctx.clearRect(0, 0, w, h);
+	    function drawMonitor(typed, blink){
+	      var w = scrCanvas.width, h = scrCanvas.height;
+	      // Background — dark with cyan tint
+	      scrCtx.fillStyle = '#010e18';
+	      scrCtx.fillRect(0,0,w,h);
 
-	      // Background
-	      var grad = sctx.createLinearGradient(0, 0, 0, h);
-	      grad.addColorStop(0, '#070a14');
-	      grad.addColorStop(1, '#0a1630');
-	      sctx.fillStyle = grad;
-	      sctx.fillRect(0, 0, w, h);
+	      // Subtle glow bg in center
+	      var grd = scrCtx.createRadialGradient(w/2,h/2,30,w/2,h/2,260);
+	      grd.addColorStop(0,'rgba(0,220,255,0.06)');
+	      grd.addColorStop(1,'rgba(0,0,0,0)');
+	      scrCtx.fillStyle = grd;
+	      scrCtx.fillRect(0,0,w,h);
 
 	      // Scanlines
-	      sctx.globalAlpha = 0.08;
-	      sctx.fillStyle = '#ffffff';
-	      for(var y = 0; y < h; y += 4) sctx.fillRect(0, y, w, 1);
-	      sctx.globalAlpha = 1;
+	      scrCtx.globalAlpha = 0.06;
+	      for(var sy=0;sy<h;sy+=3){scrCtx.fillStyle='#ffffff';scrCtx.fillRect(0,sy,w,1);}
+	      scrCtx.globalAlpha = 1;
 
-	      // Frame glow
-	      sctx.strokeStyle = 'rgba(34, 211, 238, 0.65)';
-	      sctx.lineWidth = 3;
-	      sctx.strokeRect(18, 18, w - 36, h - 36);
+	      // Border glow
+	      scrCtx.strokeStyle = 'rgba(0,220,255,0.55)';
+	      scrCtx.lineWidth = 2;
+	      scrCtx.strokeRect(10,10,w-20,h-20);
 
-	      // Text
-	      var visible = codeText.slice(0, typedCount);
-	      var lines = visible.split('\n');
-	      var maxLines = 16;
-	      if(lines.length > maxLines) lines = lines.slice(lines.length - maxLines);
+	      // Header bar
+	      scrCtx.fillStyle = 'rgba(0,30,42,0.9)';
+	      scrCtx.fillRect(10,10,w-20,28);
+	      scrCtx.fillStyle = '#00c8e0';
+	      scrCtx.font = '12px JetBrains Mono, monospace';
+	      scrCtx.fillText('ahmed@portfolio:~/projects $', 20, 28);
 
-	      sctx.font = '18px JetBrains Mono, monospace';
-	      sctx.textBaseline = 'top';
-	      var x = 34;
-	      var yPos = 40;
-
-	      lines.forEach(function(line, idx){
-	        var color = '#38bdf8';
-	        if(/(async|await|return|const|function|export)\b/.test(line)) color = '#f472b6';
-	        if(/(tf\\.|tensor|layers|compile|fit|predict)\b/.test(line)) color = '#22d3ee';
-	        if(/console\\.log|epoch=/.test(line)) color = '#a3e635';
-	        sctx.fillStyle = color;
-	        sctx.fillText(line, x, yPos);
-	        yPos += 26;
+	      // Code
+	      var vis = scrText.slice(0, typed);
+	      var lines = vis.split('\n');
+	      var maxL = 14;
+	      if(lines.length>maxL) lines = lines.slice(lines.length-maxL);
+	      scrCtx.font = '15px JetBrains Mono, monospace';
+	      scrCtx.textBaseline = 'top';
+	      var x0=18, yy=50;
+	      lines.forEach(function(ln){
+	        var col = '#7dd3fc';
+	        if(/^import|^from/.test(ln)) col='#a78bfa';
+	        if(/^#/.test(ln)) col='#4ade80';
+	        if(/=/.test(ln)&&!/==/g.test(ln)) col='#38bdf8';
+	        if(/print|accuracy/.test(ln)) col='#22d3ee';
+	        if(/>>/.test(ln)) col='#86efac';
+	        scrCtx.fillStyle=col;
+	        scrCtx.fillText(ln,x0,yy);
+	        yy+=22;
 	      });
+	      if(blink){scrCtx.fillStyle='#00f0ff';scrCtx.fillRect(x0+Math.min((lines[lines.length-1]||'').length,40)*9,yy-22,8,16);}
+	    }
+	    drawMonitor(0,true);
+	    var scrTex = new THREE.CanvasTexture(scrCanvas);
+	    scrTex.minFilter = THREE.LinearFilter; scrTex.magFilter = THREE.LinearFilter;
 
-	      // Cursor
-	      if(blink){
-	        sctx.fillStyle = '#22d3ee';
-	        sctx.fillRect(x + clamp((lines[lines.length - 1] || '').length, 0, 60) * 10.2, yPos - 26, 10, 20);
+	    // Screen mesh — bright emissive
+	    var screenMesh = new THREE.Mesh(
+	      new THREE.PlaneGeometry(2.34, 1.38),
+	      new THREE.MeshStandardMaterial({
+	        map: scrTex, emissive: new THREE.Color(0x00d4f0), emissiveIntensity: 0.55,
+	        roughness:0.9, metalness:0
+	      })
+	    );
+	    screenMesh.position.set(0, 1.26, 0.055);
+	    monitorGroup.add(screenMesh);
+
+	    // Screen edge glow — subtle cyan bloom ring
+	    var glowFrame = new THREE.Mesh(new THREE.BoxGeometry(2.52,1.54,0.04), new THREE.MeshStandardMaterial({
+	      color:0x001a22, emissive:0x00c8e0, emissiveIntensity:0.5, transparent:true, opacity:0.35
+	    }));
+	    glowFrame.position.set(0,1.26,-0.02);
+	    monitorGroup.add(glowFrame);
+
+	    /* ==============================
+	       PC TOWER (right on desk)
+	    ================================ */
+	    var towerGroup = new THREE.Group();
+	    towerGroup.position.set(1.6, 1.45, -0.7);
+	    deskGroup.add(towerGroup);
+
+	    var tower = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.2, 0.55), bodyMat);
+	    tower.position.y = 0.6;
+	    tower.castShadow = true;
+	    towerGroup.add(tower);
+	    // Tower front panel
+	    var towerFront = new THREE.Mesh(new THREE.BoxGeometry(0.48,1.18,0.04), plateMat);
+	    towerFront.position.set(0,0.6,0.28);
+	    towerGroup.add(towerFront);
+	    // Fan grill circles
+	    for(var fi=0;fi<3;fi++){
+	      var fanRing = new THREE.Mesh(new THREE.RingGeometry(0.07,0.1,16), voidMat);
+	      fanRing.position.set(-0.08+fi*0.08, 0.85-fi*0.25, 0.31);
+	      fanRing.rotation.y = Math.PI;
+	      towerGroup.add(fanRing);
+	    }
+	    // Power button glow
+	    var pwrBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.02,12), cyanGlow);
+	    pwrBtn.rotation.x=Math.PI/2;
+	    pwrBtn.position.set(0.12,0.38,0.3);
+	    towerGroup.add(pwrBtn);
+	    // USB strip glow
+	    var usb = new THREE.Mesh(new THREE.BoxGeometry(0.1,0.015,0.015), new THREE.MeshStandardMaterial({emissive:0x00a0b0, emissiveIntensity:0.8}));
+	    usb.position.set(0,0.28,0.31);
+	    towerGroup.add(usb);
+
+	    /* ==============================
+	       KEYBOARD
+	    ================================ */
+	    var kbGroup = new THREE.Group();
+	    kbGroup.position.set(-0.4, 1.45, 0.9);
+	    deskGroup.add(kbGroup);
+	    var kbBase2 = new THREE.Mesh(new THREE.BoxGeometry(1.8,0.06,0.6), bodyMat);
+	    kbGroup.add(kbBase2);
+	    // Keyboard LED strip
+	    var kbLed = new THREE.Mesh(new THREE.BoxGeometry(1.7,0.01,0.02), new THREE.MeshStandardMaterial({emissive:0x003366, emissiveIntensity:1.2, color:0x001133}));
+	    kbLed.position.set(0,0.035,-0.3);
+	    kbGroup.add(kbLed);
+
+	    var dKeys = [];
+	    var dRows=4, dCols=13;
+	    for(var r2=0;r2<dRows;r2++){
+	      for(var c2=0;c2<dCols;c2++){
+	        var dk = new THREE.Mesh(new THREE.BoxGeometry(0.11,0.04,0.1), voidMat);
+	        dk.position.set(-0.78+c2*0.13, 0.05, -0.2+r2*0.13);
+	        dk.userData.baseY = dk.position.y;
+	        kbGroup.add(dk);
+	        dKeys.push(dk);
 	      }
 	    }
 
-	    drawScreen(0, true);
-	    var screenTex = new THREE.CanvasTexture(screenCanvas);
-	    screenTex.minFilter = THREE.LinearFilter;
-	    screenTex.magFilter = THREE.LinearFilter;
-	    var screenMat = new THREE.MeshStandardMaterial({
-	      map: screenTex,
-	      emissive: new THREE.Color(0x0ea5e9),
-	      emissiveIntensity: 0.32,
-	      roughness: 0.9,
-	      metalness: 0.0
+	    /* ==============================
+	       MOUSE
+	    ================================ */
+	    var mGroup = new THREE.Group();
+	    mGroup.position.set(1.1,1.45,0.9);
+	    deskGroup.add(mGroup);
+	    var mBody2 = new THREE.Mesh(new THREE.SphereGeometry(0.12,14,10), bodyMat);
+	    mBody2.scale.set(1,0.6,1.4);
+	    mGroup.add(mBody2);
+
+	    /* ==============================
+	       SEATED ROBOT
+	    ================================ */
+	    var seatedRobot = new THREE.Group();
+	    seatedRobot.position.set(0.6, 0, 1.6);
+	    seatedRobot.rotation.y = -0.5;
+	    sceneRoot.add(seatedRobot);
+
+	    // Chair base
+	    var chairBase = new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.6,0.06,12), voidMat);
+	    chairBase.position.y = 0.03;
+	    seatedRobot.add(chairBase);
+	    // Chair pole
+	    var chairPole = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.65,8), voidMat);
+	    chairPole.position.y = 0.36;
+	    seatedRobot.add(chairPole);
+	    // Chair seat
+	    var seat = new THREE.Mesh(new THREE.BoxGeometry(0.88,0.1,0.88), bodyMat);
+	    seat.position.y = 0.72;
+	    seatedRobot.add(seat);
+	    // Chair back
+	    var chairBack = new THREE.Mesh(new THREE.BoxGeometry(0.84,1.1,0.1), plateMat);
+	    chairBack.position.set(0,1.28,-0.44);
+	    seatedRobot.add(chairBack);
+	    // Chair arms
+	    [-1,1].forEach(function(s){
+	      var arm = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.28,0.72), voidMat);
+	      arm.position.set(0.42*s,0.98,0);
+	      seatedRobot.add(arm);
 	    });
-	    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.12), screenMat);
-	    screen.position.set(1.5, 1.8, 0.07);
-	    desk.add(screen);
 
-	    // Keyboard
-	    var keyboard = new THREE.Group();
-	    keyboard.position.set(0.35, 0.93, 1.05);
-	    keyboard.rotation.x = -0.08;
-	    desk.add(keyboard);
-	    var kbBase = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.11, 0.72), plasticMat);
-	    keyboard.add(kbBase);
-	    var kbTop = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.04, 0.7), darkMat);
-	    kbTop.position.y = 0.06;
-	    keyboard.add(kbTop);
+	    // Robot torso (seated — leaning forward slightly)
+	    var robotTorso = new THREE.Group();
+	    robotTorso.position.set(0,1.4,0);
+	    robotTorso.rotation.x = -0.15; // lean forward
+	    seatedRobot.add(robotTorso);
 
-	    var keys = [];
-	    var rows = 5, cols = 14;
-	    var startX = -0.9, startZ = -0.28;
-	    for(var r = 0; r < rows; r++){
-	      for(var c = 0; c < cols; c++){
-	        var wKey = (c === 0 && r === 4) ? 0.24 : 0.12;
-	        var keyGeo = new THREE.BoxGeometry(wKey, 0.05, 0.11);
-	        var mat = (r === 0 && (c === 0 || c === cols - 1)) ? accentMat : darkMat;
-	        var key = new THREE.Mesh(keyGeo, mat);
-	        key.position.set(startX + c * 0.13, 0.095, startZ + r * 0.14);
-	        key.userData.baseY = key.position.y;
-	        keyboard.add(key);
-	        keys.push(key);
-	      }
+	    var torsoMesh = new THREE.Mesh(new THREE.BoxGeometry(0.72,0.92,0.52), bodyMat);
+	    torsoMesh.castShadow = true;
+	    robotTorso.add(torsoMesh);
+	    // Chest plate
+	    var cPlate = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.55,0.08), plateMat);
+	    cPlate.position.set(0,0.08,0.3);
+	    robotTorso.add(cPlate);
+	    // Chest glow line
+	    var cLine = new THREE.Mesh(new THREE.BoxGeometry(0.03,0.35,0.04), cyanGlow);
+	    cLine.position.set(0,0.1,0.35);
+	    robotTorso.add(cLine);
+	    // Shoulder plates
+	    [-1,1].forEach(function(s){
+	      var sp = new THREE.Mesh(new THREE.BoxGeometry(0.28,0.28,0.36), plateMat);
+	      sp.position.set(0.5*s,0.28,0);
+	      robotTorso.add(sp);
+	    });
+
+	    // Robot head
+	    var deskHeadGroup = new THREE.Group();
+	    deskHeadGroup.position.set(0,0.62,0);
+	    robotTorso.add(deskHeadGroup);
+
+	    var dHead = new THREE.Mesh(new THREE.BoxGeometry(0.52,0.48,0.46), bodyMat);
+	    deskHeadGroup.add(dHead);
+	    // Visor
+	    var dVisor = new THREE.Mesh(new THREE.BoxGeometry(0.4,0.16,0.06), voidMat);
+	    dVisor.position.set(0,0.05,0.25);
+	    deskHeadGroup.add(dVisor);
+	    // Eyes
+	    var dEyeL = new THREE.Mesh(new THREE.SphereGeometry(0.045,12,10), cyanGlow);
+	    var dEyeR = new THREE.Mesh(new THREE.SphereGeometry(0.045,12,10), cyanGlow);
+	    dEyeL.position.set(-0.1,0.07,0.24);
+	    dEyeR.position.set(0.1,0.07,0.24);
+	    deskHeadGroup.add(dEyeL); deskHeadGroup.add(dEyeR);
+	    // Head collar
+	    var dCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.22,0.12,8), plateMat);
+	    dCollar.position.y=-0.28;
+	    deskHeadGroup.add(dCollar);
+
+	    // Arms (forearms resting on desk)
+	    function buildDeskArm(side){
+	      var g = new THREE.Group();
+	      g.position.set(0.42*side, 0.1, 0.1);
+	      robotTorso.add(g);
+	      // Upper arm
+	      var ua = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.11,0.55,8), bodyMat);
+	      ua.rotation.z = (Math.PI/2) * side * -0.7;
+	      ua.rotation.x = 0.5;
+	      ua.position.set(0.15*side,-0.15,0.2);
+	      g.add(ua);
+	      // Forearm (pointing down to desk)
+	      var fa = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.09,0.6,8), bodyMat);
+	      fa.rotation.x = 1.2;
+	      fa.position.set(0.16*side,-0.48,0.5);
+	      g.add(fa);
+	      return g;
 	    }
+	    buildDeskArm(-1); buildDeskArm(1);
 
-	    // Mouse
-	    var mouse = new THREE.Group();
-	    mouse.position.set(-1.22, 0.94, 1.05);
-	    mouse.rotation.y = 0.2;
-	    desk.add(mouse);
-	    var mouseBody = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 16), plasticMat);
-	    mouseBody.scale.set(1.0, 0.65, 1.25);
-	    mouse.add(mouseBody);
-	    var mouseTop = new THREE.Mesh(new THREE.SphereGeometry(0.18, 18, 14), darkMat);
-	    mouseTop.scale.set(1.0, 0.55, 1.15);
-	    mouseTop.position.set(0, 0.06, 0.02);
-	    mouse.add(mouseTop);
-	    var wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.09, 12), metalMat);
-	    wheel.rotation.x = Math.PI / 2;
-	    wheel.position.set(0, 0.12, 0.12);
-	    mouse.add(wheel);
+	    // Legs (bent, sitting)
+	    function buildDeskLeg(side){
+	      var g = new THREE.Group();
+	      g.position.set(0.22*side, 0.72, 0.1);
+	      seatedRobot.add(g);
+	      // Thigh horizontal
+	      var th = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,0.7,8), bodyMat);
+	      th.rotation.x = Math.PI/2;
+	      th.position.set(0,0,0.35);
+	      g.add(th);
+	      // Knee
+	      var kn = new THREE.Mesh(new THREE.SphereGeometry(0.1,10,8), voidMat);
+	      kn.position.set(0,0,0.72);
+	      g.add(kn);
+	      // Shin going down
+	      var sh = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,0.7,8), bodyMat);
+	      sh.position.set(0,-0.35,0.72);
+	      g.add(sh);
+	      // Boot
+	      var bt = new THREE.Mesh(new THREE.BoxGeometry(0.2,0.14,0.42), bodyMat);
+	      bt.position.set(0,-0.74,0.85);
+	      g.add(bt);
+	      return g;
+	    }
+	    buildDeskLeg(-1); buildDeskLeg(1);
 
-	    // Mousepad (soft)
-	    var pad = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.03, 0.8), darkMat);
-	    pad.position.set(-1.28, 0.84, 1.06);
-	    desk.add(pad);
+	    /* ==============================
+	       MOUSE PARALLAX (no drag rotation)
+	    ================================ */
+	    var dRawX=0.5, dRawY=0.5, dSmX=0.5, dSmY=0.5;
+	    document.addEventListener('mousemove', function(e){
+	      dRawX = e.clientX/window.innerWidth;
+	      dRawY = e.clientY/window.innerHeight;
+	    }, {passive:true});
 
-	    // Mouse drag controls
-	    var rotX = INITIAL_ROTATION_X, rotY = INITIAL_ROTATION_Y, targetRotX = INITIAL_ROTATION_X, targetRotY = INITIAL_ROTATION_Y;
-	    var isDragging = false, lastX = 0, lastY = 0;
-	    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
-    window.addEventListener('mouseup', function(){isDragging=false;});
-    window.addEventListener('mousemove', function(e){
-      if(!isDragging) return;
-      targetRotY += (e.clientX - lastX) * DRAG_SENSITIVITY;
-      targetRotX += (e.clientY - lastY) * DRAG_SENSITIVITY;
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
+	    // Base camera position
+	    var camBaseX=5.5, camBaseY=4.2, camBaseZ=7.5;
+	    var CAM_PARALLAX = 0.55;
 
-	    var t = 0;
-	    var lastKeyIndex = -1;
-	    function animate(){
-	      t += DESK_TIME_DELTA;
-	      
-	      // Smooth camera rotation
-	      rotX += (targetRotX - rotX) * ROTATION_SMOOTHING;
-	      rotY += (targetRotY - rotY) * ROTATION_SMOOTHING;
-	      if(!isDragging){
-	        targetRotY += AUTO_ROTATION_SPEED;
+	    /* ==============================
+	       FPS + ANIMATION
+	    ================================ */
+	    var dFpsEl = document.getElementById('dsk-fps');
+	    var dFpsFrames=0, dFpsLast=performance.now();
+	    var t=0;
+	    var lastDKeyIdx=-1;
+	    var dClock = new THREE.Clock();
+
+	    function animateDesk(){
+	      requestAnimationFrame(animateDesk);
+	      var dt = dClock.getDelta();
+	      t += dt;
+
+	      // FPS
+	      dFpsFrames++;
+	      var now2 = performance.now();
+	      if(now2-dFpsLast >= 1000){
+	        if(dFpsEl) dFpsEl.textContent = dFpsFrames;
+	        dFpsFrames=0; dFpsLast=now2;
 	      }
-	      
-	      desk.rotation.x = rotX;
-	      desk.rotation.y = rotY;
 
-	      // Typing animation (keys + mouse click)
-	      if(keys.length){
-	        var keyIndex = Math.floor((t * 9.5) % keys.length);
-	        if(keyIndex !== lastKeyIndex){
-	          if(lastKeyIndex >= 0) keys[lastKeyIndex].position.y = keys[lastKeyIndex].userData.baseY;
-	          lastKeyIndex = keyIndex;
+	      // Smooth mouse
+	      dSmX = lerpD(dSmX, dRawX, 0.04);
+	      dSmY = lerpD(dSmY, dRawY, 0.04);
+
+	      // Camera subtle parallax (no rotation)
+	      camera.position.x = camBaseX + (dSmX-0.5)*CAM_PARALLAX;
+	      camera.position.y = camBaseY + (0.5-dSmY)*CAM_PARALLAX*0.4;
+	      camera.lookAt(0, 0.8, 0);
+
+	      // Screen glow follows slightly
+	      screenGlow.intensity = 2.2 + Math.sin(t*1.8)*0.4;
+
+	      // Cyanline pulse on robot chest
+	      cLine.material.emissiveIntensity = 3 + Math.sin(t*2.5)*1;
+	      // Eye pulse
+	      cyanGlow.emissiveIntensity = 3.5 + Math.sin(t*3)*0.8;
+
+	      // Head slight tilt toward screen
+	      deskHeadGroup.rotation.y = -0.3 + (dSmX-0.5)*0.15;
+	      deskHeadGroup.rotation.x = -0.08;
+
+	      // Keyboard typing
+	      if(dKeys.length){
+	        var ki = Math.floor((t*8)%dKeys.length);
+	        if(ki!==lastDKeyIdx){
+	          if(lastDKeyIdx>=0) dKeys[lastDKeyIdx].position.y = dKeys[lastDKeyIdx].userData.baseY;
+	          lastDKeyIdx=ki;
 	        }
-	        var pressDepth = 0.028 * (0.6 + 0.4 * Math.sin(t * 22));
-	        keys[lastKeyIndex].position.y = keys[lastKeyIndex].userData.baseY - pressDepth;
+	        dKeys[ki].position.y = dKeys[ki].userData.baseY - 0.02;
 	      }
-	      wheel.rotation.y = Math.sin(t * 10) * 0.35;
-	      mouse.position.y = 0.94 + Math.sin(t * 6) * 0.008;
 
-	      // Update screen with typewriter effect
-	      var tick = Math.floor(t * 60);
-	      var typed = Math.floor((tick * TYPE_SPEED) % cycleLen);
-	      if(typed > codeText.length) typed = codeText.length;
-	      var blink = (tick % 24) < 12;
-	      drawScreen(typed, blink);
-	      screenTex.needsUpdate = true;
+	      // Update monitor screen typewriter
+	      var tick = Math.floor(t*55);
+	      var typed = Math.floor((tick*22) % scrCycleLen);
+	      if(typed>scrText.length) typed=scrText.length;
+	      var blink2 = (tick%20)<10;
+	      drawMonitor(typed, blink2);
+	      scrTex.needsUpdate = true;
 
 	      renderer.render(scene, camera);
-	      requestAnimationFrame(animate);
 	    }
-	    animate();
+	    animateDesk();
 	    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
 	  })();
 
