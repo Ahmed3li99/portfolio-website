@@ -2968,120 +2968,311 @@ if (cvLink) {
   }
 
   /* ============================================
-     1. HERO — 3D ROBOT
+     1. HERO — 3D DEVELOPER WORKSTATION
      ============================================ */
-  (function heroRobot(){
+  (function heroWorkstation(){
     var container = document.getElementById('three-hero-nn');
     if(!container) return;
 
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
-    camera.position.z = 8;
+    var camera = new THREE.PerspectiveCamera(48, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.set(1.2, 0.3, 7.5);
+    camera.lookAt(1.0, -0.2, 0);
 
     var renderer = makeRenderer(container, true);
 
-    // Robot animation constants
-    var BODY_SWAY_SPEED = 0.5;
-    var BODY_SWAY_AMPLITUDE = 0.05;
-    var HEAD_TRACKING_SENSITIVITY = 0.4;
-    var HEAD_TRACKING_SMOOTHING = 0.1;
-    var ARM_WAVE_SPEED = 3;
-    var ARM_WAVE_AMPLITUDE = 0.6;
-    var ARM_WAVE_OFFSET = 0.3;
-    var LEG_WALK_SPEED = 2;
-    var LEG_WALK_AMPLITUDE = 0.2;
-    var ROBOT_TIME_DELTA = 0.016;
+    // Lighting
+    scene.add(new THREE.AmbientLight(0x0a1428, 4));
 
-    // Create robot
-    var robot = new THREE.Group();
-    
-    // Body (main torso)
-    var bodyGeo = new THREE.BoxGeometry(1, 1.5, 0.6);
-    var bodyMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
-    var body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0;
-    robot.add(body);
+    var cyanLight = new THREE.PointLight(0x22d3ee, 5, 22);
+    cyanLight.position.set(-3, 3, 5);
+    scene.add(cyanLight);
 
-    // Head group (for look-at rotation)
-    var headGroup = new THREE.Group();
-    headGroup.position.set(0, 1.2, 0);
-    robot.add(headGroup);
+    var pinkLight = new THREE.PointLight(0xf472b6, 4, 18);
+    pinkLight.position.set(5, -1, 4);
+    scene.add(pinkLight);
 
-    // Head (cube)
-    var headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-    var headMat = new THREE.MeshBasicMaterial({color: 0xf472b6});
-    var head = new THREE.Mesh(headGeo, headMat);
-    headGroup.add(head);
+    var screenGlow = new THREE.PointLight(0x38bdf8, 6, 9);
+    screenGlow.position.set(1.2, 0.1, 3.5);
+    scene.add(screenGlow);
 
-    // Eyes
-    var eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
-    var eyeMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
-    var leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-    leftEye.position.set(-0.2, 0.15, 0.45);
-    head.add(leftEye);
-    var rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-    rightEye.position.set(0.2, 0.15, 0.45);
-    head.add(rightEye);
+    // ---- Main workstation group ----
+    var ws = new THREE.Group();
+    ws.position.set(1.2, 0.2, 0);
+    scene.add(ws);
 
-    // Antenna
-    var antennaGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6);
-    var antennaMat = new THREE.MeshBasicMaterial({color: 0xfb923c});
-    var antenna = new THREE.Mesh(antennaGeo, antennaMat);
-    antenna.position.set(0, 0.5, 0);
-    head.add(antenna);
+    // Monitor frame
+    var mFrameGeo = new THREE.BoxGeometry(2.9, 1.85, 0.1);
+    var mFrameMat = new THREE.MeshPhongMaterial({color: 0x0d1117, emissive: 0x080d1c, shininess: 120});
+    var mFrame = new THREE.Mesh(mFrameGeo, mFrameMat);
+    ws.add(mFrame);
 
-    // Arms
-    var armGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
-    var armMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
-    var leftArm = new THREE.Mesh(armGeo, armMat);
-    leftArm.position.set(-0.65, 0.3, 0);
-    robot.add(leftArm);
-    var rightArm = new THREE.Mesh(armGeo, armMat);
-    rightArm.position.set(0.65, 0.3, 0);
-    robot.add(rightArm);
+    // Frame edge glow
+    ws.add(new THREE.LineSegments(
+      new THREE.EdgesGeometry(mFrameGeo),
+      new THREE.LineBasicMaterial({color: 0x22d3ee, transparent: true, opacity: 0.85})
+    ));
 
-    // Legs
-    var legGeo = new THREE.BoxGeometry(0.3, 0.9, 0.3);
-    var legMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
-    var leftLeg = new THREE.Mesh(legGeo, legMat);
-    leftLeg.position.set(-0.3, -1.1, 0);
-    robot.add(leftLeg);
-    var rightLeg = new THREE.Mesh(legGeo, legMat);
-    rightLeg.position.set(0.3, -1.1, 0);
-    robot.add(rightLeg);
+    // Screen canvas with typewriter code
+    var sCanvas = document.createElement('canvas');
+    sCanvas.width = 580; sCanvas.height = 370;
+    var sCtx = sCanvas.getContext('2d');
 
-    scene.add(robot);
+    var codeLines = [
+      {t: '# Deep Learning Model', c: '#6272a4'},
+      {t: 'import tensorflow as tf', c: '#8be9fd'},
+      {t: 'import numpy as np', c: '#8be9fd'},
+      {t: 'import pandas as pd', c: '#8be9fd'},
+      {t: '', c: ''},
+      {t: 'model = Sequential([', c: '#f1fa8c'},
+      {t: '  Dense(256, "relu"),', c: '#50fa7b'},
+      {t: '  BatchNormalization(),', c: '#50fa7b'},
+      {t: '  Dropout(0.3),', c: '#50fa7b'},
+      {t: '  Dense(128, "relu"),', c: '#50fa7b'},
+      {t: '  Dense(10, "softmax")', c: '#50fa7b'},
+      {t: '])', c: '#f1fa8c'},
+      {t: '', c: ''},
+      {t: 'model.compile(', c: '#ff79c6'},
+      {t: '  optimizer="adam",', c: '#ff79c6'},
+      {t: '  loss="sparse_ce",', c: '#ff79c6'},
+      {t: '  metrics=["accuracy"])', c: '#ff79c6'},
+      {t: '', c: ''},
+      {t: '✓ Epoch 50/50 — acc: 98.7%', c: '#50fa7b'},
+    ];
 
-    // Mouse tracking
-    var mouseX = 0.5, mouseY = 0.5;
+    var totalChars = codeLines.reduce(function(a, l){ return a + l.t.length + 1; }, 0);
+    var typePos = 0;
+    var CHARS_PER_TICK = 0.55;
+
+    function drawScreen(chars){
+      sCtx.fillStyle = '#0d1117';
+      sCtx.fillRect(0, 0, 580, 370);
+
+      // Scanlines
+      sCtx.fillStyle = 'rgba(0,0,0,0.1)';
+      for(var sl = 0; sl < 370; sl += 3){ sCtx.fillRect(0, sl, 580, 1); }
+
+      // Title bar
+      sCtx.fillStyle = '#161b22';
+      sCtx.fillRect(0, 0, 580, 26);
+      ['#ff5f57','#febc2e','#28c840'].forEach(function(c, i){
+        sCtx.fillStyle = c;
+        sCtx.beginPath(); sCtx.arc(14 + i * 20, 13, 5, 0, Math.PI * 2); sCtx.fill();
+      });
+      sCtx.fillStyle = '#58a6ff';
+      sCtx.font = '10px monospace';
+      sCtx.fillText('ahmed@ai-studio — python model.py', 68, 17);
+
+      var charCount = 0, y = 54;
+      sCtx.font = '13px JetBrains Mono, monospace';
+      for(var i = 0; i < codeLines.length; i++){
+        if(charCount > chars) break;
+        var line = codeLines[i];
+        var show = Math.min(line.t.length, chars - charCount);
+        sCtx.fillStyle = '#3d444d';
+        sCtx.fillText(String(i + 1).padStart(2, ' '), 8, y);
+        if(show > 0){
+          sCtx.fillStyle = line.c || '#f8f8f2';
+          sCtx.fillText(line.t.substring(0, show), 32, y);
+        }
+        // Blinking cursor on actively-typed line
+        if(show < line.t.length){
+          var cx = 32 + sCtx.measureText(line.t.substring(0, show)).width;
+          if(Math.floor(Date.now() / 500) % 2 === 0){
+            sCtx.fillStyle = '#22d3ee';
+            sCtx.fillRect(cx, y - 12, 2, 15);
+          }
+        }
+        charCount += line.t.length + 1;
+        y += 19;
+      }
+
+      // Bottom accent glow bar
+      var g = sCtx.createLinearGradient(0, 366, 580, 366);
+      g.addColorStop(0, 'rgba(34,211,238,0)');
+      g.addColorStop(0.4, 'rgba(34,211,238,0.6)');
+      g.addColorStop(0.6, 'rgba(34,211,238,0.6)');
+      g.addColorStop(1, 'rgba(244,114,182,0.5)');
+      sCtx.fillStyle = g;
+      sCtx.fillRect(0, 365, 580, 3);
+    }
+
+    drawScreen(0);
+    var sTex = new THREE.CanvasTexture(sCanvas);
+    var sMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.7, 1.72),
+      new THREE.MeshBasicMaterial({map: sTex})
+    );
+    sMesh.position.z = 0.06;
+    ws.add(sMesh);
+
+    // Monitor neck
+    var neckGeo = new THREE.BoxGeometry(0.12, 0.52, 0.12);
+    ws.add(Object.assign(new THREE.Mesh(neckGeo,
+      new THREE.MeshPhongMaterial({color: 0x1e2030, shininess: 120})),
+      {position: new THREE.Vector3(0, -1.18, 0)}));
+
+    // Monitor base
+    var baseGeo = new THREE.BoxGeometry(1.1, 0.065, 0.45);
+    var monBase = new THREE.Mesh(baseGeo,
+      new THREE.MeshPhongMaterial({color: 0x1a1e2e, emissive: 0x08080f, shininess: 130}));
+    monBase.position.set(0, -1.47, 0.12);
+    ws.add(monBase);
+    var baseWire = new THREE.LineSegments(
+      new THREE.EdgesGeometry(baseGeo),
+      new THREE.LineBasicMaterial({color: 0x22d3ee, transparent: true, opacity: 0.5})
+    );
+    baseWire.position.copy(monBase.position);
+    ws.add(baseWire);
+
+    // Keyboard body
+    var kbGeo = new THREE.BoxGeometry(2.1, 0.08, 0.58);
+    var kb = new THREE.Mesh(kbGeo,
+      new THREE.MeshPhongMaterial({color: 0x161b22, emissive: 0x0a0a1a, shininess: 70}));
+    kb.position.set(-0.2, -1.55, 0.88);
+    ws.add(kb);
+    ws.add(Object.assign(new THREE.LineSegments(
+      new THREE.EdgesGeometry(kbGeo),
+      new THREE.LineBasicMaterial({color: 0x38bdf8, transparent: true, opacity: 0.65})
+    ), {position: kb.position.clone()}));
+
+    // Keyboard keys
+    var keys = [];
+    var kGeo = new THREE.BoxGeometry(0.105, 0.042, 0.105);
+    var keyRows = [{z: -0.19, n: 13}, {z: -0.06, n: 12}, {z: 0.07, n: 11}, {z: 0.20, n: 10}];
+    var keyPalette = [0x22d3ee, 0x38bdf8, 0xf472b6, 0xfb923c];
+    keyRows.forEach(function(row){
+      var startX = -(row.n * 0.14) / 2;
+      for(var k = 0; k < row.n; k++){
+        var km = new THREE.MeshPhongMaterial({
+          color: 0x1e293b,
+          emissive: keyPalette[k % 4],
+          emissiveIntensity: 0.1,
+          shininess: 110
+        });
+        var key = new THREE.Mesh(kGeo, km);
+        key.position.set(kb.position.x + startX + k * 0.145, -1.51, kb.position.z + row.z);
+        ws.add(key);
+        keys.push(key);
+      }
+    });
+
+    // Mouse body
+    var mgGeo = new THREE.CylinderGeometry(0.16, 0.185, 0.32, 12);
+    var mg = new THREE.Mesh(mgGeo,
+      new THREE.MeshPhongMaterial({color: 0x161b22, emissive: 0x08080f, shininess: 90}));
+    mg.position.set(1.28, -1.55, 0.76);
+    mg.rotation.z = 0.25;
+    ws.add(mg);
+    var mgWire = new THREE.LineSegments(
+      new THREE.EdgesGeometry(mgGeo),
+      new THREE.LineBasicMaterial({color: 0xf472b6, transparent: true, opacity: 0.65})
+    );
+    mgWire.position.copy(mg.position);
+    mgWire.rotation.z = 0.25;
+    ws.add(mgWire);
+
+    // Mouse scroll wheel glow
+    var wMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.032, 0.032, 0.085, 8),
+      new THREE.MeshPhongMaterial({color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 0.7})
+    );
+    wMesh.position.set(mg.position.x + 0.02, mg.position.y + 0.13, mg.position.z);
+    wMesh.rotation.z = Math.PI / 2;
+    ws.add(wMesh);
+
+    // Floating data particles
+    var ptGeo = new THREE.SphereGeometry(0.038, 7, 7);
+    var ptPalette = [0x22d3ee, 0xf472b6, 0x38bdf8, 0xfb923c, 0xa78bfa, 0x50fa7b];
+    var pts = [];
+    for(var p = 0; p < 38; p++){
+      var pm = new THREE.MeshBasicMaterial({
+        color: ptPalette[p % ptPalette.length],
+        transparent: true, opacity: 0.75
+      });
+      var pt = new THREE.Mesh(ptGeo, pm);
+      var a = Math.random() * Math.PI * 2;
+      var r = 3.2 + Math.random() * 2.4;
+      pt.userData = {
+        a: a, r: r,
+        yBase: (Math.random() - 0.5) * 4.5,
+        speed: (0.18 + Math.random() * 0.38) * (Math.random() > 0.5 ? 1 : -1),
+        ySpd: 0.22 + Math.random() * 0.38,
+        yAmp: 0.28 + Math.random() * 0.55
+      };
+      pt.position.set(Math.cos(a) * r + 1.2, pt.userData.yBase, Math.sin(a) * r * 0.33);
+      scene.add(pt);
+      pts.push(pt);
+    }
+
+    // Holographic rings around the scene
+    var ringDefs = [
+      {inner: 3.3, outer: 3.38, color: 0x22d3ee, opacity: 0.13, rx: Math.PI / 2, ry: 0},
+      {inner: 3.6, outer: 3.67, color: 0xf472b6, opacity: 0.09, rx: Math.PI / 3, ry: 0.4},
+      {inner: 3.9, outer: 3.96, color: 0x38bdf8, opacity: 0.07, rx: Math.PI * 0.45, ry: 0.8}
+    ];
+    var rings = ringDefs.map(function(d){
+      var r = new THREE.Mesh(
+        new THREE.RingGeometry(d.inner, d.outer, 72),
+        new THREE.MeshBasicMaterial({color: d.color, transparent: true, opacity: d.opacity, side: THREE.DoubleSide})
+      );
+      r.rotation.set(d.rx, d.ry, 0);
+      r.position.set(1.2, 0, 0);
+      scene.add(r);
+      return r;
+    });
+
+    // Mouse parallax tracking
+    var mX = 0, mY = 0;
     document.addEventListener('mousemove', function(e){
-      mouseX = e.clientX / window.innerWidth;
-      mouseY = e.clientY / window.innerHeight;
+      mX = (e.clientX / window.innerWidth - 0.5);
+      mY = (e.clientY / window.innerHeight - 0.5);
     });
 
     var t = 0;
     function animate(){
-      t += ROBOT_TIME_DELTA;
-      
-      // Subtle body sway
-      robot.rotation.z = Math.sin(t * BODY_SWAY_SPEED) * BODY_SWAY_AMPLITUDE;
-      
-      // Head follows mouse
-      // Note: This follows Three.js Euler angle conventions where X-rotation controls pitch (vertical tilt)
-      // and Y-rotation controls yaw (horizontal rotation). Mouse Y (vertical) controls rotation X, 
-      // mouse X (horizontal) controls rotation Y.
-      var targetRotX = (mouseY - 0.5) * HEAD_TRACKING_SENSITIVITY;
-      var targetRotY = (mouseX - 0.5) * HEAD_TRACKING_SENSITIVITY;
-      headGroup.rotation.x += (targetRotX - headGroup.rotation.x) * HEAD_TRACKING_SMOOTHING;
-      headGroup.rotation.y += (targetRotY - headGroup.rotation.y) * HEAD_TRACKING_SMOOTHING;
-      
-      // Arm wave
-      leftArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED) * ARM_WAVE_AMPLITUDE - ARM_WAVE_OFFSET;
-      rightArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED + Math.PI) * ARM_WAVE_AMPLITUDE + ARM_WAVE_OFFSET;
-      
-      // Leg walk
-      leftLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED) * LEG_WALK_AMPLITUDE;
-      rightLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED + Math.PI) * LEG_WALK_AMPLITUDE;
+      t += 0.016;
+
+      // Typewriter advance
+      typePos += CHARS_PER_TICK;
+      if(typePos > totalChars + 40) typePos = 0;
+      drawScreen(Math.floor(typePos));
+      sTex.needsUpdate = true;
+
+      // Floating idle motion
+      ws.position.y = 0.2 + Math.sin(t * 0.5) * 0.07;
+
+      // Mouse parallax
+      ws.rotation.y += (mX * 0.22 - ws.rotation.y) * 0.04;
+      ws.rotation.x += (-mY * 0.1 - ws.rotation.x) * 0.04;
+
+      // Particle orbit
+      pts.forEach(function(p){
+        p.userData.a += p.userData.speed * 0.016;
+        p.position.x = Math.cos(p.userData.a) * p.userData.r + 1.2;
+        p.position.z = Math.sin(p.userData.a) * p.userData.r * 0.33;
+        p.position.y = p.userData.yBase + Math.sin(t * p.userData.ySpd) * p.userData.yAmp;
+        p.material.opacity = 0.3 + Math.abs(Math.sin(t * 1.6 + p.userData.a)) * 0.5;
+      });
+
+      // Ring rotation
+      rings[0].rotation.z += 0.0035;
+      rings[1].rotation.y += 0.003;
+      rings[2].rotation.x += 0.004;
+
+      // Random key press glow
+      if(Math.random() < 0.09){
+        var ri = Math.floor(Math.random() * keys.length);
+        keys[ri].material.emissiveIntensity = 1.0;
+      }
+      keys.forEach(function(k){
+        if(k.material.emissiveIntensity > 0.1) k.material.emissiveIntensity *= 0.87;
+      });
+
+      // Light animation
+      screenGlow.intensity = 5 + Math.sin(t * 14) * 0.4;
+      cyanLight.intensity  = 4 + Math.sin(t * 0.7) * 0.8;
+      pinkLight.intensity  = 3 + Math.sin(t * 0.55 + 1) * 0.6;
 
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
