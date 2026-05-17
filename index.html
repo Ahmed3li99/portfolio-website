@@ -1128,9 +1128,9 @@ footer span{color:var(--pink)}
 /* About 3D Spheres section */
 .three-3d-section{
   position:relative;width:100%;height:380px;
-  margin:48px 0;border-radius:18px;overflow:hidden;
-  background:linear-gradient(135deg,rgba(8,22,55,.4),rgba(3,9,26,.6));
-  border:1px solid var(--border);
+  margin:48px 0;border-radius:0;overflow:hidden;
+  background:transparent;
+  border:none;
 }
 .three-3d-section canvas{
   position:absolute;inset:0;width:100%;height:100%;
@@ -2968,95 +2968,120 @@ if (cvLink) {
   }
 
   /* ============================================
-     1. HERO — 3D NEURAL NETWORK
+     1. HERO — 3D ROBOT
      ============================================ */
-  (function heroNN(){
+  (function heroRobot(){
     var container = document.getElementById('three-hero-nn');
     if(!container) return;
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
-    camera.position.z = 18;
+    camera.position.z = 8;
 
     var renderer = makeRenderer(container, true);
 
-    // Build 4-layer network
-    var layers = [4, 6, 6, 3];
-    var spacing = 6;
-    var nodes = [];
-    var nodeMeshes = [];
+    // Robot animation constants
+    var BODY_SWAY_SPEED = 0.5;
+    var BODY_SWAY_AMPLITUDE = 0.05;
+    var HEAD_TRACKING_SENSITIVITY = 0.4;
+    var HEAD_TRACKING_SMOOTHING = 0.1;
+    var ARM_WAVE_SPEED = 3;
+    var ARM_WAVE_AMPLITUDE = 0.6;
+    var ARM_WAVE_OFFSET = 0.3;
+    var LEG_WALK_SPEED = 2;
+    var LEG_WALK_AMPLITUDE = 0.2;
+    var ROBOT_TIME_DELTA = 0.016;
 
-    layers.forEach(function(count, layerIdx){
-      var x = (layerIdx - (layers.length-1)/2) * spacing;
-      var layerNodes = [];
-      for(var i = 0; i < count; i++){
-        var y = (i - (count-1)/2) * 2.2;
-        var z = 0;
-        var color = layerIdx === 0 ? 0xf472b6 : (layerIdx === layers.length-1 ? 0x22d3ee : 0x38bdf8);
-        var geo = new THREE.SphereGeometry(0.32, 16, 16);
-        var mat = new THREE.MeshBasicMaterial({color: color, transparent:true, opacity:0.85});
-        var mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(x, y, z);
-        mesh.userData = {pulse: Math.random() * Math.PI * 2, baseColor: color};
-        scene.add(mesh);
-        layerNodes.push(mesh);
-        nodeMeshes.push(mesh);
+    // Create robot
+    var robot = new THREE.Group();
+    
+    // Body (main torso)
+    var bodyGeo = new THREE.BoxGeometry(1, 1.5, 0.6);
+    var bodyMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
+    var body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0;
+    robot.add(body);
 
-        // Glow ring
-        var ringGeo = new THREE.RingGeometry(0.42, 0.5, 24);
-        var ringMat = new THREE.MeshBasicMaterial({color: color, transparent:true, opacity:0.35, side:THREE.DoubleSide});
-        var ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.position.copy(mesh.position);
-        scene.add(ring);
-        mesh.userData.ring = ring;
-      }
-      nodes.push(layerNodes);
-    });
+    // Head group (for look-at rotation)
+    var headGroup = new THREE.Group();
+    headGroup.position.set(0, 1.2, 0);
+    robot.add(headGroup);
 
-    // Connections
-    var lines = [];
-    for(var l = 0; l < nodes.length - 1; l++){
-      nodes[l].forEach(function(a){
-        nodes[l+1].forEach(function(b){
-          var points = [a.position.clone(), b.position.clone()];
-          var geo = new THREE.BufferGeometry().setFromPoints(points);
-          var mat = new THREE.LineBasicMaterial({color: 0x38bdf8, transparent:true, opacity:0.15});
-          var line = new THREE.Line(geo, mat);
-          scene.add(line);
-          lines.push(line);
-        });
-      });
-    }
+    // Head (cube)
+    var headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+    var headMat = new THREE.MeshBasicMaterial({color: 0xf472b6});
+    var head = new THREE.Mesh(headGeo, headMat);
+    headGroup.add(head);
 
-    // Mouse parallax
-    var mouseX = 0, mouseY = 0;
+    // Eyes
+    var eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    var eyeMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
+    var leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+    leftEye.position.set(-0.2, 0.15, 0.45);
+    head.add(leftEye);
+    var rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+    rightEye.position.set(0.2, 0.15, 0.45);
+    head.add(rightEye);
+
+    // Antenna
+    var antennaGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6);
+    var antennaMat = new THREE.MeshBasicMaterial({color: 0xfb923c});
+    var antenna = new THREE.Mesh(antennaGeo, antennaMat);
+    antenna.position.set(0, 0.5, 0);
+    head.add(antenna);
+
+    // Arms
+    var armGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
+    var armMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
+    var leftArm = new THREE.Mesh(armGeo, armMat);
+    leftArm.position.set(-0.65, 0.3, 0);
+    robot.add(leftArm);
+    var rightArm = new THREE.Mesh(armGeo, armMat);
+    rightArm.position.set(0.65, 0.3, 0);
+    robot.add(rightArm);
+
+    // Legs
+    var legGeo = new THREE.BoxGeometry(0.3, 0.9, 0.3);
+    var legMat = new THREE.MeshBasicMaterial({color: 0x22d3ee});
+    var leftLeg = new THREE.Mesh(legGeo, legMat);
+    leftLeg.position.set(-0.3, -1.1, 0);
+    robot.add(leftLeg);
+    var rightLeg = new THREE.Mesh(legGeo, legMat);
+    rightLeg.position.set(0.3, -1.1, 0);
+    robot.add(rightLeg);
+
+    scene.add(robot);
+
+    // Mouse tracking
+    var mouseX = 0.5, mouseY = 0.5;
     document.addEventListener('mousemove', function(e){
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+      mouseX = e.clientX / window.innerWidth;
+      mouseY = e.clientY / window.innerHeight;
     });
 
     var t = 0;
     function animate(){
-      t += 0.016;
-      scene.rotation.y += (mouseX - scene.rotation.y) * 0.04;
-      scene.rotation.x += (mouseY - scene.rotation.x) * 0.04;
-      scene.rotation.y += 0.002; // auto rotate
-
-      nodeMeshes.forEach(function(m){
-        m.userData.pulse += 0.04;
-        var scale = 1 + Math.sin(m.userData.pulse) * 0.3;
-        m.scale.set(scale, scale, scale);
-        if(m.userData.ring){
-          m.userData.ring.scale.set(scale*1.3, scale*1.3, scale*1.3);
-          m.userData.ring.material.opacity = 0.2 + Math.sin(m.userData.pulse) * 0.2;
-          m.userData.ring.lookAt(camera.position);
-        }
-      });
-
-      // Pulsing line opacity
-      lines.forEach(function(line, i){
-        line.material.opacity = 0.1 + Math.abs(Math.sin(t * 1.5 + i * 0.1)) * 0.25;
-      });
+      t += ROBOT_TIME_DELTA;
+      
+      // Subtle body sway
+      robot.rotation.z = Math.sin(t * BODY_SWAY_SPEED) * BODY_SWAY_AMPLITUDE;
+      
+      // Head follows mouse
+      // Note: This follows Three.js Euler angle conventions where X-rotation controls pitch (vertical tilt)
+      // and Y-rotation controls yaw (horizontal rotation). Mouse Y (vertical) controls rotation X, 
+      // mouse X (horizontal) controls rotation Y.
+      var targetRotX = (mouseY - 0.5) * HEAD_TRACKING_SENSITIVITY;
+      var targetRotY = (mouseX - 0.5) * HEAD_TRACKING_SENSITIVITY;
+      headGroup.rotation.x += (targetRotX - headGroup.rotation.x) * HEAD_TRACKING_SMOOTHING;
+      headGroup.rotation.y += (targetRotY - headGroup.rotation.y) * HEAD_TRACKING_SMOOTHING;
+      
+      // Arm wave
+      leftArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED) * ARM_WAVE_AMPLITUDE - ARM_WAVE_OFFSET;
+      rightArm.rotation.z = Math.sin(t * ARM_WAVE_SPEED + Math.PI) * ARM_WAVE_AMPLITUDE + ARM_WAVE_OFFSET;
+      
+      // Leg walk
+      leftLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED) * LEG_WALK_AMPLITUDE;
+      rightLeg.rotation.z = Math.sin(t * LEG_WALK_SPEED + Math.PI) * LEG_WALK_AMPLITUDE;
 
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
@@ -3078,6 +3103,8 @@ if (cvLink) {
 
     var renderer = makeRenderer(container, true);
 
+    var SPHERE_LABEL_LINE_WIDTH = 4;
+
     var techs = [
       {label:'Python', color:0x38bdf8, size:1.4},
       {label:'TF', color:0xfb923c, size:1.2},
@@ -3093,10 +3120,11 @@ if (cvLink) {
       var canvas = document.createElement('canvas');
       canvas.width = 256; canvas.height = 256;
       var ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(3,9,26,0.85)';
+      // Reduced background opacity to 50% to match the transparent section background (CSS .three-3d-section)
+      ctx.fillStyle = 'rgba(3,9,26,0.5)';
       ctx.beginPath(); ctx.arc(128,128,120,0,Math.PI*2); ctx.fill();
       ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
-      ctx.lineWidth = 6;
+      ctx.lineWidth = SPHERE_LABEL_LINE_WIDTH;
       ctx.beginPath(); ctx.arc(128,128,118,0,Math.PI*2); ctx.stroke();
       ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
       ctx.font = 'bold 48px Orbitron, sans-serif';
@@ -3119,9 +3147,9 @@ if (cvLink) {
       spheresArr.push(mesh);
     });
 
-    // Center glow sphere
+    // Center glow sphere - more transparent
     var coreGeo = new THREE.SphereGeometry(0.8, 32, 32);
-    var coreMat = new THREE.MeshBasicMaterial({color:0xf472b6, transparent:true, opacity:0.6});
+    var coreMat = new THREE.MeshBasicMaterial({color:0xf472b6, transparent:true, opacity:0.4});
     var core = new THREE.Mesh(coreGeo, coreMat);
     scene.add(core);
 
@@ -3282,100 +3310,208 @@ if (cvLink) {
   })();
 
   /* ============================================
-     4. PROJECTS — 3D CARD STACK
+     4. PROJECTS — 3D DESK SCENE
      ============================================ */
-  (function projectsStack(){
+  (function deskScene(){
     var container = document.getElementById('three-projects-stack');
     if(!container) return;
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
-    camera.position.z = 8;
+    camera.position.set(0, 2, 6);
+    camera.lookAt(0, 1, 0);
 
     var renderer = makeRenderer(container, true);
 
-    function makeCardTexture(title, num, color){
-      var canvas = document.createElement('canvas');
-      canvas.width = 512; canvas.height = 700;
-      var ctx = canvas.getContext('2d');
-      var grad = ctx.createLinearGradient(0,0,0,700);
-      grad.addColorStop(0, 'rgba(8,22,55,0.95)');
-      grad.addColorStop(1, 'rgba(3,9,26,0.95)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0,0,512,700);
-      // Border
-      ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
-      ctx.lineWidth = 3;
-      ctx.strokeRect(15,15,482,670);
-      // Top stripe
-      ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
-      ctx.fillRect(15, 15, 482, 8);
-      // Number
-      ctx.fillStyle = 'rgba(244,114,182,0.3)';
-      ctx.font = 'bold 200px Orbitron, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(num, 256, 280);
-      // Title
-      ctx.fillStyle = '#dff0fc';
-      ctx.font = 'bold 36px Orbitron, sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      var words = title.split(' ');
-      var line = ''; var y = 420;
-      words.forEach(function(w){
-        var test = line + w + ' ';
-        if(ctx.measureText(test).width > 440){
-          ctx.fillText(line, 256, y); line = w + ' '; y += 45;
-        } else { line = test; }
-      });
-      ctx.fillText(line, 256, y);
-      // Tag
-      ctx.fillStyle = '#22d3ee';
-      ctx.font = '18px JetBrains Mono, monospace';
-      ctx.fillText('// PROJECT', 256, 80);
-      // Footer
-      ctx.fillStyle = 'rgba(56,189,248,0.6)';
-      ctx.font = '20px JetBrains Mono, monospace';
-      ctx.fillText('VIEW ON GITHUB →', 256, 630);
-      return new THREE.CanvasTexture(canvas);
-    }
+    // Animation constants
+    var TYPING_ARM_AMPLITUDE = 0.4;
+    var TYPING_ARM_OFFSET = 0.2;
+    var TYPING_SPEED = 4;
+    var TYPEWRITER_SPEED = 20;
+    var INITIAL_ROTATION_X = 0.2;
+    var INITIAL_ROTATION_Y = -0.5;
+    var DRAG_SENSITIVITY = 0.01;
+    var AUTO_ROTATION_SPEED = 0.003;
+    var ROTATION_SMOOTHING = 0.08;
+    var DESK_TIME_DELTA = 0.015;
 
-    var projects = [
-      {t:'Breast Cancer ML', n:'01', c:0xf472b6},
-      {t:'Deep Learning TF', n:'02', c:0x38bdf8},
-      {t:'Sequence Models', n:'03', c:0x22d3ee}
+    // Create desk group
+    var desk = new THREE.Group();
+    scene.add(desk);
+
+    // Desk surface (wooden-like box)
+    var deskTopGeo = new THREE.BoxGeometry(5, 0.3, 3);
+    var deskTopMat = new THREE.MeshBasicMaterial({color: 0x8B7355});
+    var deskTop = new THREE.Mesh(deskTopGeo, deskTopMat);
+    deskTop.position.y = 0.8;
+    desk.add(deskTop);
+
+    // Desk legs
+    var legGeo = new THREE.BoxGeometry(0.15, 0.8, 0.15);
+    var legMat = new THREE.MeshBasicMaterial({color: 0x654321});
+    var legPositions = [[-2, 0.4, -1], [2, 0.4, -1], [-2, 0.4, 1], [2, 0.4, 1]];
+    legPositions.forEach(function(pos){
+      var leg = new THREE.Mesh(legGeo, legMat);
+      leg.position.set(pos[0], pos[1], pos[2]);
+      desk.add(leg);
+    });
+
+    // Monitor stand
+    var standGeo = new THREE.BoxGeometry(0.4, 1.2, 0.4);
+    var standMat = new THREE.MeshBasicMaterial({color: 0x333333});
+    var stand = new THREE.Mesh(standGeo, standMat);
+    stand.position.set(1.5, 0.6, 0);
+    desk.add(stand);
+
+    // Monitor (screen frame)
+    var screenFrameGeo = new THREE.BoxGeometry(1.8, 1.2, 0.1);
+    var screenFrameMat = new THREE.MeshBasicMaterial({color: 0x111111});
+    var screenFrame = new THREE.Mesh(screenFrameGeo, screenFrameMat);
+    screenFrame.position.set(1.5, 1.8, 0);
+    screenFrame.userData = {typewriterT: 0};
+    desk.add(screenFrame);
+
+    // Monitor screen (display)
+    var canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 342;
+    var ctx = canvas.getContext('2d');
+    
+    var screenLines = [
+      '$ npm run build',
+      '> Building...',
+      '[████████████████████░░░░░░░░░░░░]',
+      '',
+      'function createMagic() {',
+      '  const result = await compute();',
+      '  return result.map(x => x * 2);',
+      '}'
     ];
+    
+    // Calculate typewriter cycle duration: total time for all lines to appear sequentially
+    // Each line appears when typewriterT >= i * TYPEWRITER_SPEED (cumulative time, not incremental)
+    var TYPEWRITER_CYCLE_DURATION = screenLines.length * TYPEWRITER_SPEED;
+    var CHARACTER_REVEAL_SPEED = 0.05; // Characters revealed per time unit
+    
+    function drawScreen(typewriterT){
+      ctx.fillStyle = '#0a0e1a';
+      ctx.fillRect(0, 0, 512, 342);
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 10, 492, 322);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '16px JetBrains Mono, monospace';
+      var yPos = 40;
+      var totalCharIndex = Math.floor(typewriterT * CHARACTER_REVEAL_SPEED);
+      var charIndex = 0;
+      screenLines.forEach(function(line, i){
+        if(typewriterT >= i * TYPEWRITER_SPEED) {
+          var charsToShow = Math.max(0, totalCharIndex - charIndex);
+          var displayText = line.substring(0, charsToShow);
+          ctx.fillText(displayText, 30, yPos);
+          charIndex += line.length + 1; // +1 for newline
+        }
+        yPos += 30;
+      });
+    }
+    drawScreen(0);
+    var screenTex = new THREE.CanvasTexture(canvas);
+    var screenMat = new THREE.MeshBasicMaterial({map: screenTex});
+    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.2), screenMat);
+    screen.position.set(1.5, 1.8, 0.06);
+    screen.userData = {canvas: canvas, ctx: ctx};
+    desk.add(screen);
 
-    var cards = [];
-    projects.forEach(function(p, i){
-      var geo = new THREE.PlaneGeometry(2.8, 3.8);
-      var tex = makeCardTexture(p.t, p.n, p.c);
-      var mat = new THREE.MeshBasicMaterial({map: tex, transparent:true, side:THREE.DoubleSide});
-      var mesh = new THREE.Mesh(geo, mat);
-      mesh.position.x = (i - 1) * 1.6;
-      mesh.position.z = -Math.abs(i - 1) * 0.5;
-      mesh.rotation.y = (i - 1) * 0.25;
-      mesh.userData = {baseX: mesh.position.x, baseZ: mesh.position.z, baseRotY: mesh.rotation.y};
-      scene.add(mesh);
-      cards.push(mesh);
-    });
+    // Keyboard
+    var keyboardGeo = new THREE.BoxGeometry(1.6, 0.1, 0.5);
+    var keyboardMat = new THREE.MeshBasicMaterial({color: 0x2a2a2a});
+    var keyboard = new THREE.Mesh(keyboardGeo, keyboardMat);
+    keyboard.position.set(0.5, 0.95, 1);
+    desk.add(keyboard);
 
-    // Mouse parallax
-    var mx = 0, my = 0;
-    container.addEventListener('mousemove', function(e){
-      var rect = container.getBoundingClientRect();
-      mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      my = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    // Mouse
+    var mouseBtnGeo = new THREE.BoxGeometry(0.3, 0.15, 0.5);
+    var mouseMat = new THREE.MeshBasicMaterial({color: 0x404040});
+    var mouse = new THREE.Mesh(mouseBtnGeo, mouseMat);
+    mouse.position.set(-1.2, 0.95, 1);
+    mouse.rotation.z = 0.2;
+    desk.add(mouse);
+
+    // Chair (simple)
+    var chairBackGeo = new THREE.BoxGeometry(0.8, 1, 0.1);
+    var chairMat = new THREE.MeshBasicMaterial({color: 0xf472b6});
+    var chairBack = new THREE.Mesh(chairBackGeo, chairMat);
+    chairBack.position.set(-2, 1.5, 1.5);
+    chairBack.rotation.z = 0.15;
+    desk.add(chairBack);
+
+    var chairSeatGeo = new THREE.BoxGeometry(0.8, 0.2, 0.8);
+    var chairSeat = new THREE.Mesh(chairSeatGeo, chairMat);
+    chairSeat.position.set(-2, 0.8, 1.2);
+    desk.add(chairSeat);
+
+    // Character body (simple figure)
+    var character = new THREE.Group();
+    character.position.set(-2, 0.8, 0.5);
+    desk.add(character);
+
+    var bodyGeo = new THREE.BoxGeometry(0.4, 0.6, 0.3);
+    var bodyMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
+    var charBody = new THREE.Mesh(bodyGeo, bodyMat);
+    charBody.position.y = 0.4;
+    character.add(charBody);
+
+    var headGeo = new THREE.SphereGeometry(0.2, 16, 16);
+    var headMat = new THREE.MeshBasicMaterial({color: 0xf5a962});
+    var head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 1.1;
+    character.add(head);
+
+    // Arms
+    var armGeo = new THREE.BoxGeometry(0.15, 0.5, 0.15);
+    var armMat = new THREE.MeshBasicMaterial({color: 0xf5a962});
+    var leftArm = new THREE.Mesh(armGeo, armMat);
+    leftArm.position.set(-0.25, 0.6, 0);
+    character.add(leftArm);
+    var rightArm = new THREE.Mesh(armGeo, armMat);
+    rightArm.position.set(0.25, 0.6, 0);
+    character.add(rightArm);
+
+    // Mouse drag controls
+    var rotX = INITIAL_ROTATION_X, rotY = INITIAL_ROTATION_Y, targetRotX = INITIAL_ROTATION_X, targetRotY = INITIAL_ROTATION_Y;
+    var isDragging = false, lastX = 0, lastY = 0;
+    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
+    window.addEventListener('mouseup', function(){isDragging=false;});
+    window.addEventListener('mousemove', function(e){
+      if(!isDragging) return;
+      targetRotY += (e.clientX - lastX) * DRAG_SENSITIVITY;
+      targetRotX += (e.clientY - lastY) * DRAG_SENSITIVITY;
+      lastX = e.clientX;
+      lastY = e.clientY;
     });
-    container.addEventListener('mouseleave', function(){ mx = 0; my = 0; });
 
     var t = 0;
     function animate(){
-      t += 0.015;
-      cards.forEach(function(c, i){
-        c.position.y = Math.sin(t + i * 1.2) * 0.15;
-        c.rotation.y = c.userData.baseRotY + mx * 0.3;
-        c.rotation.x = -my * 0.2;
-      });
+      t += DESK_TIME_DELTA;
+      
+      // Smooth camera rotation
+      rotX += (targetRotX - rotX) * ROTATION_SMOOTHING;
+      rotY += (targetRotY - rotY) * ROTATION_SMOOTHING;
+      if(!isDragging){
+        targetRotY += AUTO_ROTATION_SPEED;
+      }
+      
+      desk.rotation.x = rotX;
+      desk.rotation.y = rotY;
+
+      // Character typing animation
+      leftArm.rotation.z = Math.sin(t * TYPING_SPEED) * TYPING_ARM_AMPLITUDE - TYPING_ARM_OFFSET;
+      rightArm.rotation.z = Math.sin(t * TYPING_SPEED + Math.PI) * TYPING_ARM_AMPLITUDE + TYPING_ARM_OFFSET;
+
+      // Update screen with typewriter effect
+      var typewriterT = (t * TYPEWRITER_SPEED) % TYPEWRITER_CYCLE_DURATION;
+      drawScreen(typewriterT);
+      screenTex.needsUpdate = true;
+
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
