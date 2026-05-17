@@ -10,6 +10,8 @@
 <!-- GSAP + ScrollTrigger -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- Three.js for 3D scenes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
 /* ===========================
@@ -1112,6 +1114,56 @@ footer span{color:var(--pink)}
 }
 
 /* ===========================
+   3D SCENES — Three.js containers
+   =========================== */
+.three-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+/* Hero 3D Neural Network */
+#three-hero-nn{
+  position:absolute;inset:0;z-index:1;
+  opacity:.85;pointer-events:none;
+}
+/* About 3D Spheres section */
+.three-3d-section{
+  position:relative;width:100%;height:380px;
+  margin:48px 0;border-radius:18px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(8,22,55,.4),rgba(3,9,26,.6));
+  border:1px solid var(--border);
+}
+.three-3d-section canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block;
+}
+/* Inner container — fills the parent .three-3d-section */
+#three-spheres,
+#three-skills-cube,
+#three-projects-stack,
+#three-globe{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+#three-skills-cube{cursor:grab}
+#three-skills-cube:active{cursor:grabbing}
+#three-spheres{cursor:grab}
+#three-spheres:active{cursor:grabbing}
+.three-label{
+  position:absolute;top:18px;left:22px;z-index:10;
+  font-family:var(--mono);font-size:.65rem;
+  color:var(--cyan);letter-spacing:3px;
+  text-transform:uppercase;
+  background:var(--panel-strong);padding:6px 14px;
+  border-radius:6px;border:1px solid var(--border);
+  backdrop-filter:blur(10px);
+}
+.three-hint{
+  position:absolute;bottom:18px;right:22px;z-index:10;
+  font-family:var(--mono);font-size:.6rem;
+  color:var(--txt2);letter-spacing:2px;
+  opacity:.6;
+}
+
+/* ===========================
    COUNT-UP GLITCH ON COMPLETE
    =========================== */
 .count-done{
@@ -1542,6 +1594,9 @@ body.light{
   <div class="hero-layer hero-layer-3" id="parallax-3"></div>
   <canvas id="hero-data-canvas" aria-hidden="true"></canvas>
 
+  <!-- 3D Neural Network background -->
+  <div id="three-hero-nn" aria-hidden="true"></div>
+
   <!-- Floating code snippets -->
   <div id="hero-floating-code" aria-hidden="true">
     <span class="floating-code" style="left:5%;animation-delay:0s">import tensorflow as tf</span>
@@ -1715,6 +1770,13 @@ body.light{
     </article>
   </div>
 
+  <!-- 3D Floating Tech Spheres -->
+  <div class="three-3d-section" aria-label="3D technology spheres">
+    <span class="three-label">// Tech Universe</span>
+    <div id="three-spheres"></div>
+    <span class="three-hint">drag to rotate</span>
+  </div>
+
   <!-- Stats row -->
   <div class="stats" style="margin-top:48px">
     <div class="stat gsap-scale"><div class="sn" data-count="3">0</div><div class="sl">ML Projects</div></div>
@@ -1766,6 +1828,13 @@ body.light{
 <div class="sec" id="projects">
   <span class="tag gsap-slide-up">// 03. Projects</span>
   <h2 class="h2 glitch" data-text="Featured Work">Featured Work</h2>
+
+  <!-- 3D Projects Card Stack -->
+  <div class="three-3d-section" aria-label="3D project cards">
+    <span class="three-label">// 3D Showcase</span>
+    <div id="three-projects-stack"></div>
+    <span class="three-hint">move mouse to rotate</span>
+  </div>
 
   <!-- Gallery Carousel -->
   <div class="gallery-shell gsap-slide-up">
@@ -1878,6 +1947,14 @@ for name, layer in models.items():
 <div class="sec" id="skills">
   <span class="tag gsap-slide-up">// 05. Skills</span>
   <h2 class="h2 glitch" data-text="Tech Stack">Tech Stack</h2>
+
+  <!-- 3D Rotating Tech Cube -->
+  <div class="three-3d-section" aria-label="3D technology cube" style="height:440px">
+    <span class="three-label">// Tech Cube</span>
+    <div id="three-skills-cube"></div>
+    <span class="three-hint">drag to rotate</span>
+  </div>
+
   <div class="skgrid">
     <div class="sk gsap-scale"><span class="si">🐍</span><div class="sn2">Python</div><div class="slv">Core Language</div><div class="sk-tooltip">Used in: All ML Projects</div></div>
     <div class="sk gsap-scale"><span class="si">📊</span><div class="sn2">Data Analysis</div><div class="slv">Advanced</div><div class="sk-tooltip">Used in: Breast Cancer Classification</div></div>
@@ -1921,6 +1998,13 @@ for name, layer in models.items():
 <div class="sec" id="contact">
   <span class="tag gsap-slide-up">// 06. Contact</span>
   <h2 class="h2 glitch" data-text="Get In Touch">Get In Touch</h2>
+  <!-- 3D Wireframe Globe -->
+  <div class="three-3d-section" aria-label="3D globe showing location" style="margin-bottom:40px">
+    <span class="three-label">// Available Worldwide</span>
+    <div id="three-globe"></div>
+    <span class="three-hint">📍 Egypt</span>
+  </div>
+
   <div class="cgrid">
     <div class="cleft gsap-slide-left">
       <h3>Let's Build<br><span>Something Together</span></h3>
@@ -2856,6 +2940,556 @@ if (cvLink) {
     }
   });
 }
+
+/* ===============================================
+   THREE.JS — 5 IMMERSIVE 3D SCENES
+   =============================================== */
+(function(){
+  if(typeof THREE === 'undefined'){
+    console.warn('Three.js not loaded - 3D scenes disabled');
+    return;
+  }
+
+  // ----- Shared helpers -----
+  function makeRenderer(container, transparent){
+    var renderer = new THREE.WebGLRenderer({antialias:true, alpha:!!transparent});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    if(transparent) renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+    return renderer;
+  }
+
+  function onResize(camera, renderer, container){
+    var w = container.clientWidth, h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+
+  /* ============================================
+     1. HERO — 3D NEURAL NETWORK
+     ============================================ */
+  (function heroNN(){
+    var container = document.getElementById('three-hero-nn');
+    if(!container) return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.z = 18;
+
+    var renderer = makeRenderer(container, true);
+
+    // Build 4-layer network
+    var layers = [4, 6, 6, 3];
+    var spacing = 6;
+    var nodes = [];
+    var nodeMeshes = [];
+
+    layers.forEach(function(count, layerIdx){
+      var x = (layerIdx - (layers.length-1)/2) * spacing;
+      var layerNodes = [];
+      for(var i = 0; i < count; i++){
+        var y = (i - (count-1)/2) * 2.2;
+        var z = 0;
+        var color = layerIdx === 0 ? 0xf472b6 : (layerIdx === layers.length-1 ? 0x22d3ee : 0x38bdf8);
+        var geo = new THREE.SphereGeometry(0.32, 16, 16);
+        var mat = new THREE.MeshBasicMaterial({color: color, transparent:true, opacity:0.85});
+        var mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, y, z);
+        mesh.userData = {pulse: Math.random() * Math.PI * 2, baseColor: color};
+        scene.add(mesh);
+        layerNodes.push(mesh);
+        nodeMeshes.push(mesh);
+
+        // Glow ring
+        var ringGeo = new THREE.RingGeometry(0.42, 0.5, 24);
+        var ringMat = new THREE.MeshBasicMaterial({color: color, transparent:true, opacity:0.35, side:THREE.DoubleSide});
+        var ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.copy(mesh.position);
+        scene.add(ring);
+        mesh.userData.ring = ring;
+      }
+      nodes.push(layerNodes);
+    });
+
+    // Connections
+    var lines = [];
+    for(var l = 0; l < nodes.length - 1; l++){
+      nodes[l].forEach(function(a){
+        nodes[l+1].forEach(function(b){
+          var points = [a.position.clone(), b.position.clone()];
+          var geo = new THREE.BufferGeometry().setFromPoints(points);
+          var mat = new THREE.LineBasicMaterial({color: 0x38bdf8, transparent:true, opacity:0.15});
+          var line = new THREE.Line(geo, mat);
+          scene.add(line);
+          lines.push(line);
+        });
+      });
+    }
+
+    // Mouse parallax
+    var mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', function(e){
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+    });
+
+    var t = 0;
+    function animate(){
+      t += 0.016;
+      scene.rotation.y += (mouseX - scene.rotation.y) * 0.04;
+      scene.rotation.x += (mouseY - scene.rotation.x) * 0.04;
+      scene.rotation.y += 0.002; // auto rotate
+
+      nodeMeshes.forEach(function(m){
+        m.userData.pulse += 0.04;
+        var scale = 1 + Math.sin(m.userData.pulse) * 0.3;
+        m.scale.set(scale, scale, scale);
+        if(m.userData.ring){
+          m.userData.ring.scale.set(scale*1.3, scale*1.3, scale*1.3);
+          m.userData.ring.material.opacity = 0.2 + Math.sin(m.userData.pulse) * 0.2;
+          m.userData.ring.lookAt(camera.position);
+        }
+      });
+
+      // Pulsing line opacity
+      lines.forEach(function(line, i){
+        line.material.opacity = 0.1 + Math.abs(Math.sin(t * 1.5 + i * 0.1)) * 0.25;
+      });
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+  })();
+
+  /* ============================================
+     2. ABOUT — 3D FLOATING TECH SPHERES
+     ============================================ */
+  (function spheres(){
+    var container = document.getElementById('three-spheres');
+    if(!container) return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.z = 14;
+
+    var renderer = makeRenderer(container, true);
+
+    var techs = [
+      {label:'Python', color:0x38bdf8, size:1.4},
+      {label:'TF', color:0xfb923c, size:1.2},
+      {label:'Pandas', color:0xf472b6, size:1.0},
+      {label:'NumPy', color:0x22d3ee, size:1.0},
+      {label:'SKL', color:0x38bdf8, size:0.9},
+      {label:'ML', color:0xf472b6, size:1.1},
+      {label:'AI', color:0x22d3ee, size:0.9},
+      {label:'SQL', color:0xfb923c, size:0.85}
+    ];
+
+    function makeLabelTexture(text, color){
+      var canvas = document.createElement('canvas');
+      canvas.width = 256; canvas.height = 256;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgba(3,9,26,0.85)';
+      ctx.beginPath(); ctx.arc(128,128,120,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.arc(128,128,118,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.font = 'bold 48px Orbitron, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(text, 128, 128);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    var spheresArr = [];
+    techs.forEach(function(t, i){
+      var angle = (i / techs.length) * Math.PI * 2;
+      var radius = 6;
+      var geo = new THREE.SphereGeometry(t.size, 32, 32);
+      var tex = makeLabelTexture(t.label, t.color);
+      var mat = new THREE.MeshBasicMaterial({map: tex, transparent:true});
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(Math.cos(angle)*radius, Math.sin(i*0.7)*2, Math.sin(angle)*radius);
+      mesh.userData = {angle:angle, radius:radius, ySpeed:0.5+Math.random(), yOffset:i*0.7};
+      scene.add(mesh);
+      spheresArr.push(mesh);
+    });
+
+    // Center glow sphere
+    var coreGeo = new THREE.SphereGeometry(0.8, 32, 32);
+    var coreMat = new THREE.MeshBasicMaterial({color:0xf472b6, transparent:true, opacity:0.6});
+    var core = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(core);
+
+    // Mouse drag rotation
+    var rotY = 0, rotX = 0, targetRotY = 0, targetRotX = 0;
+    var isDragging = false, lastX = 0, lastY = 0;
+    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
+    window.addEventListener('mouseup', function(){isDragging=false;});
+    window.addEventListener('mousemove', function(e){
+      if(!isDragging) return;
+      targetRotY += (e.clientX - lastX) * 0.01;
+      targetRotX += (e.clientY - lastY) * 0.01;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    // Touch
+    container.addEventListener('touchstart', function(e){if(e.touches[0]){isDragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;}});
+    window.addEventListener('touchend', function(){isDragging=false;});
+    window.addEventListener('touchmove', function(e){
+      if(!isDragging||!e.touches[0]) return;
+      targetRotY += (e.touches[0].clientX - lastX) * 0.01;
+      targetRotX += (e.touches[0].clientY - lastY) * 0.01;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    });
+
+    var t = 0;
+    function animate(){
+      t += 0.01;
+      rotY += (targetRotY - rotY) * 0.1;
+      rotX += (targetRotX - rotX) * 0.1;
+      if(!isDragging) targetRotY += 0.003;
+      scene.rotation.y = rotY;
+      scene.rotation.x = rotX;
+
+      spheresArr.forEach(function(s){
+        s.userData.angle += 0.005;
+        s.position.x = Math.cos(s.userData.angle) * s.userData.radius;
+        s.position.z = Math.sin(s.userData.angle) * s.userData.radius;
+        s.position.y = Math.sin(t * s.userData.ySpeed + s.userData.yOffset) * 2;
+        s.rotation.y += 0.01;
+      });
+
+      core.scale.setScalar(1 + Math.sin(t*2) * 0.15);
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+  })();
+
+  /* ============================================
+     3. SKILLS — 3D ROTATING TECH CUBE
+     ============================================ */
+  (function skillsCube(){
+    var container = document.getElementById('three-skills-cube');
+    if(!container) return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.z = 7;
+
+    var renderer = makeRenderer(container, true);
+
+    function makeFaceTexture(text, sub, color){
+      var canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 512;
+      var ctx = canvas.getContext('2d');
+      // Background
+      var grad = ctx.createLinearGradient(0,0,512,512);
+      grad.addColorStop(0, 'rgba(3,9,26,0.95)');
+      grad.addColorStop(1, 'rgba(8,22,55,0.95)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,512,512);
+      // Border
+      ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.lineWidth = 4;
+      ctx.strokeRect(20,20,472,472);
+      // Inner grid
+      ctx.strokeStyle = 'rgba(56,189,248,0.08)';
+      ctx.lineWidth = 1;
+      for(var i = 40; i < 512; i += 32){
+        ctx.beginPath(); ctx.moveTo(i,20); ctx.lineTo(i,492); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(20,i); ctx.lineTo(492,i); ctx.stroke();
+      }
+      // Text
+      ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.font = 'bold 72px Orbitron, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(text, 256, 240);
+      ctx.fillStyle = 'rgba(223,240,252,0.55)';
+      ctx.font = '24px JetBrains Mono, monospace';
+      ctx.fillText(sub, 256, 310);
+      // Corner brackets
+      ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.lineWidth = 3;
+      var brackets = [[40,40,90,40,40,90],[472,40,422,40,472,90],[40,472,40,422,90,472],[472,472,472,422,422,472]];
+      brackets.forEach(function(b){
+        ctx.beginPath(); ctx.moveTo(b[0],b[1]); ctx.lineTo(b[2],b[3]); ctx.moveTo(b[0],b[1]); ctx.lineTo(b[4],b[5]); ctx.stroke();
+      });
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    var faces = [
+      {t:'PYTHON', s:'core lang', c:0x38bdf8},
+      {t:'TF', s:'tensorflow', c:0xfb923c},
+      {t:'ML', s:'machine learning', c:0xf472b6},
+      {t:'AI', s:'artificial intel', c:0x22d3ee},
+      {t:'DATA', s:'analysis', c:0x38bdf8},
+      {t:'DL', s:'deep learning', c:0xf472b6}
+    ];
+
+    var materials = faces.map(function(f){
+      return new THREE.MeshBasicMaterial({map: makeFaceTexture(f.t, f.s, f.c)});
+    });
+
+    var geo = new THREE.BoxGeometry(3.5, 3.5, 3.5);
+    var cube = new THREE.Mesh(geo, materials);
+    scene.add(cube);
+
+    // Glow edges (wireframe)
+    var edges = new THREE.EdgesGeometry(geo);
+    var lineMat = new THREE.LineBasicMaterial({color: 0x22d3ee, transparent:true, opacity:0.6});
+    var wireframe = new THREE.LineSegments(edges, lineMat);
+    scene.add(wireframe);
+
+    // Drag controls
+    var rotY = 0.5, rotX = 0.2, targetY = 0.5, targetX = 0.2;
+    var isDragging = false, lastX = 0, lastY = 0;
+    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
+    window.addEventListener('mouseup', function(){isDragging=false;});
+    window.addEventListener('mousemove', function(e){
+      if(!isDragging) return;
+      targetY += (e.clientX - lastX) * 0.01;
+      targetX += (e.clientY - lastY) * 0.01;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    container.addEventListener('touchstart', function(e){if(e.touches[0]){isDragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;}});
+    window.addEventListener('touchend', function(){isDragging=false;});
+    window.addEventListener('touchmove', function(e){
+      if(!isDragging||!e.touches[0]) return;
+      targetY += (e.touches[0].clientX - lastX) * 0.01;
+      targetX += (e.touches[0].clientY - lastY) * 0.01;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    });
+
+    function animate(){
+      rotY += (targetY - rotY) * 0.1;
+      rotX += (targetX - rotX) * 0.1;
+      if(!isDragging){ targetY += 0.005; targetX += 0.002; }
+      cube.rotation.y = rotY;
+      cube.rotation.x = rotX;
+      wireframe.rotation.copy(cube.rotation);
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+  })();
+
+  /* ============================================
+     4. PROJECTS — 3D CARD STACK
+     ============================================ */
+  (function projectsStack(){
+    var container = document.getElementById('three-projects-stack');
+    if(!container) return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.z = 8;
+
+    var renderer = makeRenderer(container, true);
+
+    function makeCardTexture(title, num, color){
+      var canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 700;
+      var ctx = canvas.getContext('2d');
+      var grad = ctx.createLinearGradient(0,0,0,700);
+      grad.addColorStop(0, 'rgba(8,22,55,0.95)');
+      grad.addColorStop(1, 'rgba(3,9,26,0.95)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,512,700);
+      // Border
+      ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.lineWidth = 3;
+      ctx.strokeRect(15,15,482,670);
+      // Top stripe
+      ctx.fillStyle = '#' + color.toString(16).padStart(6,'0');
+      ctx.fillRect(15, 15, 482, 8);
+      // Number
+      ctx.fillStyle = 'rgba(244,114,182,0.3)';
+      ctx.font = 'bold 200px Orbitron, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(num, 256, 280);
+      // Title
+      ctx.fillStyle = '#dff0fc';
+      ctx.font = 'bold 36px Orbitron, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var words = title.split(' ');
+      var line = ''; var y = 420;
+      words.forEach(function(w){
+        var test = line + w + ' ';
+        if(ctx.measureText(test).width > 440){
+          ctx.fillText(line, 256, y); line = w + ' '; y += 45;
+        } else { line = test; }
+      });
+      ctx.fillText(line, 256, y);
+      // Tag
+      ctx.fillStyle = '#22d3ee';
+      ctx.font = '18px JetBrains Mono, monospace';
+      ctx.fillText('// PROJECT', 256, 80);
+      // Footer
+      ctx.fillStyle = 'rgba(56,189,248,0.6)';
+      ctx.font = '20px JetBrains Mono, monospace';
+      ctx.fillText('VIEW ON GITHUB →', 256, 630);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    var projects = [
+      {t:'Breast Cancer ML', n:'01', c:0xf472b6},
+      {t:'Deep Learning TF', n:'02', c:0x38bdf8},
+      {t:'Sequence Models', n:'03', c:0x22d3ee}
+    ];
+
+    var cards = [];
+    projects.forEach(function(p, i){
+      var geo = new THREE.PlaneGeometry(2.8, 3.8);
+      var tex = makeCardTexture(p.t, p.n, p.c);
+      var mat = new THREE.MeshBasicMaterial({map: tex, transparent:true, side:THREE.DoubleSide});
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.x = (i - 1) * 1.6;
+      mesh.position.z = -Math.abs(i - 1) * 0.5;
+      mesh.rotation.y = (i - 1) * 0.25;
+      mesh.userData = {baseX: mesh.position.x, baseZ: mesh.position.z, baseRotY: mesh.rotation.y};
+      scene.add(mesh);
+      cards.push(mesh);
+    });
+
+    // Mouse parallax
+    var mx = 0, my = 0;
+    container.addEventListener('mousemove', function(e){
+      var rect = container.getBoundingClientRect();
+      mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      my = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    });
+    container.addEventListener('mouseleave', function(){ mx = 0; my = 0; });
+
+    var t = 0;
+    function animate(){
+      t += 0.015;
+      cards.forEach(function(c, i){
+        c.position.y = Math.sin(t + i * 1.2) * 0.15;
+        c.rotation.y = c.userData.baseRotY + mx * 0.3;
+        c.rotation.x = -my * 0.2;
+      });
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+  })();
+
+  /* ============================================
+     5. CONTACT — 3D WIREFRAME GLOBE
+     ============================================ */
+  (function globe(){
+    var container = document.getElementById('three-globe');
+    if(!container) return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.z = 6;
+
+    var renderer = makeRenderer(container, true);
+
+    // Wireframe sphere
+    var globeGeo = new THREE.SphereGeometry(2, 36, 24);
+    var wireMat = new THREE.MeshBasicMaterial({color: 0x22d3ee, wireframe:true, transparent:true, opacity:0.4});
+    var globeMesh = new THREE.Mesh(globeGeo, wireMat);
+    scene.add(globeMesh);
+
+    // Inner solid (subtle)
+    var innerGeo = new THREE.SphereGeometry(1.95, 36, 24);
+    var innerMat = new THREE.MeshBasicMaterial({color: 0x03091a, transparent:true, opacity:0.7});
+    var innerMesh = new THREE.Mesh(innerGeo, innerMat);
+    scene.add(innerMesh);
+
+    // Glow ring
+    var ringGeo = new THREE.RingGeometry(2.3, 2.4, 64);
+    var ringMat = new THREE.MeshBasicMaterial({color: 0xf472b6, transparent:true, opacity:0.5, side:THREE.DoubleSide});
+    var ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    scene.add(ring);
+
+    // Location markers (lat/lon -> xyz)
+    function latLonToVec3(lat, lon, radius){
+      var phi = (90 - lat) * Math.PI / 180;
+      var theta = (lon + 180) * Math.PI / 180;
+      return new THREE.Vector3(
+        -radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    var locations = [
+      {lat:30.0444, lon:31.2357, label:'Cairo', big:true},  // Egypt
+      {lat:40.7128, lon:-74.0060, label:'NYC'},
+      {lat:51.5074, lon:-0.1278, label:'London'},
+      {lat:35.6762, lon:139.6503, label:'Tokyo'},
+      {lat:1.3521, lon:103.8198, label:'Singapore'},
+      {lat:-33.8688, lon:151.2093, label:'Sydney'}
+    ];
+
+    locations.forEach(function(loc){
+      var pos = latLonToVec3(loc.lat, loc.lon, 2);
+      var size = loc.big ? 0.12 : 0.06;
+      var color = loc.big ? 0xf472b6 : 0x22d3ee;
+      var dotGeo = new THREE.SphereGeometry(size, 12, 12);
+      var dotMat = new THREE.MeshBasicMaterial({color: color});
+      var dot = new THREE.Mesh(dotGeo, dotMat);
+      dot.position.copy(pos);
+      globeMesh.add(dot); // attach to globe so they rotate together
+
+      // Pulse ring on big marker
+      if(loc.big){
+        var pulseGeo = new THREE.RingGeometry(0.15, 0.18, 32);
+        var pulseMat = new THREE.MeshBasicMaterial({color: 0xf472b6, transparent:true, opacity:0.8, side:THREE.DoubleSide});
+        var pulse = new THREE.Mesh(pulseGeo, pulseMat);
+        pulse.position.copy(pos);
+        pulse.lookAt(0, 0, 0);
+        globeMesh.add(pulse);
+        dot.userData.pulse = pulse;
+      }
+    });
+
+    // Orbiting satellite
+    var satGeo = new THREE.SphereGeometry(0.08, 8, 8);
+    var satMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
+    var satellite = new THREE.Mesh(satGeo, satMat);
+    scene.add(satellite);
+
+    var t = 0;
+    function animate(){
+      t += 0.01;
+      globeMesh.rotation.y += 0.003;
+      innerMesh.rotation.y = globeMesh.rotation.y;
+      ring.rotation.z += 0.005;
+
+      // Satellite orbit
+      satellite.position.set(Math.cos(t) * 3, Math.sin(t * 0.7) * 0.5, Math.sin(t) * 3);
+
+      // Pulse animation on Cairo marker
+      globeMesh.children.forEach(function(c){
+        if(c.userData.pulse){
+          var s = 1 + Math.sin(t * 3) * 0.5;
+          c.userData.pulse.scale.set(s, s, s);
+          c.userData.pulse.material.opacity = 0.9 - Math.sin(t * 3) * 0.4;
+        }
+      });
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+  })();
+
+})();
 </script>
 </body>
 </html>
