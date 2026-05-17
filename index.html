@@ -3424,174 +3424,243 @@ if (cvLink) {
   /* ============================================
      4. PROJECTS — 3D DESK SCENE
      ============================================ */
-  (function deskScene(){
-    var container = document.getElementById('three-projects-stack');
-    if(!container) return;
+	  (function deskScene(){
+	    var container = document.getElementById('three-projects-stack');
+	    if(!container) return;
 
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 2, 6);
-    camera.lookAt(0, 1, 0);
+	    var scene = new THREE.Scene();
+	    var camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 1000);
+	    camera.position.set(0, 2.15, 6.4);
+	    camera.lookAt(0, 1.1, 0);
 
-    var renderer = makeRenderer(container, true);
+	    var renderer = makeRenderer(container, true);
+	    renderer.outputEncoding = THREE.sRGBEncoding;
+	    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	    renderer.toneMappingExposure = 1.05;
 
-    // Animation constants
-    var TYPING_ARM_AMPLITUDE = 0.4;
-    var TYPING_ARM_OFFSET = 0.2;
-    var TYPING_SPEED = 4;
-    var TYPEWRITER_SPEED = 20;
-    var INITIAL_ROTATION_X = 0.2;
-    var INITIAL_ROTATION_Y = -0.5;
-    var DRAG_SENSITIVITY = 0.01;
-    var AUTO_ROTATION_SPEED = 0.003;
-    var ROTATION_SMOOTHING = 0.08;
-    var DESK_TIME_DELTA = 0.015;
+	    // Animation constants
+	    var INITIAL_ROTATION_X = 0.2;
+	    var INITIAL_ROTATION_Y = -0.5;
+	    var DRAG_SENSITIVITY = 0.01;
+	    var AUTO_ROTATION_SPEED = 0.003;
+	    var ROTATION_SMOOTHING = 0.08;
+	    var DESK_TIME_DELTA = 0.015;
 
-    // Create desk group
-    var desk = new THREE.Group();
-    scene.add(desk);
+	    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
 
-    // Desk surface (wooden-like box)
-    var deskTopGeo = new THREE.BoxGeometry(5, 0.3, 3);
-    var deskTopMat = new THREE.MeshBasicMaterial({color: 0x8B7355});
-    var deskTop = new THREE.Mesh(deskTopGeo, deskTopMat);
-    deskTop.position.y = 0.8;
-    desk.add(deskTop);
+	    // Lighting (desk lamp vibe + cool rim)
+	    var hemi = new THREE.HemisphereLight(0xaad7ff, 0x080a12, 0.55);
+	    hemi.position.set(0, 12, 0);
+	    scene.add(hemi);
+	    var keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+	    keyLight.position.set(7, 9, 7);
+	    scene.add(keyLight);
+	    var lampLight = new THREE.PointLight(0xffcc88, 1.0, 18);
+	    lampLight.position.set(-2.6, 3.2, 1.4);
+	    scene.add(lampLight);
+	    var rimLight = new THREE.PointLight(0x22d3ee, 0.65, 22);
+	    rimLight.position.set(2.8, 2.4, -6);
+	    scene.add(rimLight);
 
-    // Desk legs
-    var legGeo = new THREE.BoxGeometry(0.15, 0.8, 0.15);
-    var legMat = new THREE.MeshBasicMaterial({color: 0x654321});
-    var legPositions = [[-2, 0.4, -1], [2, 0.4, -1], [-2, 0.4, 1], [2, 0.4, 1]];
-    legPositions.forEach(function(pos){
-      var leg = new THREE.Mesh(legGeo, legMat);
-      leg.position.set(pos[0], pos[1], pos[2]);
-      desk.add(leg);
-    });
+	    // Materials
+	    var woodMat = new THREE.MeshStandardMaterial({color: 0x7b5b3d, roughness: 0.78, metalness: 0.05});
+	    var darkMat = new THREE.MeshStandardMaterial({color: 0x0b1020, roughness: 0.65, metalness: 0.25});
+	    var metalMat = new THREE.MeshStandardMaterial({color: 0x64748b, roughness: 0.25, metalness: 0.85});
+	    var plasticMat = new THREE.MeshStandardMaterial({color: 0x111827, roughness: 0.55, metalness: 0.1});
+	    var accentMat = new THREE.MeshStandardMaterial({color: 0xf472b6, roughness: 0.35, metalness: 0.2, emissive: 0xf472b6, emissiveIntensity: 0.1});
 
-    // Monitor stand
-    var standGeo = new THREE.BoxGeometry(0.4, 1.2, 0.4);
-    var standMat = new THREE.MeshBasicMaterial({color: 0x333333});
-    var stand = new THREE.Mesh(standGeo, standMat);
-    stand.position.set(1.5, 0.6, 0);
-    desk.add(stand);
+	    // Create desk group
+	    var desk = new THREE.Group();
+	    scene.add(desk);
 
-    // Monitor (screen frame)
-    var screenFrameGeo = new THREE.BoxGeometry(1.8, 1.2, 0.1);
-    var screenFrameMat = new THREE.MeshBasicMaterial({color: 0x111111});
-    var screenFrame = new THREE.Mesh(screenFrameGeo, screenFrameMat);
-    screenFrame.position.set(1.5, 1.8, 0);
-    screenFrame.userData = {typewriterT: 0};
-    desk.add(screenFrame);
+	    // Desk surface
+	    var deskTopGeo = new THREE.BoxGeometry(5.2, 0.28, 3.1);
+	    var deskTop = new THREE.Mesh(deskTopGeo, woodMat);
+	    deskTop.position.y = 0.8;
+	    desk.add(deskTop);
 
-    // Monitor screen (display)
-    var canvas = document.createElement('canvas');
-    canvas.width = 512; canvas.height = 342;
-    var ctx = canvas.getContext('2d');
-    
-    var screenLines = [
-      '$ npm run build',
-      '> Building...',
-      '[████████████████████░░░░░░░░░░░░]',
-      '',
-      'function createMagic() {',
-      '  const result = await compute();',
-      '  return result.map(x => x * 2);',
-      '}'
-    ];
-    
-    // Calculate typewriter cycle duration: total time for all lines to appear sequentially
-    // Each line appears when typewriterT >= i * TYPEWRITER_SPEED (cumulative time, not incremental)
-    var TYPEWRITER_CYCLE_DURATION = screenLines.length * TYPEWRITER_SPEED;
-    var CHARACTER_REVEAL_SPEED = 0.05; // Characters revealed per time unit
-    
-    function drawScreen(typewriterT){
-      ctx.fillStyle = '#0a0e1a';
-      ctx.fillRect(0, 0, 512, 342);
-      ctx.strokeStyle = '#22d3ee';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(10, 10, 492, 322);
-      ctx.fillStyle = '#38bdf8';
-      ctx.font = '16px JetBrains Mono, monospace';
-      var yPos = 40;
-      var totalCharIndex = Math.floor(typewriterT * CHARACTER_REVEAL_SPEED);
-      var charIndex = 0;
-      screenLines.forEach(function(line, i){
-        if(typewriterT >= i * TYPEWRITER_SPEED) {
-          var charsToShow = Math.max(0, totalCharIndex - charIndex);
-          var displayText = line.substring(0, charsToShow);
-          ctx.fillText(displayText, 30, yPos);
-          charIndex += line.length + 1; // +1 for newline
-        }
-        yPos += 30;
-      });
-    }
-    drawScreen(0);
-    var screenTex = new THREE.CanvasTexture(canvas);
-    var screenMat = new THREE.MeshBasicMaterial({map: screenTex});
-    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.2), screenMat);
-    screen.position.set(1.5, 1.8, 0.06);
-    screen.userData = {canvas: canvas, ctx: ctx};
-    desk.add(screen);
+	    // Desk legs
+	    var legGeo = new THREE.BoxGeometry(0.16, 0.82, 0.16);
+	    var legPositions = [[-2, 0.4, -1], [2, 0.4, -1], [-2, 0.4, 1], [2, 0.4, 1]];
+	    legPositions.forEach(function(pos){
+	      var leg = new THREE.Mesh(legGeo, woodMat);
+	      leg.position.set(pos[0], pos[1], pos[2]);
+	      desk.add(leg);
+	    });
 
-    // Keyboard
-    var keyboardGeo = new THREE.BoxGeometry(1.6, 0.1, 0.5);
-    var keyboardMat = new THREE.MeshBasicMaterial({color: 0x2a2a2a});
-    var keyboard = new THREE.Mesh(keyboardGeo, keyboardMat);
-    keyboard.position.set(0.5, 0.95, 1);
-    desk.add(keyboard);
+	    // Monitor stand
+	    var stand = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.2, 0.42), metalMat);
+	    stand.position.set(1.5, 0.6, 0);
+	    desk.add(stand);
+	    var standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.65, 0.08, 26), metalMat);
+	    standBase.position.set(1.5, 0.87, 0);
+	    desk.add(standBase);
 
-    // Mouse
-    var mouseBtnGeo = new THREE.BoxGeometry(0.3, 0.15, 0.5);
-    var mouseMat = new THREE.MeshBasicMaterial({color: 0x404040});
-    var mouse = new THREE.Mesh(mouseBtnGeo, mouseMat);
-    mouse.position.set(-1.2, 0.95, 1);
-    mouse.rotation.z = 0.2;
-    desk.add(mouse);
+	    // Monitor (screen frame)
+	    var screenFrameGeo = new THREE.BoxGeometry(1.92, 1.28, 0.12);
+	    var screenFrame = new THREE.Mesh(screenFrameGeo, darkMat);
+	    screenFrame.position.set(1.5, 1.8, 0);
+	    desk.add(screenFrame);
 
-    // Chair (simple)
-    var chairBackGeo = new THREE.BoxGeometry(0.8, 1, 0.1);
-    var chairMat = new THREE.MeshBasicMaterial({color: 0xf472b6});
-    var chairBack = new THREE.Mesh(chairBackGeo, chairMat);
-    chairBack.position.set(-2, 1.5, 1.5);
-    chairBack.rotation.z = 0.15;
-    desk.add(chairBack);
+	    // Monitor screen (display)
+	    var screenCanvas = document.createElement('canvas');
+	    screenCanvas.width = 768; screenCanvas.height = 480;
+	    var sctx = screenCanvas.getContext('2d');
 
-    var chairSeatGeo = new THREE.BoxGeometry(0.8, 0.2, 0.8);
-    var chairSeat = new THREE.Mesh(chairSeatGeo, chairMat);
-    chairSeat.position.set(-2, 0.8, 1.2);
-    desk.add(chairSeat);
+	    var codeLines = [
+	      'const api = createClient({ baseURL: \"https://api.example.com\" });',
+	      '',
+	      'export async function trainModel(dataset) {',
+	      '  const features = dataset.map(r => [r.x1, r.x2, r.x3]);',
+	      '  const labels = dataset.map(r => r.y);',
+	      '  const model = tf.sequential();',
+	      '  model.add(tf.layers.dense({ units: 64, activation: \"relu\", inputShape: [3] }));',
+	      '  model.add(tf.layers.dropout({ rate: 0.2 }));',
+	      '  model.add(tf.layers.dense({ units: 32, activation: \"relu\" }));',
+	      '  model.add(tf.layers.dense({ units: 1, activation: \"sigmoid\" }));',
+	      '  model.compile({ optimizer: \"adam\", loss: \"binaryCrossentropy\", metrics: [\"accuracy\"] });',
+	      '',
+	      '  const history = await model.fit(tf.tensor2d(features), tf.tensor(labels), {',
+	      '    epochs: 50, batchSize: 32, validationSplit: 0.2, shuffle: true,',
+	      '    callbacks: { onEpochEnd: (e, l) => log(e, l) }',
+	      '  });',
+	      '',
+	      '  return { model, history };',
+	      '}',
+	      '',
+	      'function log(epoch, logs) {',
+	      '  console.log(`epoch=${epoch} loss=${logs.loss.toFixed(4)} acc=${(logs.acc||logs.accuracy).toFixed(4)}`);',
+	      '}',
+	      '',
+	      '/* streaming inference */',
+	      'for await (const row of streamRows()) {',
+	      '  const pred = model.predict(tf.tensor2d([[row.x1, row.x2, row.x3]])).dataSync()[0];',
+	      '  if (pred > 0.85) alerts.push({ id: row.id, pred });',
+	      '}'
+	    ];
+	    var codeText = codeLines.join('\n');
+	    var TYPE_SPEED = 28; // characters per tick (based on DESK_TIME_DELTA)
+	    var PAUSE_TICKS = 120;
+	    var cycleLen = codeText.length + PAUSE_TICKS;
 
-    // Character body (simple figure)
-    var character = new THREE.Group();
-    character.position.set(-2, 0.8, 0.5);
-    desk.add(character);
+	    function drawScreen(typedCount, blink){
+	      var w = screenCanvas.width, h = screenCanvas.height;
+	      sctx.clearRect(0, 0, w, h);
 
-    var bodyGeo = new THREE.BoxGeometry(0.4, 0.6, 0.3);
-    var bodyMat = new THREE.MeshBasicMaterial({color: 0x38bdf8});
-    var charBody = new THREE.Mesh(bodyGeo, bodyMat);
-    charBody.position.y = 0.4;
-    character.add(charBody);
+	      // Background
+	      var grad = sctx.createLinearGradient(0, 0, 0, h);
+	      grad.addColorStop(0, '#070a14');
+	      grad.addColorStop(1, '#0a1630');
+	      sctx.fillStyle = grad;
+	      sctx.fillRect(0, 0, w, h);
 
-    var headGeo = new THREE.SphereGeometry(0.2, 16, 16);
-    var headMat = new THREE.MeshBasicMaterial({color: 0xf5a962});
-    var head = new THREE.Mesh(headGeo, headMat);
-    head.position.y = 1.1;
-    character.add(head);
+	      // Scanlines
+	      sctx.globalAlpha = 0.08;
+	      sctx.fillStyle = '#ffffff';
+	      for(var y = 0; y < h; y += 4) sctx.fillRect(0, y, w, 1);
+	      sctx.globalAlpha = 1;
 
-    // Arms
-    var armGeo = new THREE.BoxGeometry(0.15, 0.5, 0.15);
-    var armMat = new THREE.MeshBasicMaterial({color: 0xf5a962});
-    var leftArm = new THREE.Mesh(armGeo, armMat);
-    leftArm.position.set(-0.25, 0.6, 0);
-    character.add(leftArm);
-    var rightArm = new THREE.Mesh(armGeo, armMat);
-    rightArm.position.set(0.25, 0.6, 0);
-    character.add(rightArm);
+	      // Frame glow
+	      sctx.strokeStyle = 'rgba(34, 211, 238, 0.65)';
+	      sctx.lineWidth = 3;
+	      sctx.strokeRect(18, 18, w - 36, h - 36);
 
-    // Mouse drag controls
-    var rotX = INITIAL_ROTATION_X, rotY = INITIAL_ROTATION_Y, targetRotX = INITIAL_ROTATION_X, targetRotY = INITIAL_ROTATION_Y;
-    var isDragging = false, lastX = 0, lastY = 0;
-    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
+	      // Text
+	      var visible = codeText.slice(0, typedCount);
+	      var lines = visible.split('\n');
+	      var maxLines = 16;
+	      if(lines.length > maxLines) lines = lines.slice(lines.length - maxLines);
+
+	      sctx.font = '18px JetBrains Mono, monospace';
+	      sctx.textBaseline = 'top';
+	      var x = 34;
+	      var yPos = 40;
+
+	      lines.forEach(function(line, idx){
+	        var color = '#38bdf8';
+	        if(/(async|await|return|const|function|export)\b/.test(line)) color = '#f472b6';
+	        if(/(tf\\.|tensor|layers|compile|fit|predict)\b/.test(line)) color = '#22d3ee';
+	        if(/console\\.log|epoch=/.test(line)) color = '#a3e635';
+	        sctx.fillStyle = color;
+	        sctx.fillText(line, x, yPos);
+	        yPos += 26;
+	      });
+
+	      // Cursor
+	      if(blink){
+	        sctx.fillStyle = '#22d3ee';
+	        sctx.fillRect(x + clamp((lines[lines.length - 1] || '').length, 0, 60) * 10.2, yPos - 26, 10, 20);
+	      }
+	    }
+
+	    drawScreen(0, true);
+	    var screenTex = new THREE.CanvasTexture(screenCanvas);
+	    screenTex.minFilter = THREE.LinearFilter;
+	    screenTex.magFilter = THREE.LinearFilter;
+	    var screenMat = new THREE.MeshStandardMaterial({
+	      map: screenTex,
+	      emissive: new THREE.Color(0x0ea5e9),
+	      emissiveIntensity: 0.32,
+	      roughness: 0.9,
+	      metalness: 0.0
+	    });
+	    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.12), screenMat);
+	    screen.position.set(1.5, 1.8, 0.07);
+	    desk.add(screen);
+
+	    // Keyboard
+	    var keyboard = new THREE.Group();
+	    keyboard.position.set(0.35, 0.93, 1.05);
+	    keyboard.rotation.x = -0.08;
+	    desk.add(keyboard);
+	    var kbBase = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.11, 0.72), plasticMat);
+	    keyboard.add(kbBase);
+	    var kbTop = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.04, 0.7), darkMat);
+	    kbTop.position.y = 0.06;
+	    keyboard.add(kbTop);
+
+	    var keys = [];
+	    var rows = 5, cols = 14;
+	    var startX = -0.9, startZ = -0.28;
+	    for(var r = 0; r < rows; r++){
+	      for(var c = 0; c < cols; c++){
+	        var wKey = (c === 0 && r === 4) ? 0.24 : 0.12;
+	        var keyGeo = new THREE.BoxGeometry(wKey, 0.05, 0.11);
+	        var mat = (r === 0 && (c === 0 || c === cols - 1)) ? accentMat : darkMat;
+	        var key = new THREE.Mesh(keyGeo, mat);
+	        key.position.set(startX + c * 0.13, 0.095, startZ + r * 0.14);
+	        key.userData.baseY = key.position.y;
+	        keyboard.add(key);
+	        keys.push(key);
+	      }
+	    }
+
+	    // Mouse
+	    var mouse = new THREE.Group();
+	    mouse.position.set(-1.22, 0.94, 1.05);
+	    mouse.rotation.y = 0.2;
+	    desk.add(mouse);
+	    var mouseBody = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 16), plasticMat);
+	    mouseBody.scale.set(1.0, 0.65, 1.25);
+	    mouse.add(mouseBody);
+	    var mouseTop = new THREE.Mesh(new THREE.SphereGeometry(0.18, 18, 14), darkMat);
+	    mouseTop.scale.set(1.0, 0.55, 1.15);
+	    mouseTop.position.set(0, 0.06, 0.02);
+	    mouse.add(mouseTop);
+	    var wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.09, 12), metalMat);
+	    wheel.rotation.x = Math.PI / 2;
+	    wheel.position.set(0, 0.12, 0.12);
+	    mouse.add(wheel);
+
+	    // Mousepad (soft)
+	    var pad = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.03, 0.8), darkMat);
+	    pad.position.set(-1.28, 0.84, 1.06);
+	    desk.add(pad);
+
+	    // Mouse drag controls
+	    var rotX = INITIAL_ROTATION_X, rotY = INITIAL_ROTATION_Y, targetRotX = INITIAL_ROTATION_X, targetRotY = INITIAL_ROTATION_Y;
+	    var isDragging = false, lastX = 0, lastY = 0;
+	    container.addEventListener('mousedown', function(e){isDragging=true;lastX=e.clientX;lastY=e.clientY;});
     window.addEventListener('mouseup', function(){isDragging=false;});
     window.addEventListener('mousemove', function(e){
       if(!isDragging) return;
@@ -3601,35 +3670,48 @@ if (cvLink) {
       lastY = e.clientY;
     });
 
-    var t = 0;
-    function animate(){
-      t += DESK_TIME_DELTA;
-      
-      // Smooth camera rotation
-      rotX += (targetRotX - rotX) * ROTATION_SMOOTHING;
-      rotY += (targetRotY - rotY) * ROTATION_SMOOTHING;
-      if(!isDragging){
-        targetRotY += AUTO_ROTATION_SPEED;
-      }
-      
-      desk.rotation.x = rotX;
-      desk.rotation.y = rotY;
+	    var t = 0;
+	    var lastKeyIndex = -1;
+	    function animate(){
+	      t += DESK_TIME_DELTA;
+	      
+	      // Smooth camera rotation
+	      rotX += (targetRotX - rotX) * ROTATION_SMOOTHING;
+	      rotY += (targetRotY - rotY) * ROTATION_SMOOTHING;
+	      if(!isDragging){
+	        targetRotY += AUTO_ROTATION_SPEED;
+	      }
+	      
+	      desk.rotation.x = rotX;
+	      desk.rotation.y = rotY;
 
-      // Character typing animation
-      leftArm.rotation.z = Math.sin(t * TYPING_SPEED) * TYPING_ARM_AMPLITUDE - TYPING_ARM_OFFSET;
-      rightArm.rotation.z = Math.sin(t * TYPING_SPEED + Math.PI) * TYPING_ARM_AMPLITUDE + TYPING_ARM_OFFSET;
+	      // Typing animation (keys + mouse click)
+	      if(keys.length){
+	        var keyIndex = Math.floor((t * 9.5) % keys.length);
+	        if(keyIndex !== lastKeyIndex){
+	          if(lastKeyIndex >= 0) keys[lastKeyIndex].position.y = keys[lastKeyIndex].userData.baseY;
+	          lastKeyIndex = keyIndex;
+	        }
+	        var pressDepth = 0.028 * (0.6 + 0.4 * Math.sin(t * 22));
+	        keys[lastKeyIndex].position.y = keys[lastKeyIndex].userData.baseY - pressDepth;
+	      }
+	      wheel.rotation.y = Math.sin(t * 10) * 0.35;
+	      mouse.position.y = 0.94 + Math.sin(t * 6) * 0.008;
 
-      // Update screen with typewriter effect
-      var typewriterT = (t * TYPEWRITER_SPEED) % TYPEWRITER_CYCLE_DURATION;
-      drawScreen(typewriterT);
-      screenTex.needsUpdate = true;
+	      // Update screen with typewriter effect
+	      var tick = Math.floor(t * 60);
+	      var typed = Math.floor((tick * TYPE_SPEED) % cycleLen);
+	      if(typed > codeText.length) typed = codeText.length;
+	      var blink = (tick % 24) < 12;
+	      drawScreen(typed, blink);
+	      screenTex.needsUpdate = true;
 
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    }
-    animate();
-    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
-  })();
+	      renderer.render(scene, camera);
+	      requestAnimationFrame(animate);
+	    }
+	    animate();
+	    window.addEventListener('resize', function(){ onResize(camera, renderer, container); });
+	  })();
 
   /* ============================================
      5. CONTACT — 3D WIREFRAME GLOBE
