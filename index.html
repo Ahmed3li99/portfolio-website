@@ -5289,6 +5289,13 @@ if (cvLink) {
   var glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
   scene.add(glowSphere);
 
+  // Store core reference globally for color changes
+  window._neuroCoreData = {
+    coreMaterial: coreMaterial,
+    wireframeMaterial: wireframeMaterial,
+    glowMaterial: glowMaterial
+  };
+
   // Lighting
   var light = new THREE.PointLight(0xffffff, 1);
   light.position.set(3, 3, 3);
@@ -5299,7 +5306,7 @@ if (cvLink) {
 
   // Animation variables
   var coreRotation = {x: 0, y: 0};
-  var targetCoreGlow = 0x22d3ee;
+  var targetCoreColor = 0x22d3ee;
 
   // Animation loop
   function animateCore(time) {
@@ -5370,11 +5377,17 @@ if (cvLink) {
     node.dataset.y = y;
   });
 
+  // Initialize SVG
+  connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
+  connectionSvg.setAttribute('width', '100%');
+  connectionSvg.setAttribute('height', '100%');
+  connectionSvg.setAttribute('preserveAspectRatio', 'none');
+
   // Draw SVG connection lines
   function drawConnections() {
     connectionSvg.innerHTML = '';
     
-    // Create gradient
+    // Recreate gradient each time
     var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     var gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     gradient.setAttribute('id', 'gradient-cyan');
@@ -5400,11 +5413,17 @@ if (cvLink) {
 
     nodes.forEach(function(node, i) {
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      var x = centerX + parseFloat(node.dataset.x);
+      var y = centerY + parseFloat(node.dataset.y);
+      
       line.setAttribute('x1', centerX);
       line.setAttribute('y1', centerY);
-      line.setAttribute('x2', centerX + parseFloat(node.dataset.x));
-      line.setAttribute('y2', centerY + parseFloat(node.dataset.y));
+      line.setAttribute('x2', x);
+      line.setAttribute('y2', y);
       line.setAttribute('class', 'neural-connection-line');
+      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke-opacity', '0.3');
+      
       connectionSvg.appendChild(line);
     });
   }
@@ -5455,13 +5474,28 @@ if (cvLink) {
       });
 
       // Animate connection line
-      nodes.forEach(function(n, i) {
-        var lines = document.querySelectorAll('.neural-connection-line');
-        var idx = Array.prototype.indexOf.call(nodes, node);
-        if(idx >= 0 && lines[idx]) {
-          gsap.to(lines[idx], {opacity: 1, strokeWidth: 3, duration: 0.3});
-        }
-      });
+      var lines = document.querySelectorAll('.neural-connection-line');
+      var nodeIndex = Array.prototype.indexOf.call(nodes, this);
+      if(nodeIndex >= 0 && lines[nodeIndex]) {
+        gsap.to(lines[nodeIndex], {attr: {strokeWidth: 3, strokeOpacity: 1}, duration: 0.3});
+      }
+
+      // Change neural core glow color
+      if(window._neuroCoreData) {
+        gsap.to(window._neuroCoreData.coreMaterial.color, {
+          h: 0.85, // Pink hue
+          duration: 0.3,
+          onUpdate: function() {
+            window._neuroCoreData.coreMaterial.color.setHSL(
+              window._neuroCoreData.coreMaterial.color.getHSL().h,
+              window._neuroCoreData.coreMaterial.color.getHSL().s,
+              window._neuroCoreData.coreMaterial.color.getHSL().l
+            );
+          }
+        });
+        window._neuroCoreData.wireframeMaterial.color.setHex(0xf472b6);
+        window._neuroCoreData.glowMaterial.color.setHex(0xf472b6);
+      }
 
       // Update HUD Panel
       updateHUD(skill, level, projects);
@@ -5476,8 +5510,15 @@ if (cvLink) {
       // Restore connection lines
       var lines = document.querySelectorAll('.neural-connection-line');
       lines.forEach(function(line) {
-        gsap.to(line, {opacity: 0.3, strokeWidth: 1.5, duration: 0.3});
+        gsap.to(line, {attr: {strokeWidth: 1.5, strokeOpacity: 0.3}, duration: 0.3});
       });
+
+      // Restore neural core color
+      if(window._neuroCoreData) {
+        window._neuroCoreData.wireframeMaterial.color.setHex(0x22d3ee);
+        window._neuroCoreData.coreMaterial.color.setHex(0x22d3ee);
+        window._neuroCoreData.glowMaterial.color.setHex(0x22d3ee);
+      }
 
       // Hide HUD
       hudPanel.classList.remove('active');
@@ -5513,6 +5554,9 @@ if (cvLink) {
     var containerHeight = skillNodesContainer.parentElement.clientHeight;
     centerX = containerWidth / 2;
     centerY = containerHeight / 2;
+    
+    // Update SVG viewBox
+    connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
     
     // Adjust radius based on screen size
     var newRadius = radius;
