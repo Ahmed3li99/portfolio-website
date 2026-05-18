@@ -5272,8 +5272,7 @@ if (cvLink) {
   var wireframeMaterial = new THREE.LineBasicMaterial({
     color: 0x22d3ee,
     transparent: true,
-    opacity: 0.5,
-    linewidth: 2
+    opacity: 0.5
   });
   var wireframeGeometry = new THREE.EdgesGeometry(wireGeo);
   var wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
@@ -5306,7 +5305,6 @@ if (cvLink) {
 
   // Animation variables
   var coreRotation = {x: 0, y: 0};
-  var targetCoreColor = 0x22d3ee;
 
   // Animation loop
   function animateCore(time) {
@@ -5360,24 +5358,24 @@ if (cvLink) {
     var radius = 280; // Distance from center
     var containerWidth = skillNodesContainer.parentElement.clientWidth;
     var containerHeight = skillNodesContainer.parentElement.clientHeight;
-  var centerX = containerWidth / 2;
-  var centerY = containerHeight / 2;
+    let centerX = containerWidth / 2;
+    let centerY = containerHeight / 2;
 
-  // Position skill nodes in a circle
-  nodes.forEach(function(node, i) {
-    var angle = (i / nodeCount) * Math.PI * 2 - Math.PI / 2;
-    var x = Math.cos(angle) * radius;
-    var y = Math.sin(angle) * radius;
-    
-    node.style.left = (centerX + x) + 'px';
-    node.style.top = (centerY + y) + 'px';
-    node.style.transform = 'translate(-50%, -50%)';
-    
-    // Store original position for animations
-    node.dataset.angle = angle;
-    node.dataset.x = x;
-    node.dataset.y = y;
-  });
+    // Position skill nodes in a circle
+    nodes.forEach(function(node, i) {
+      var angle = (i / nodeCount) * Math.PI * 2 - Math.PI / 2;
+      var x = Math.cos(angle) * radius;
+      var y = Math.sin(angle) * radius;
+      
+      node.style.left = (centerX + x) + 'px';
+      node.style.top = (centerY + y) + 'px';
+      node.style.transform = 'translate(-50%, -50%)';
+      
+      // Store original position for animations
+      node.dataset.angle = angle;
+      node.dataset.x = x;
+      node.dataset.y = y;
+    });
 
   // Initialize SVG
   connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
@@ -5484,17 +5482,7 @@ if (cvLink) {
 
       // Change neural core glow color
       if(window._neuroCoreData) {
-        gsap.to(window._neuroCoreData.coreMaterial.color, {
-          h: 0.85, // Pink hue
-          duration: 0.3,
-          onUpdate: function() {
-            window._neuroCoreData.coreMaterial.color.setHSL(
-              window._neuroCoreData.coreMaterial.color.getHSL().h,
-              window._neuroCoreData.coreMaterial.color.getHSL().s,
-              window._neuroCoreData.coreMaterial.color.getHSL().l
-            );
-          }
-        });
+        window._neuroCoreData.coreMaterial.color.setHex(0xf472b6);
         window._neuroCoreData.wireframeMaterial.color.setHex(0xf472b6);
         window._neuroCoreData.glowMaterial.color.setHex(0xf472b6);
       }
