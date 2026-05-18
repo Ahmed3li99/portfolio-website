@@ -2143,14 +2143,166 @@ footer span{color:var(--pink)}
 
 /* Light theme */
 body.light{
-  --bg:#f0f4f8;--bg2:rgba(10,20,40,.03);--card:rgba(255,255,255,.96);
-  --blue:#0ea5e9;--cyan:#06b6d4;--pink:#db2777;
-  --border:rgba(14,165,233,.14);--glow:0 0 12px rgba(14,165,233,.08);
-  --glow-pink:0 0 12px rgba(219,39,119,.08);
-  --txt:#061126;--txt2:rgba(6,17,38,.6);
-  --panel:rgba(255,255,255,.96);
-  --panel-weak:rgba(255,255,255,.92);
-  --panel-strong:rgba(255,255,255,.88);
+  --bg:#f0f4f8;--bg2:rgba(10,20,40,.06);--card:rgba(255,255,255,.98);
+  --blue:#0080d0;--cyan:#009fb0;--pink:#d91f5e;
+  --border:rgba(0,128,208,.32);--glow:0 0 18px rgba(0,128,208,.25),0 0 40px rgba(0,128,208,.12);
+  --glow-pink:0 0 18px rgba(217,31,94,.25),0 0 40px rgba(217,31,94,.12);
+  --txt:#051020;--txt2:rgba(5,16,32,.75);
+  --panel:rgba(255,255,255,.98);
+  --panel-weak:rgba(255,255,255,.96);
+  --panel-strong:rgba(255,255,255,.94);
+}
+/* Light mode overrides for hardcoded rgba values */
+body.light .tt{
+  background:rgba(0,128,208,.15);border:1px solid rgba(0,128,208,.35);
+  color:#0080d0;
+}
+body.light .card:hover{
+  box-shadow:0 8px 36px rgba(0,128,208,.25);
+}
+body.light .btn-ghost:hover{
+  background:rgba(0,128,208,.12);
+  box-shadow:0 0 18px rgba(0,128,208,.25),0 0 40px rgba(0,128,208,.12);
+}
+body.light #cursor-ring{
+  border:1px solid rgba(0,128,208,.5);
+}
+body.light .navul a::after{
+  background:#009fb0;
+}
+body.light .rsh-corner.tl{border-top:2px solid rgba(0,128,208,.75);border-left:2px solid rgba(0,128,208,.75)}
+body.light .rsh-corner.tr{border-top:2px solid rgba(0,128,208,.55);border-right:2px solid rgba(0,128,208,.55)}
+body.light .rsh-corner.bl{border-bottom:2px solid rgba(0,128,208,.55);border-left:2px solid rgba(0,128,208,.55)}
+body.light .rsh-corner.br{border-bottom:2px solid rgba(217,31,94,.45);border-right:2px solid rgba(217,31,94,.45)}
+/* Light mode hero layers - reduce blur, increase visibility */
+body.light .hero-layer-1{
+  background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(217,31,94,.18),transparent 70%),
+             radial-gradient(ellipse 50% 40% at 20% 60%,rgba(0,128,208,.15),transparent 70%);
+  filter:blur(40px);
+}
+body.light .hero-layer-2{
+  background:linear-gradient(180deg,transparent 40%,rgba(0,128,208,.08) 100%);
+}
+body.light .hero-layer-3{
+  background-image:
+    linear-gradient(rgba(0,128,208,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,128,208,.08) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+body.light .hero-city{opacity:.45}
+/* Light mode terminal/code styling */
+body.light .sk-neural{filter:brightness(1.1)}
+body.light .nn-pulse{stroke:rgba(0,128,208,.5)}
+body.light .nn-input{fill:rgba(217,31,94,.8)}
+body.light .nn-hidden{fill:rgba(0,128,208,.8)}
+body.light .nn-output{fill:rgba(0,155,176,.8)}
+body.light .nn-node-glow{filter:drop-shadow(0 0 8px rgba(0,128,208,.6))}
+/* Light mode nav */
+body.light nav.scrolled{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(0,128,208,.25)}
+/* Light mode robot showcase */
+body.light .robot-showcase{
+  background:rgba(240,244,248,.9);
+  border:1px solid rgba(0,128,208,.35);
+  box-shadow:0 0 60px rgba(0,128,208,.15), 0 0 0 1px rgba(0,128,208,.15);
+}
+body.light .robot-showcase::before{
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+body.light .rsh-status{
+  background:rgba(240,244,248,.95);
+  border:1px solid rgba(0,128,208,.3);
+  color:rgba(0,128,208,.95);
+}
+body.light .rsh-signal span:nth-child(4){
+  height:14px;background:rgba(0,128,208,.95);box-shadow:0 0 5px rgba(0,128,208,.6)
+}
+/* Light mode button overrides */
+body.light .btn-blue{
+  background:linear-gradient(135deg,#0080d0,#0066aa);
+  color:#fff;box-shadow:0 4px 20px rgba(0,128,208,.3);
+}
+body.light .btn-blue:hover{
+  box-shadow:0 6px 30px rgba(0,128,208,.5);
+}
+body.light .btn-cv{
+  background:linear-gradient(135deg,#009fb0,#007a8f);
+  color:#fff;box-shadow:0 4px 20px rgba(0,155,176,.3);
+}
+body.light .btn-cv:hover{
+  box-shadow:0 6px 28px rgba(0,155,176,.5);
+}
+/* Light mode skill badges */
+body.light .eb-c{
+  background:rgba(0,155,176,.12);border:1px solid rgba(0,155,176,.4);
+  color:#009fb0;
+}
+body.light .eb-b{
+  background:rgba(217,31,94,.12);border:1px solid rgba(217,31,94,.4);
+  color:#d91f5e;
+}
+/* Light mode contact section */
+body.light .clink:hover{
+  border-color:#d91f5e;box-shadow:0 4px 18px rgba(217,31,94,.2);
+}
+body.light .cico{
+  background:rgba(217,31,94,.12);border:1px solid rgba(217,31,94,.35);
+}
+body.light .cico i, body.light .cico svg{color:#d91f5e}
+/* Light mode desk showcase */
+body.light .desk-showcase-wrap{
+  border:1px solid rgba(0,128,208,.25);
+  background:rgba(240,244,248,.92);
+}
+body.light .dsk-fps-box{
+  border:1px solid rgba(0,128,208,.4);
+  background:rgba(240,244,248,.95);
+}
+body.light .dsk-fps-label{color:rgba(0,128,208,.7)}
+body.light .dsk-fps-val{color:rgba(0,128,208,.95)}
+body.light .dsk-check{color:rgba(0,128,208,.75)}
+body.light .dsk-cb{
+  border:1px solid rgba(0,128,208,.5);
+  background:rgba(0,128,208,.05);
+}
+body.light .dsk-cb.active{
+  background:rgba(0,128,208,.3);
+  border-color:rgba(0,128,208,.9);
+  box-shadow:0 0 6px rgba(0,128,208,.6);
+}
+body.light .dsk-ow-btn{
+  border:1px solid rgba(0,128,208,.65);
+  background:rgba(240,244,248,.95);
+  color:rgba(0,128,208,.95);
+}
+/* Light mode ML visualization */
+body.light .mlv-input{
+  background:rgba(0,128,208,.12);border:1px solid rgba(0,128,208,.35);
+}
+body.light .mlv-hidden{
+  background:rgba(217,31,94,.12);border:1px solid rgba(217,31,94,.35);
+}
+body.light .mlv-output{
+  background:rgba(0,155,176,.12);border:1px solid rgba(0,155,176,.35);
+}
+/* Light mode chip/tag styling */
+body.light .chip{
+  background:rgba(217,31,94,.12);border:1px solid rgba(217,31,94,.35);
+  color:#d91f5e;
+}
+/* Light mode project code section */
+body.light .project-code{
+  background:rgba(240,244,248,.95);color:rgba(0,128,208,.95);
+  border:1px solid rgba(0,128,208,.25);
+}
+/* Light mode skill cards */
+body.light .sk::before{
+  background:linear-gradient(135deg,rgba(217,31,94,.08),rgba(0,128,208,.08));
+}
+body.light .sk:hover{
+  border-color:#d91f5e;box-shadow:0 6px 26px rgba(217,31,94,.2);
+}
+body.light .pbtn:hover{
+  background:rgba(217,31,94,.12);box-shadow:0 0 18px rgba(217,31,94,.25),0 0 40px rgba(217,31,94,.12);
 }
 </style>
 </head>
