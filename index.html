@@ -5345,19 +5345,21 @@ if (cvLink) {
    =========================== */
 
 (function(){
-  var skillNodesContainer = document.querySelector('.skill-nodes');
-  var nodes = document.querySelectorAll('.skill-node');
-  var connectionSvg = document.querySelector('.neural-connections');
-  var hudPanel = document.querySelector('.ai-hud-panel');
-  var coreCenter = document.querySelector('.core-center');
-  var particlesContainer = document.querySelector('.particles-container');
+  // Delay initialization to ensure DOM is ready
+  setTimeout(function() {
+    var skillNodesContainer = document.querySelector('.skill-nodes');
+    var nodes = document.querySelectorAll('.skill-node');
+    var connectionSvg = document.querySelector('.neural-connections');
+    var hudPanel = document.querySelector('.ai-hud-panel');
+    var coreCenter = document.querySelector('.core-center');
+    var particlesContainer = document.querySelector('.particles-container');
 
-  if(!skillNodesContainer) return;
+    if(!skillNodesContainer || nodes.length === 0) return;
 
-  var nodeCount = nodes.length;
-  var radius = 280; // Distance from center
-  var containerWidth = skillNodesContainer.parentElement.clientWidth;
-  var containerHeight = skillNodesContainer.parentElement.clientHeight;
+    var nodeCount = nodes.length;
+    var radius = 280; // Distance from center
+    var containerWidth = skillNodesContainer.parentElement.clientWidth;
+    var containerHeight = skillNodesContainer.parentElement.clientHeight;
   var centerX = containerWidth / 2;
   var centerY = containerHeight / 2;
 
@@ -5588,6 +5590,7 @@ if (cvLink) {
     {opacity: 0, scale: 0},
     {opacity: 1, scale: 1, duration: 0.6, stagger: 0.1}
   );
+  }, 100); // End of setTimeout
 
 })();
 
