@@ -901,6 +901,501 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
 }
 
 /* ===========================
+   FUTURISTIC AI INTERFACE
+   =========================== */
+
+/* Main Container */
+.ai-system-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 60px auto;
+  height: 700px;
+  perspective: 1200px;
+}
+
+/* Neural Core Canvas - 3D Central Object */
+#neural-core-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  z-index: 10;
+}
+
+/* Skill Nodes Wrapper */
+.skill-nodes-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Neural Connections SVG */
+.neural-connections {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.neural-connections line {
+  stroke: url(#gradient-cyan);
+  stroke-width: 1.5;
+  opacity: 0.3;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.3));
+}
+
+/* Core Center */
+.core-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.4), transparent);
+  filter: blur(20px);
+  animation: coreGlowPulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+.core-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  text-align: center;
+  z-index: 2;
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+  animation: labelFloat 2.5s ease-in-out infinite;
+}
+
+.core-pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: corePulse 2s ease-out infinite;
+  z-index: 0;
+}
+
+@keyframes coreGlowPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes labelFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes corePulse {
+  0% {
+    width: 40px;
+    height: 40px;
+    opacity: 0.8;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+/* Skill Nodes */
+.skill-nodes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.skill-node {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.33, 0.66, 0.66, 1);
+  z-index: 8;
+}
+
+.node-outer-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(34, 211, 238, 0.4);
+  border-radius: 50%;
+  animation: nodeRingRotate 8s linear infinite;
+}
+
+.node-outer-ring::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes nodeRingRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.node-content {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  background: rgba(8, 22, 55, 0.7);
+  border: 1.5px solid rgba(34, 211, 238, 0.5);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.node-icon {
+  font-size: 2rem;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.4));
+}
+
+.node-label {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+
+.node-glow {
+  position: absolute;
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent);
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.skill-node:hover .node-glow {
+  opacity: 1;
+}
+
+.skill-node:hover .node-content {
+  border-color: var(--pink);
+  box-shadow: 0 0 20px rgba(244, 114, 182, 0.4), inset 0 0 20px rgba(244, 114, 182, 0.1);
+  background: rgba(8, 22, 55, 0.9);
+}
+
+.skill-node:hover .node-label {
+  color: var(--pink);
+  text-shadow: 0 0 12px rgba(244, 114, 182, 0.6);
+}
+
+.skill-node:hover .node-outer-ring {
+  border-color: var(--pink);
+  animation-duration: 3s;
+}
+
+.skill-node:hover .node-icon {
+  filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.6));
+  transform: scale(1.15);
+}
+
+/* Floating HUD Panel */
+.ai-hud-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  width: 280px;
+  background: rgba(3, 9, 26, 0.95);
+  border: 1.5px solid rgba(34, 211, 238, 0.4);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  padding: 20px;
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.33, 0.66, 0.66, 1);
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.ai-hud-panel.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.hud-title {
+  color: var(--cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.hud-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: hudPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hudPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.hud-content {
+  margin-bottom: 12px;
+}
+
+.hud-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: rgba(223, 240, 252, 0.7);
+  letter-spacing: 1px;
+}
+
+.hud-label {
+  color: var(--txt2);
+}
+
+.hud-value {
+  color: var(--pink);
+  text-shadow: 0 0 6px rgba(244, 114, 182, 0.4);
+  font-weight: 600;
+}
+
+.hud-bar {
+  display: inline-block;
+  width: 60px;
+  height: 3px;
+  background: rgba(34, 211, 238, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-left: 4px;
+}
+
+.hud-bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  width: 70%;
+  box-shadow: 0 0 6px var(--cyan);
+}
+
+.hud-footer {
+  height: 1px;
+  background: rgba(34, 211, 238, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-scan-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: hudScan 2s ease-in-out infinite;
+}
+
+@keyframes hudScan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Particles Container */
+.particles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 50%;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ai-system-container {
+    height: 600px;
+  }
+  
+  #neural-core-canvas {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .skill-node {
+    width: 95px;
+    height: 95px;
+  }
+  
+  .node-content {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .node-outer-ring {
+    width: 85px;
+    height: 85px;
+  }
+  
+  .node-icon {
+    font-size: 1.6rem;
+  }
+  
+  .node-label {
+    font-size: 0.48rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-system-container {
+    height: 500px;
+  }
+  
+  #neural-core-canvas {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .skill-node {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .node-content {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .node-outer-ring {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .node-icon {
+    font-size: 1.4rem;
+    margin-bottom: 2px;
+  }
+  
+  .node-label {
+    font-size: 0.44rem;
+  }
+  
+  .ai-hud-panel {
+    width: 240px;
+    font-size: 0.6rem;
+    right: 10px;
+    bottom: 20px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-system-container {
+    height: 450px;
+  }
+  
+  #neural-core-canvas {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .skill-node {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .node-content {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .node-outer-ring {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .node-icon {
+    font-size: 1.2rem;
+    margin-bottom: 1px;
+  }
+  
+  .node-label {
+    font-size: 0.4rem;
+  }
+  
+  .ai-hud-panel {
+    display: none;
+  }
+}
+
+/* ===========================
    EDUCATION
    =========================== */
 .edu-wrap{display:grid;grid-template-columns:auto 2px 1fr;gap:0 32px;align-items:start}
@@ -2183,39 +2678,148 @@ for name, layer in models.items():
   <span class="tag gsap-slide-up">// 05. Skills</span>
   <h2 class="h2 glitch" data-text="Tech Stack">Tech Stack</h2>
 
-  <div class="skgrid">
-    <div class="sk gsap-scale"><span class="si">🐍</span><div class="sn2">Python</div><div class="slv">Core Language</div><div class="sk-tooltip">Used in: All ML Projects</div></div>
-    <div class="sk gsap-scale"><span class="si">📊</span><div class="sn2">Data Analysis</div><div class="slv">Advanced</div><div class="sk-tooltip">Used in: Breast Cancer Classification</div></div>
-    <div class="sk gsap-scale"><span class="si">🤖</span><div class="sn2">Machine Learning</div><div class="slv">Advanced</div><div class="sk-tooltip">Used in: Cancer Classification, Sequence Models</div></div>
-    <div class="sk gsap-scale"><span class="si">🧠</span><div class="sn2">Deep Learning</div><div class="slv">Intermediate</div><div class="sk-tooltip">Used in: RNN/LSTM Prediction Project</div></div>
-    <div class="sk gsap-scale"><span class="si">🐼</span><div class="sn2">Pandas</div><div class="slv">Advanced</div><div class="sk-tooltip">Used in: All data preprocessing pipelines</div></div>
-    <div class="sk gsap-scale"><span class="si">⚙️</span><div class="sn2">Scikit-learn</div><div class="slv">Advanced</div><div class="sk-tooltip">Used in: Classification, Regression, Metrics</div></div>
-    <div class="sk gsap-scale"><span class="si">🔥</span><div class="sn2">TensorFlow</div><div class="slv">Intermediate</div><div class="sk-tooltip">Used in: CNN, RNN, LSTM, GRU models</div></div>
-    <div class="sk gsap-scale"><span class="si">🗄️</span><div class="sn2">SQL</div><div class="slv">Fundamentals</div><div class="sk-tooltip">Used in: Database queries & data extraction</div></div>
-  </div>
-
-  <!-- Skill Progress Bars -->
-  <div class="skill-bars" style="max-width:700px;margin-top:48px">
-    <div class="sb-item gsap-slide-up">
-      <div class="sb-header"><span class="sb-name">Python & Data Analysis</span><span class="sb-pct">85%</span></div>
-      <div class="sb-track"><div class="sb-fill" data-width="85"></div></div>
+  <!-- Futuristic AI System Interface -->
+  <div class="ai-system-container">
+    <!-- 3D Canvas for Neural Core -->
+    <div id="neural-core-canvas" class="neural-core-canvas"></div>
+    
+    <!-- Skill Nodes Container -->
+    <div class="skill-nodes-wrapper">
+      <!-- Connection SVG -->
+      <svg class="neural-connections" aria-hidden="true"></svg>
+      
+      <!-- Center Glow and Core Label -->
+      <div class="core-center">
+        <div class="core-glow"></div>
+        <div class="core-label">NEURAL CORE</div>
+        <div class="core-pulse"></div>
+      </div>
+      
+      <!-- Skill Nodes -->
+      <div class="skill-nodes">
+        <div class="skill-node" data-skill="Python" data-level="ADVANCED" data-projects="20+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🐍</div>
+            <div class="node-label">Python</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="TensorFlow" data-level="TRAINED" data-projects="12+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🔥</div>
+            <div class="node-label">TensorFlow</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="Machine Learning" data-level="ADVANCED" data-projects="15+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🤖</div>
+            <div class="node-label">Machine Learning</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="Data Analysis" data-level="ACTIVE" data-projects="18+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">📊</div>
+            <div class="node-label">Data Analysis</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="SQL" data-level="CORE SYSTEM" data-projects="20+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🗄️</div>
+            <div class="node-label">SQL</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="React" data-level="LEARNING" data-projects="8+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">⚛️</div>
+            <div class="node-label">React</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="Next.js" data-level="ACTIVE" data-projects="6+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">▲</div>
+            <div class="node-label">Next.js</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="Node.js" data-level="TRAINED" data-projects="10+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🟢</div>
+            <div class="node-label">Node.js</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="APIs" data-level="DEPLOYED" data-projects="14+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🔌</div>
+            <div class="node-label">APIs</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+        
+        <div class="skill-node" data-skill="AI Systems" data-level="LEARNING" data-projects="9+">
+          <div class="node-outer-ring"></div>
+          <div class="node-content">
+            <div class="node-icon">🧠</div>
+            <div class="node-label">AI Systems</div>
+          </div>
+          <div class="node-glow"></div>
+        </div>
+      </div>
     </div>
-    <div class="sb-item gsap-slide-up">
-      <div class="sb-header"><span class="sb-name">Machine Learning</span><span class="sb-pct">80%</span></div>
-      <div class="sb-track"><div class="sb-fill" data-width="80"></div></div>
+    
+    <!-- Floating HUD Panel -->
+    <div class="ai-hud-panel">
+      <div class="hud-header">
+        <div class="hud-title">SYSTEM STATUS</div>
+        <div class="hud-indicator"></div>
+      </div>
+      <div class="hud-content">
+        <div class="hud-line">
+          <span class="hud-label">SKILL:</span>
+          <span class="hud-value">—</span>
+        </div>
+        <div class="hud-line">
+          <span class="hud-label">STATUS:</span>
+          <span class="hud-value">IDLE</span>
+        </div>
+        <div class="hud-line">
+          <span class="hud-label">PROJECTS:</span>
+          <span class="hud-value">0+</span>
+        </div>
+        <div class="hud-line">
+          <span class="hud-label">EFFICIENCY:</span>
+          <span class="hud-bar"><span class="hud-bar-fill"></span></span>
+        </div>
+      </div>
+      <div class="hud-footer">
+        <div class="hud-scan-line"></div>
+      </div>
     </div>
-    <div class="sb-item gsap-slide-up">
-      <div class="sb-header"><span class="sb-name">Deep Learning (TF/Keras)</span><span class="sb-pct">70%</span></div>
-      <div class="sb-track"><div class="sb-fill" data-width="70"></div></div>
-    </div>
-    <div class="sb-item gsap-slide-up">
-      <div class="sb-header"><span class="sb-name">Data Visualization</span><span class="sb-pct">75%</span></div>
-      <div class="sb-track"><div class="sb-fill" data-width="75"></div></div>
-    </div>
-    <div class="sb-item gsap-slide-up">
-      <div class="sb-header"><span class="sb-name">SQL & Git</span><span class="sb-pct">60%</span></div>
-      <div class="sb-track"><div class="sb-fill" data-width="60"></div></div>
-    </div>
+    
+    <!-- Particles Container -->
+    <div class="particles-container" aria-hidden="true"></div>
   </div>
 </div>
 </div>
@@ -4634,6 +5238,350 @@ if (cvLink) {
   })();
 
 })();
+
+/* ===========================
+   FUTURISTIC AI SYSTEM INTERFACE
+   =========================== */
+
+(function(){
+  var container = document.getElementById('neural-core-canvas');
+  if(!container) return;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+  camera.position.z = 3;
+
+  var renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
+
+  // Create Neural Core (Holographic Orb)
+  var coreGeometry = new THREE.IcosahedronGeometry(1, 4);
+  var coreMaterial = new THREE.MeshPhongMaterial({
+    color: 0x22d3ee,
+    emissive: 0x0088ff,
+    wireframe: false,
+    shininess: 100
+  });
+  var core = new THREE.Mesh(coreGeometry, coreMaterial);
+  scene.add(core);
+
+  // Wireframe overlay for Neural Core
+  var wireGeo = new THREE.IcosahedronGeometry(1.02, 4);
+  var wireframeMaterial = new THREE.LineBasicMaterial({
+    color: 0x22d3ee,
+    transparent: true,
+    opacity: 0.5
+  });
+  var wireframeGeometry = new THREE.EdgesGeometry(wireGeo);
+  var wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+  scene.add(wireframe);
+
+  // Outer glow sphere
+  var glowGeometry = new THREE.IcosahedronGeometry(1.15, 3);
+  var glowMaterial = new THREE.MeshBasicMaterial({
+    color: 0x22d3ee,
+    transparent: true,
+    opacity: 0.1
+  });
+  var glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+  scene.add(glowSphere);
+
+  // Store core reference globally for color changes
+  window._neuroCoreData = {
+    coreMaterial: coreMaterial,
+    wireframeMaterial: wireframeMaterial,
+    glowMaterial: glowMaterial
+  };
+
+  // Lighting
+  var light = new THREE.PointLight(0xffffff, 1);
+  light.position.set(3, 3, 3);
+  scene.add(light);
+
+  var ambientLight = new THREE.AmbientLight(0x0088ff, 0.3);
+  scene.add(ambientLight);
+
+  // Animation variables
+  var coreRotation = {x: 0, y: 0};
+
+  // Animation loop
+  function animateCore(time) {
+    coreRotation.x += 0.0005;
+    coreRotation.y += 0.0008;
+    
+    core.rotation.x = coreRotation.x;
+    core.rotation.y = coreRotation.y;
+    wireframe.rotation.copy(core.rotation);
+    glowSphere.rotation.copy(core.rotation);
+
+    // Floating animation
+    core.position.y = Math.sin(time * 0.0005) * 0.2;
+    wireframe.position.y = Math.sin(time * 0.0005) * 0.2;
+    glowSphere.position.y = Math.sin(time * 0.0005) * 0.2;
+
+    // Pulse effect
+    var pulse = 1 + Math.sin(time * 0.001) * 0.1;
+    core.scale.set(pulse, pulse, pulse);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animateCore);
+  }
+  animateCore(0);
+
+  // Handle resize
+  window.addEventListener('resize', function() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+})();
+
+/* ===========================
+   SKILL NODES POSITIONING & ANIMATIONS
+   =========================== */
+
+(function(){
+  // Delay initialization to ensure DOM is ready
+  setTimeout(function() {
+    var skillNodesContainer = document.querySelector('.skill-nodes');
+    var nodes = document.querySelectorAll('.skill-node');
+    var connectionSvg = document.querySelector('.neural-connections');
+    var hudPanel = document.querySelector('.ai-hud-panel');
+    var coreCenter = document.querySelector('.core-center');
+    var particlesContainer = document.querySelector('.particles-container');
+
+    if(!skillNodesContainer || nodes.length === 0) return;
+
+    var nodeCount = nodes.length;
+    var radius = 280; // Distance from center
+    var containerWidth = skillNodesContainer.parentElement.clientWidth;
+    var containerHeight = skillNodesContainer.parentElement.clientHeight;
+    var centerX = containerWidth / 2;
+    var centerY = containerHeight / 2;
+
+    // Position skill nodes in a circle
+    nodes.forEach(function(node, i) {
+      var angle = (i / nodeCount) * Math.PI * 2 - Math.PI / 2;
+      var x = Math.cos(angle) * radius;
+      var y = Math.sin(angle) * radius;
+      
+      node.style.left = (centerX + x) + 'px';
+      node.style.top = (centerY + y) + 'px';
+      node.style.transform = 'translate(-50%, -50%)';
+      
+      // Store original position for animations
+      node.dataset.angle = angle;
+      node.dataset.x = x;
+      node.dataset.y = y;
+    });
+
+  // Initialize SVG
+  connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
+  connectionSvg.setAttribute('width', '100%');
+  connectionSvg.setAttribute('height', '100%');
+  connectionSvg.setAttribute('preserveAspectRatio', 'none');
+
+  // Draw SVG connection lines
+  function drawConnections() {
+    connectionSvg.innerHTML = '';
+    
+    // Recreate gradient each time
+    var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    var gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradient.setAttribute('id', 'gradient-cyan');
+    gradient.setAttribute('x1', '0%');
+    gradient.setAttribute('y1', '0%');
+    gradient.setAttribute('x2', '100%');
+    gradient.setAttribute('y2', '100%');
+    
+    var stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('stop-color', '#22d3ee');
+    stop1.setAttribute('stop-opacity', '0.2');
+    
+    var stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%');
+    stop2.setAttribute('stop-color', '#38bdf8');
+    stop2.setAttribute('stop-opacity', '0.1');
+    
+    gradient.appendChild(stop1);
+    gradient.appendChild(stop2);
+    defs.appendChild(gradient);
+    connectionSvg.appendChild(defs);
+
+    nodes.forEach(function(node, i) {
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      var x = centerX + parseFloat(node.dataset.x);
+      var y = centerY + parseFloat(node.dataset.y);
+      
+      line.setAttribute('x1', centerX);
+      line.setAttribute('y1', centerY);
+      line.setAttribute('x2', x);
+      line.setAttribute('y2', y);
+      line.setAttribute('class', 'neural-connection-line');
+      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke-opacity', '0.3');
+      
+      connectionSvg.appendChild(line);
+    });
+  }
+  drawConnections();
+
+  // Create particles
+  function createParticles() {
+    for(var i = 0; i < 15; i++) {
+      var particle = document.createElement('div');
+      particle.className = 'particle';
+      var angle = Math.random() * Math.PI * 2;
+      var distance = Math.random() * 200 + 50;
+      particle.style.left = (centerX + Math.cos(angle) * distance) + 'px';
+      particle.style.top = (centerY + Math.sin(angle) * distance) + 'px';
+      particlesContainer.appendChild(particle);
+      
+      // Animate particles
+      gsap.to(particle, {
+        duration: 3 + Math.random() * 2,
+        left: centerX + Math.cos(angle) * (distance + 100),
+        top: centerY + Math.sin(angle) * (distance + 100),
+        opacity: 0,
+        repeat: -1,
+        repeatDelay: 1
+      });
+    }
+  }
+  createParticles();
+
+  // Skill node hover interactions
+  nodes.forEach(function(node) {
+    node.addEventListener('mouseenter', function() {
+      var skill = this.dataset.skill;
+      var level = this.dataset.level;
+      var projects = this.dataset.projects;
+
+      // Dim other nodes
+      nodes.forEach(function(n) {
+        if(n !== node) {
+          gsap.to(n, {opacity: 0.3, duration: 0.3});
+        }
+      });
+
+      // Brighten this node
+      gsap.to(this.querySelector('.node-content'), {
+        boxShadow: '0 0 30px rgba(244, 114, 182, 0.6), inset 0 0 30px rgba(244, 114, 182, 0.15)',
+        duration: 0.3
+      });
+
+      // Animate connection line
+      var lines = document.querySelectorAll('.neural-connection-line');
+      var nodeIndex = Array.prototype.indexOf.call(nodes, this);
+      if(nodeIndex >= 0 && lines[nodeIndex]) {
+        gsap.to(lines[nodeIndex], {attr: {strokeWidth: 3, strokeOpacity: 1}, duration: 0.3});
+      }
+
+      // Change neural core glow color
+      if(window._neuroCoreData) {
+        window._neuroCoreData.coreMaterial.color.setHex(0xf472b6);
+        window._neuroCoreData.wireframeMaterial.color.setHex(0xf472b6);
+        window._neuroCoreData.glowMaterial.color.setHex(0xf472b6);
+      }
+
+      // Update HUD Panel
+      updateHUD(skill, level, projects);
+    });
+
+    node.addEventListener('mouseleave', function() {
+      // Restore other nodes
+      nodes.forEach(function(n) {
+        gsap.to(n, {opacity: 1, duration: 0.3});
+      });
+
+      // Restore connection lines
+      var lines = document.querySelectorAll('.neural-connection-line');
+      lines.forEach(function(line) {
+        gsap.to(line, {attr: {strokeWidth: 1.5, strokeOpacity: 0.3}, duration: 0.3});
+      });
+
+      // Restore neural core color
+      if(window._neuroCoreData) {
+        window._neuroCoreData.wireframeMaterial.color.setHex(0x22d3ee);
+        window._neuroCoreData.coreMaterial.color.setHex(0x22d3ee);
+        window._neuroCoreData.glowMaterial.color.setHex(0x22d3ee);
+      }
+
+      // Hide HUD
+      hudPanel.classList.remove('active');
+    });
+  });
+
+  // Update HUD Panel
+  function updateHUD(skill, level, projects) {
+    var lines = hudPanel.querySelectorAll('.hud-line');
+    
+    lines[0].querySelector('.hud-value').textContent = skill;
+    lines[1].querySelector('.hud-value').textContent = level;
+    lines[2].querySelector('.hud-value').textContent = projects;
+    
+    // Set HUD bar width based on level
+    var barFill = hudPanel.querySelector('.hud-bar-fill');
+    var levelMap = {
+      'CORE SYSTEM': 100,
+      'ADVANCED': 90,
+      'ACTIVE': 85,
+      'TRAINED': 80,
+      'DEPLOYED': 95,
+      'LEARNING': 60
+    };
+    barFill.style.width = (levelMap[level] || 70) + '%';
+    
+    hudPanel.classList.add('active');
+  }
+
+  // Responsive positioning
+  function updatePositions() {
+    var containerWidth = skillNodesContainer.parentElement.clientWidth;
+    var containerHeight = skillNodesContainer.parentElement.clientHeight;
+    centerX = containerWidth / 2;
+    centerY = containerHeight / 2;
+    
+    // Update SVG viewBox
+    connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
+    
+    // Adjust radius based on screen size
+    var newRadius = radius;
+    if(window.innerWidth < 768) {
+      newRadius = 180;
+    } else if(window.innerWidth < 1024) {
+      newRadius = 230;
+    }
+
+    nodes.forEach(function(node, i) {
+      var angle = parseFloat(node.dataset.angle);
+      var x = Math.cos(angle) * newRadius;
+      var y = Math.sin(angle) * newRadius;
+      
+      gsap.to(node, {
+        left: centerX + x,
+        top: centerY + y,
+        duration: 0.5
+      });
+    });
+
+    drawConnections();
+  }
+
+  window.addEventListener('resize', updatePositions);
+
+  // Initial animation on page load
+  gsap.fromTo(nodes, 
+    {opacity: 0, scale: 0},
+    {opacity: 1, scale: 1, duration: 0.6, stagger: 0.1}
+  );
+  }, 100); // End of setTimeout
+
+})();
+
 </script>
 </body>
 </html>
