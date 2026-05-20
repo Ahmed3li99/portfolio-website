@@ -108,19 +108,59 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
    Holographic Earth — Contact section
    =========================== */
 .spline-earth-wrap{
-  position:relative;
-  width:100%;
-  height:420px;
-  overflow:visible;
+  position:absolute;
+  --earth-offset-top:120px;
+  --earth-offset-bottom:36px;
+  --earth-base-opacity:.9;
+  top:var(--earth-offset-top);
+  bottom:var(--earth-offset-bottom);
+  left:50%;
+  width:min(980px,100%);
+  height:auto;
+  overflow:hidden;
+  transform:translateX(-50%);
   background:none;
   border:none;
   border-radius:0;
   box-shadow:none;
+  pointer-events:none;
+  z-index:0;
+  opacity:var(--earth-base-opacity);
+  --earth-mask-w:75%;
+  --earth-mask-h:70%;
+  --earth-mask-x:50%;
+  --earth-mask-y:52%;
+  --earth-mask-core-alpha:.95;
+  --earth-mask-mid-alpha:.55;
+  --earth-mask-core-stop:42%;
+  --earth-mask-mid-stop:68%;
+  --earth-mask:radial-gradient(var(--earth-mask-w) var(--earth-mask-h) at var(--earth-mask-x) var(--earth-mask-y), rgba(0,0,0,var(--earth-mask-core-alpha)) var(--earth-mask-core-stop), rgba(0,0,0,var(--earth-mask-mid-alpha)) var(--earth-mask-mid-stop), rgba(0,0,0,0) 100%);
+  -webkit-mask-image:var(--earth-mask);
+  mask-image:var(--earth-mask);
 }
 #earth-canvas{
   width:100%;height:100%;
   display:block;
   background:transparent !important;
+}
+#contact{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  --contact-grid-padding:20px;
+}
+#contact > .tag,
+#contact > .h2,
+#contact .cgrid{
+  position:relative;
+  z-index:2;
+}
+#contact .cgrid{
+  padding:var(--contact-grid-padding);
+  border:1px solid rgba(0,207,255,.18);
+  background:linear-gradient(145deg, rgba(3,9,26,.45), rgba(3,9,26,.15));
+  backdrop-filter:blur(4px);
+  border-radius:18px;
 }
 
 /* ===========================
@@ -947,6 +987,10 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   margin: 60px auto;
   height: 700px;
   perspective: 1200px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
 
 /* Neural Core Canvas - 3D Central Object */
@@ -1559,6 +1603,12 @@ footer span{color:var(--pink)}
   .eline{display:none}
   .eyr{text-align:left}
   .cgrid{grid-template-columns:1fr}
+  .spline-earth-wrap{
+    --earth-offset-top:110px;
+    --earth-offset-bottom:26px;
+    --earth-base-opacity:.72;
+    width:100%;
+  }
   .proj-grid{grid-template-columns:1fr}
   #scroll-nav{display:none}
 }
@@ -1731,9 +1781,10 @@ footer span{color:var(--pink)}
 /* About 3D Spheres section */
 .three-3d-section{
   position:relative;width:100%;height:380px;
-  margin:48px 0;border-radius:0;overflow:hidden;
-  background:transparent;
-  border:none;
+  margin:48px 0;border-radius:0;overflow:visible !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 .three-3d-section canvas{
   position:absolute;inset:0;width:100%;height:100%;
@@ -1764,6 +1815,16 @@ footer span{color:var(--pink)}
   z-index:2;
   opacity:.75;
   mix-blend-mode:screen;
+}
+#skills .ts-dots,
+#skills .ts-dots .dot,
+#skills .dot,
+#skills .ts-lvl,
+#skills .skill-bars,
+#skills .sb-pct,
+#skills .sb-track,
+#skills .sb-fill{
+  display:none !important;
 }
 #three-skills-cube{cursor:grab}
 #three-skills-cube:active{cursor:grabbing}
@@ -2171,14 +2232,50 @@ footer span{color:var(--pink)}
 
 /* Light theme */
 body.light{
-  --bg:#f0f4f8;--bg2:rgba(10,20,40,.06);--card:rgba(255,255,255,.98);
+  --bg:#eaf2fb;--bg2:rgba(180,204,232,.18);--card:rgba(255,255,255,.92);
   --blue:#0080d0;--cyan:#009fb0;--pink:#d91f5e;
-  --border:rgba(0,128,208,.32);--glow:0 0 18px rgba(0,128,208,.25),0 0 40px rgba(0,128,208,.12);
-  --glow-pink:0 0 18px rgba(217,31,94,.25),0 0 40px rgba(217,31,94,.12);
-  --txt:#051020;--txt2:rgba(5,16,32,.75);
-  --panel:rgba(255,255,255,.98);
-  --panel-weak:rgba(255,255,255,.96);
-  --panel-strong:rgba(255,255,255,.94);
+  --border:rgba(0,128,208,.38);--glow:0 0 18px rgba(0,128,208,.32),0 0 42px rgba(0,128,208,.14);
+  --glow-pink:0 0 18px rgba(217,31,94,.3),0 0 42px rgba(217,31,94,.14);
+  --txt:#041022;--txt2:rgba(4,16,34,.78);
+  --panel:rgba(255,255,255,.95);
+  --panel-weak:rgba(255,255,255,.9);
+  --panel-strong:rgba(255,255,255,.92);
+  background:
+    radial-gradient(130% 90% at 100% 0%, rgba(0,128,208,.14), transparent 58%),
+    radial-gradient(100% 85% at 0% 100%, rgba(217,31,94,.1), transparent 62%),
+    #eaf2fb;
+}
+body.light::before{
+  background-image:
+    linear-gradient(rgba(0,128,208,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,128,208,.045) 1px,transparent 1px);
+}
+body.light::after{
+  background:repeating-linear-gradient(transparent,transparent 3px,rgba(3,16,32,.035) 3px,rgba(3,16,32,.035) 6px);
+}
+body.light .dark-bg{
+  background:rgba(210,225,244,.34);
+}
+body.light .gallery-viewport{
+  border-color:rgba(0,128,208,.34);
+  box-shadow:0 12px 32px rgba(6,32,66,.08);
+}
+body.light .gallery-slide{
+  background:rgba(255,255,255,.94);
+}
+body.light .gs-code{
+  background:linear-gradient(180deg, rgba(224,236,250,.88), rgba(234,243,252,.95));
+  border-left:1px solid rgba(0,128,208,.25);
+}
+body.light .gs-code pre{
+  color:#0b4b7a;
+}
+body.light #contact .cgrid{
+  background:linear-gradient(145deg, rgba(255,255,255,.8), rgba(255,255,255,.58));
+  border-color:rgba(0,128,208,.28);
+}
+body.light .spline-earth-wrap{
+  opacity:.6;
 }
 /* Light mode overrides for hardcoded rgba values */
 body.light .tt{
@@ -2678,31 +2775,6 @@ body.light .pbtn:hover{
   <span class="tag gsap-slide-up">// 03. Projects</span>
   <h2 class="h2 glitch" data-text="Featured Work">Featured Work</h2>
 
-  <!-- 3D Desk Showcase -->
-  <div class="three-3d-section desk-showcase-wrap" aria-label="3D developer workspace">
-    <div id="three-projects-stack"></div>
-    <!-- HUD Overlays (CSS only) -->
-    <div class="dsk-hud-tl" aria-hidden="true">
-      <div class="dsk-fps-box"><span class="dsk-fps-label">FPS</span><span class="dsk-fps-val" id="dsk-fps">120</span></div>
-    </div>
-    <div class="dsk-hud-bl" aria-hidden="true">
-      <label class="dsk-check"><span class="dsk-cb active"></span>SOUND EFFECT</label>
-      <label class="dsk-check"><span class="dsk-cb"></span>HIGH GRAPHICS</label>
-      <label class="dsk-check"><span class="dsk-cb"></span>MAP NAVIGATION</label>
-    </div>
-    <div class="dsk-hud-br" aria-hidden="true">
-      <a href="#contact" class="dsk-ow-btn">OPEN TO WORK <i class="fa-solid fa-bullhorn"></i></a>
-    </div>
-    <div class="dsk-hud-bc" aria-hidden="true">
-      <span class="dsk-links-label">LINKS</span>
-      <a href="https://www.linkedin.com/in/ahmed-ali-09ba01320/" target="_blank" rel="noopener" class="dsk-link">LINKEDIN <i class="fa-brands fa-linkedin"></i></a>
-      <a href="https://github.com/A7med3li99" target="_blank" rel="noopener" class="dsk-link">GITHUB <i class="fa-brands fa-github"></i></a>
-      <a href="mailto:aly86933@gmail.com" class="dsk-link">EMAIL <i class="fa-solid fa-envelope"></i></a>
-    </div>
-    <!-- Scanline -->
-    <div class="dsk-scanline" aria-hidden="true"></div>
-  </div>
-
   <!-- Gallery Carousel -->
   <div class="gallery-shell gsap-slide-up">
     <button class="gallery-btn" id="prevSlide" aria-label="Previous project">&#8592;</button>
@@ -2834,7 +2906,7 @@ for name, layer in models.items():
       
       <!-- Skill Nodes -->
       <div class="skill-nodes">
-        <div class="skill-node" data-skill="Python" data-level="ADVANCED" data-projects="20+">
+        <div class="skill-node" data-skill="Python" data-projects="20+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🐍</div>
@@ -2843,7 +2915,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="TensorFlow" data-level="TRAINED" data-projects="12+">
+        <div class="skill-node" data-skill="TensorFlow" data-projects="12+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🔥</div>
@@ -2852,7 +2924,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Machine Learning" data-level="ADVANCED" data-projects="15+">
+        <div class="skill-node" data-skill="Machine Learning" data-projects="15+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🤖</div>
@@ -2861,7 +2933,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Data Analysis" data-level="ACTIVE" data-projects="18+">
+        <div class="skill-node" data-skill="Data Analysis" data-projects="18+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">📊</div>
@@ -2870,7 +2942,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="SQL" data-level="CORE SYSTEM" data-projects="20+">
+        <div class="skill-node" data-skill="SQL" data-projects="20+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🗄️</div>
@@ -2879,7 +2951,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="React" data-level="LEARNING" data-projects="8+">
+        <div class="skill-node" data-skill="React" data-projects="8+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">⚛️</div>
@@ -2888,7 +2960,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Next.js" data-level="ACTIVE" data-projects="6+">
+        <div class="skill-node" data-skill="Next.js" data-projects="6+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">▲</div>
@@ -2897,7 +2969,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Node.js" data-level="TRAINED" data-projects="10+">
+        <div class="skill-node" data-skill="Node.js" data-projects="10+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🟢</div>
@@ -2906,7 +2978,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="APIs" data-level="DEPLOYED" data-projects="14+">
+        <div class="skill-node" data-skill="APIs" data-projects="14+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🔌</div>
@@ -2915,7 +2987,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="AI Systems" data-level="LEARNING" data-projects="9+">
+        <div class="skill-node" data-skill="AI Systems" data-projects="9+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🧠</div>
@@ -2936,10 +3008,6 @@ for name, layer in models.items():
         <div class="hud-line">
           <span class="hud-label">SKILL:</span>
           <span class="hud-value">—</span>
-        </div>
-        <div class="hud-line">
-          <span class="hud-label">STATUS:</span>
-          <span class="hud-value">IDLE</span>
         </div>
         <div class="hud-line">
           <span class="hud-label">PROJECTS:</span>
@@ -2968,7 +3036,7 @@ for name, layer in models.items():
   <span class="tag gsap-slide-up">// 06. Contact</span>
   <h2 class="h2 glitch" data-text="Get In Touch">Get In Touch</h2>
   <!-- 3D Holographic Earth — Spline Runtime -->
-  <div class="spline-earth-wrap" aria-label="3D holographic earth" style="margin-bottom:40px">
+  <div class="spline-earth-wrap" aria-label="3D holographic earth">
     <canvas id="earth-canvas"></canvas>
   </div>
 
@@ -5388,6 +5456,10 @@ if (cvLink) {
     var hudPanel = document.querySelector('.ai-hud-panel');
     var coreCenter = document.querySelector('.core-center');
     var particlesContainer = document.querySelector('.particles-container');
+    // HUD bar scaling controls: 20 projects -> 100% (20 * 5), minimum 30% keeps low counts visible.
+    var PROJECT_MULTIPLIER = 5;
+    var MIN_BAR_WIDTH = 30;
+    var MAX_BAR_WIDTH = 100;
 
     if(!skillNodesContainer || nodes.length === 0) return;
 
@@ -5494,7 +5566,6 @@ if (cvLink) {
   nodes.forEach(function(node) {
     node.addEventListener('mouseenter', function() {
       var skill = this.dataset.skill;
-      var level = this.dataset.level;
       var projects = this.dataset.projects;
 
       // Dim other nodes
@@ -5525,7 +5596,7 @@ if (cvLink) {
       }
 
       // Update HUD Panel
-      updateHUD(skill, level, projects);
+      updateHUD(skill, projects);
     });
 
     node.addEventListener('mouseleave', function() {
@@ -5553,24 +5624,19 @@ if (cvLink) {
   });
 
   // Update HUD Panel
-  function updateHUD(skill, level, projects) {
+  function updateHUD(skill, projects) {
     var lines = hudPanel.querySelectorAll('.hud-line');
     
     lines[0].querySelector('.hud-value').textContent = skill;
-    lines[1].querySelector('.hud-value').textContent = level;
-    lines[2].querySelector('.hud-value').textContent = projects;
+    lines[1].querySelector('.hud-value').textContent = projects;
     
-    // Set HUD bar width based on level
+    // Set HUD bar width based on projects count
     var barFill = hudPanel.querySelector('.hud-bar-fill');
-    var levelMap = {
-      'CORE SYSTEM': 100,
-      'ADVANCED': 90,
-      'ACTIVE': 85,
-      'TRAINED': 80,
-      'DEPLOYED': 95,
-      'LEARNING': 60
-    };
-    barFill.style.width = (levelMap[level] || 70) + '%';
+    // data-projects uses formats like "20+", so strip "+" before numeric parsing.
+    var projectsCount = parseInt(String(projects).replace('+', ''), 10) || 0;
+    // Multiplier 5 maps ~20 projects to 100% (20 * 5), then clamp keeps very low counts readable at 30%.
+    var projectsBarWidth = Math.min(MAX_BAR_WIDTH, Math.max(MIN_BAR_WIDTH, projectsCount * PROJECT_MULTIPLIER));
+    barFill.style.width = projectsBarWidth + '%';
     
     hudPanel.classList.add('active');
   }
