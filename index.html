@@ -2933,7 +2933,7 @@ for name, layer in models.items():
       </div>
     </div>
     
-    <div class="orbit-status" aria-live="polite" role="status">
+    <div class="orbit-status" aria-live="polite" aria-atomic="true" role="status">
       <div class="orbit-status-ring" aria-hidden="true"></div>
       <div class="orbit-status-content">
         <span class="orbit-status-skill">NEURAL CORE</span>
@@ -5382,10 +5382,10 @@ if (cvLink) {
     }
   }
 
-  var CORE_VISIBILITY_THRESHOLD = 0.12; // Start animation after a visible portion of the core is onscreen.
+  var CORE_VISIBILITY_THRESHOLD_RATIO = 0.12; // 0.12 = 12% of the core container visible.
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){ setActive(entry.isIntersecting && !document.hidden); });
-  }, { threshold: CORE_VISIBILITY_THRESHOLD });
+  }, { threshold: CORE_VISIBILITY_THRESHOLD_RATIO });
   observer.observe(container);
 
   document.addEventListener('visibilitychange', function(){
@@ -5500,20 +5500,27 @@ if (cvLink) {
     });
   }
 
-  var ORBIT_ROTATION_SPEED = 0.0018; // Radians per frame for the orbital motion.
-  function tick(){
+  var ORBIT_ROTATION_SPEED = 0.11; // Radians per second for the orbital motion.
+  var lastTick = 0;
+  function tick(now){
     if(!running) return;
-    drawOrbit(ORBIT_ROTATION_SPEED);
+    var deltaSeconds = lastTick ? Math.min((now - lastTick) / 1000, 0.05) : 0.016;
+    lastTick = now;
+    drawOrbit(ORBIT_ROTATION_SPEED * deltaSeconds);
     rafId = requestAnimationFrame(tick);
   }
 
   function setRunning(next){
     if(running === next) return;
     running = next;
-    if(running && !rafId) rafId = requestAnimationFrame(tick);
+    if(running && !rafId){
+      lastTick = 0;
+      rafId = requestAnimationFrame(tick);
+    }
     if(!running && rafId){
       cancelAnimationFrame(rafId);
       rafId = null;
+      lastTick = 0;
     }
   }
 
@@ -5556,10 +5563,10 @@ if (cvLink) {
   });
 
   window.addEventListener('resize', refreshNodePositions, { passive: true });
-  var ORBIT_VISIBILITY_THRESHOLD = 0.1; // Keep orbit paused when not fully visible to save CPU.
+  var ORBIT_VISIBILITY_THRESHOLD_RATIO = 0.1; // 0.1 = 10% visible before orbit resumes.
   var containerObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){ setRunning(entry.isIntersecting && !document.hidden); });
-  }, { threshold: ORBIT_VISIBILITY_THRESHOLD });
+  }, { threshold: ORBIT_VISIBILITY_THRESHOLD_RATIO });
   containerObserver.observe(skillNodesContainer.parentElement);
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) setRunning(false);
