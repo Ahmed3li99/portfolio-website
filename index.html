@@ -2933,7 +2933,7 @@ for name, layer in models.items():
       </div>
     </div>
     
-    <div class="orbit-status" aria-live="polite" aria-atomic="true" role="status">
+    <div class="orbit-status" aria-live="polite" aria-atomic="true">
       <div class="orbit-status-ring" aria-hidden="true"></div>
       <div class="orbit-status-content">
         <span class="orbit-status-skill">NEURAL CORE</span>
@@ -5500,9 +5500,9 @@ if (cvLink) {
     });
   }
 
-  var ORBIT_ROTATION_SPEED = 0.11; // Tuned for smooth readable orbit without causing motion blur.
-  var MAX_FRAME_DELTA_SECONDS = 0.05;
-  var INITIAL_FRAME_DELTA_SECONDS = 0.016;
+  var ORBIT_ROTATION_SPEED = 0.11; // Base orbit speed in radians per second.
+  var MAX_FRAME_DELTA_SECONDS = 0.05; // Cap delta to prevent large jumps during frame drops.
+  var INITIAL_FRAME_DELTA_SECONDS = 0.016; // First-frame fallback approximating 60fps.
   var lastTick = 0;
   function tick(now){
     if(!running) return;
@@ -5565,7 +5565,7 @@ if (cvLink) {
   });
 
   window.addEventListener('resize', refreshNodePositions, { passive: true });
-  var ORBIT_VISIBILITY_THRESHOLD_RATIO = 0.1; // Resume early to feel responsive while still pausing when mostly off-screen.
+  var ORBIT_VISIBILITY_THRESHOLD_RATIO = 0.1; // Resume once ~10% is visible to avoid startup lag while still saving CPU off-screen.
   var containerObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){ setRunning(entry.isIntersecting && !document.hidden); });
   }, { threshold: ORBIT_VISIBILITY_THRESHOLD_RATIO });
