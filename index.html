@@ -112,7 +112,7 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   top:120px;
   bottom:36px;
   left:50%;
-  width:min(980px,100vw);
+  width:min(980px,100%);
   height:auto;
   overflow:hidden;
   transform:translateX(-50%);
@@ -123,7 +123,9 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   pointer-events:none;
   z-index:0;
   opacity:.9;
-  --earth-mask:radial-gradient(75% 70% at 50% 52%, rgba(0,0,0,.95) 42%, rgba(0,0,0,.55) 68%, rgba(0,0,0,0) 100%);
+  --earth-mask-core-stop:42%;
+  --earth-mask-mid-stop:68%;
+  --earth-mask:radial-gradient(75% 70% at 50% 52%, rgba(0,0,0,.95) var(--earth-mask-core-stop), rgba(0,0,0,.55) var(--earth-mask-mid-stop), rgba(0,0,0,0) 100%);
   -webkit-mask-image:var(--earth-mask);
   mask-image:var(--earth-mask);
 }
@@ -1590,7 +1592,7 @@ footer span{color:var(--pink)}
   .spline-earth-wrap{
     top:110px;
     bottom:26px;
-    width:100vw;
+    width:100%;
     opacity:.72;
   }
   .proj-grid{grid-template-columns:1fr}
