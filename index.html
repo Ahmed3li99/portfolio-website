@@ -109,10 +109,13 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
    =========================== */
 .spline-earth-wrap{
   position:absolute;
-  inset:120px -8% 36px -8%;
-  width:auto;
+  top:120px;
+  bottom:36px;
+  left:50%;
+  width:min(980px,100vw);
   height:auto;
   overflow:hidden;
+  transform:translateX(-50%);
   background:none;
   border:none;
   border-radius:0;
@@ -120,8 +123,9 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   pointer-events:none;
   z-index:0;
   opacity:.9;
-  -webkit-mask-image:radial-gradient(75% 70% at 50% 52%, rgba(0,0,0,.95) 42%, rgba(0,0,0,.55) 68%, rgba(0,0,0,0) 100%);
-  mask-image:radial-gradient(75% 70% at 50% 52%, rgba(0,0,0,.95) 42%, rgba(0,0,0,.55) 68%, rgba(0,0,0,0) 100%);
+  --earth-mask:radial-gradient(75% 70% at 50% 52%, rgba(0,0,0,.95) 42%, rgba(0,0,0,.55) 68%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image:var(--earth-mask);
+  mask-image:var(--earth-mask);
 }
 #earth-canvas{
   width:100%;height:100%;
@@ -1584,7 +1588,9 @@ footer span{color:var(--pink)}
   .eyr{text-align:left}
   .cgrid{grid-template-columns:1fr}
   .spline-earth-wrap{
-    inset:110px -25% 26px -25%;
+    top:110px;
+    bottom:26px;
+    width:100vw;
     opacity:.72;
   }
   .proj-grid{grid-template-columns:1fr}
