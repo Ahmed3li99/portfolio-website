@@ -987,6 +987,10 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   margin: 60px auto;
   height: 700px;
   perspective: 1200px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
 
 /* Neural Core Canvas - 3D Central Object */
@@ -1777,9 +1781,10 @@ footer span{color:var(--pink)}
 /* About 3D Spheres section */
 .three-3d-section{
   position:relative;width:100%;height:380px;
-  margin:48px 0;border-radius:0;overflow:hidden;
-  background:transparent;
-  border:none;
+  margin:48px 0;border-radius:0;overflow:visible !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 .three-3d-section canvas{
   position:absolute;inset:0;width:100%;height:100%;
@@ -1810,6 +1815,16 @@ footer span{color:var(--pink)}
   z-index:2;
   opacity:.75;
   mix-blend-mode:screen;
+}
+#skills .ts-dots,
+#skills .ts-dots .dot,
+#skills .dot,
+#skills .ts-lvl,
+#skills .skill-bars,
+#skills .sb-pct,
+#skills .sb-track,
+#skills .sb-fill{
+  display:none !important;
 }
 #three-skills-cube{cursor:grab}
 #three-skills-cube:active{cursor:grabbing}
@@ -2891,7 +2906,7 @@ for name, layer in models.items():
       
       <!-- Skill Nodes -->
       <div class="skill-nodes">
-        <div class="skill-node" data-skill="Python" data-level="ADVANCED" data-projects="20+">
+        <div class="skill-node" data-skill="Python" data-projects="20+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🐍</div>
@@ -2900,7 +2915,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="TensorFlow" data-level="TRAINED" data-projects="12+">
+        <div class="skill-node" data-skill="TensorFlow" data-projects="12+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🔥</div>
@@ -2909,7 +2924,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Machine Learning" data-level="ADVANCED" data-projects="15+">
+        <div class="skill-node" data-skill="Machine Learning" data-projects="15+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🤖</div>
@@ -2918,7 +2933,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Data Analysis" data-level="ACTIVE" data-projects="18+">
+        <div class="skill-node" data-skill="Data Analysis" data-projects="18+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">📊</div>
@@ -2927,7 +2942,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="SQL" data-level="CORE SYSTEM" data-projects="20+">
+        <div class="skill-node" data-skill="SQL" data-projects="20+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🗄️</div>
@@ -2936,7 +2951,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="React" data-level="LEARNING" data-projects="8+">
+        <div class="skill-node" data-skill="React" data-projects="8+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">⚛️</div>
@@ -2945,7 +2960,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Next.js" data-level="ACTIVE" data-projects="6+">
+        <div class="skill-node" data-skill="Next.js" data-projects="6+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">▲</div>
@@ -2954,7 +2969,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="Node.js" data-level="TRAINED" data-projects="10+">
+        <div class="skill-node" data-skill="Node.js" data-projects="10+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🟢</div>
@@ -2963,7 +2978,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="APIs" data-level="DEPLOYED" data-projects="14+">
+        <div class="skill-node" data-skill="APIs" data-projects="14+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🔌</div>
@@ -2972,7 +2987,7 @@ for name, layer in models.items():
           <div class="node-glow"></div>
         </div>
         
-        <div class="skill-node" data-skill="AI Systems" data-level="LEARNING" data-projects="9+">
+        <div class="skill-node" data-skill="AI Systems" data-projects="9+">
           <div class="node-outer-ring"></div>
           <div class="node-content">
             <div class="node-icon">🧠</div>
@@ -2993,10 +3008,6 @@ for name, layer in models.items():
         <div class="hud-line">
           <span class="hud-label">SKILL:</span>
           <span class="hud-value">—</span>
-        </div>
-        <div class="hud-line">
-          <span class="hud-label">STATUS:</span>
-          <span class="hud-value">IDLE</span>
         </div>
         <div class="hud-line">
           <span class="hud-label">PROJECTS:</span>
@@ -5445,6 +5456,10 @@ if (cvLink) {
     var hudPanel = document.querySelector('.ai-hud-panel');
     var coreCenter = document.querySelector('.core-center');
     var particlesContainer = document.querySelector('.particles-container');
+    // HUD bar scaling controls: 20 projects -> 100% (20 * 5), minimum 30% keeps low counts visible.
+    var PROJECT_MULTIPLIER = 5;
+    var MIN_BAR_WIDTH = 30;
+    var MAX_BAR_WIDTH = 100;
 
     if(!skillNodesContainer || nodes.length === 0) return;
 
@@ -5551,7 +5566,6 @@ if (cvLink) {
   nodes.forEach(function(node) {
     node.addEventListener('mouseenter', function() {
       var skill = this.dataset.skill;
-      var level = this.dataset.level;
       var projects = this.dataset.projects;
 
       // Dim other nodes
@@ -5582,7 +5596,7 @@ if (cvLink) {
       }
 
       // Update HUD Panel
-      updateHUD(skill, level, projects);
+      updateHUD(skill, projects);
     });
 
     node.addEventListener('mouseleave', function() {
@@ -5610,24 +5624,19 @@ if (cvLink) {
   });
 
   // Update HUD Panel
-  function updateHUD(skill, level, projects) {
+  function updateHUD(skill, projects) {
     var lines = hudPanel.querySelectorAll('.hud-line');
     
     lines[0].querySelector('.hud-value').textContent = skill;
-    lines[1].querySelector('.hud-value').textContent = level;
-    lines[2].querySelector('.hud-value').textContent = projects;
+    lines[1].querySelector('.hud-value').textContent = projects;
     
-    // Set HUD bar width based on level
+    // Set HUD bar width based on projects count
     var barFill = hudPanel.querySelector('.hud-bar-fill');
-    var levelMap = {
-      'CORE SYSTEM': 100,
-      'ADVANCED': 90,
-      'ACTIVE': 85,
-      'TRAINED': 80,
-      'DEPLOYED': 95,
-      'LEARNING': 60
-    };
-    barFill.style.width = (levelMap[level] || 70) + '%';
+    // data-projects uses formats like "20+", so strip "+" before numeric parsing.
+    var projectsCount = parseInt(String(projects).replace('+', ''), 10) || 0;
+    // Multiplier 5 maps ~20 projects to 100% (20 * 5), then clamp keeps very low counts readable at 30%.
+    var projectsBarWidth = Math.min(MAX_BAR_WIDTH, Math.max(MIN_BAR_WIDTH, projectsCount * PROJECT_MULTIPLIER));
+    barFill.style.width = projectsBarWidth + '%';
     
     hudPanel.classList.add('active');
   }
