@@ -980,103 +980,116 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
    =========================== */
 
 /* Main Container */
-.ai-system-container {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  margin: 60px auto;
-  height: 700px;
-  perspective: 1200px;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  overflow: visible !important;
+.ai-system-container{
+  position:relative;
+  width:100%;
+  max-width:980px;
+  margin:58px auto 20px;
+  height:680px;
+  perspective:1300px;
+  background:none !important;
+  border:none !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  isolation:isolate;
+}
+.ai-system-container::before{
+  content:'';
+  position:absolute;
+  inset:6% 8%;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(56,189,248,.16), rgba(56,189,248,0) 55%),
+    conic-gradient(from 0deg, rgba(244,114,182,.18), rgba(34,211,238,.06), rgba(56,189,248,.18), rgba(244,114,182,.18));
+  filter:blur(34px);
+  z-index:1;
+  pointer-events:none;
 }
 
 /* Neural Core Canvas - 3D Central Object */
-#neural-core-canvas {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 320px;
-  height: 320px;
-  z-index: 10;
+#neural-core-canvas{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:300px;
+  height:300px;
+  z-index:10;
 }
 
 /* Skill Nodes Wrapper */
-.skill-nodes-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.skill-nodes-wrapper{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:3;
 }
 
 /* Neural Connections SVG */
-.neural-connections {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  pointer-events: none;
+.neural-connections{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  z-index:4;
+  pointer-events:none;
 }
 
-.neural-connections line {
-  stroke: url(#gradient-cyan);
-  stroke-width: 1.5;
-  opacity: 0.3;
-  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.3));
+.neural-connections line{
+  stroke:url(#gradient-cyan);
+  stroke-width:1.2;
+  opacity:.22;
 }
 
 /* Core Center */
-.core-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  z-index: 15;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.core-center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:84px;
+  height:84px;
+  z-index:15;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.core-glow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.4), transparent);
-  filter: blur(20px);
-  animation: coreGlowPulse 3s ease-in-out infinite;
-  z-index: -1;
+.core-glow{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, rgba(34,211,238,.45), transparent);
+  filter:blur(18px);
+  animation:coreGlowPulse 3s ease-in-out infinite;
+  z-index:-1;
 }
 
-.core-label {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 3px;
-  color: var(--cyan);
-  text-align: center;
-  z-index: 2;
-  text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
-  animation: labelFloat 2.5s ease-in-out infinite;
+.core-label{
+  font-family:var(--mono);
+  font-size:.55rem;
+  letter-spacing:3px;
+  color:var(--cyan);
+  text-align:center;
+  z-index:2;
+  text-shadow:0 0 12px rgba(34,211,238,.6);
+  animation:labelFloat 2.5s ease-in-out infinite;
 }
 
-.core-pulse {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--cyan);
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: corePulse 2s ease-out infinite;
-  z-index: 0;
+.core-pulse{
+  position:absolute;
+  width:42px;
+  height:42px;
+  border:2px solid rgba(34,211,238,.75);
+  border-radius:50%;
+  opacity:.55;
+  animation:corePulse 2s ease-out infinite;
+  z-index:0;
 }
 
 @keyframes coreGlowPulse {
@@ -1111,25 +1124,25 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   left: 0;
 }
 
-.skill-node {
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.33, 0.66, 0.66, 1);
-  z-index: 8;
+.skill-node{
+  position:absolute;
+  width:108px;
+  height:108px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:transform .3s ease, opacity .3s ease;
+  z-index:8;
 }
 
-.node-outer-ring {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid rgba(34, 211, 238, 0.4);
-  border-radius: 50%;
-  animation: nodeRingRotate 8s linear infinite;
+.node-outer-ring{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border:1.5px solid rgba(34,211,238,.35);
+  border-radius:50%;
+  animation:nodeRingRotate 12s linear infinite;
 }
 
 .node-outer-ring::before {
@@ -1149,20 +1162,20 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   100% { transform: rotate(360deg); }
 }
 
-.node-content {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  background: rgba(8, 22, 55, 0.7);
-  border: 1.5px solid rgba(34, 211, 238, 0.5);
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(8px);
-  z-index: 2;
-  transition: all 0.3s ease;
+.node-content{
+  position:absolute;
+  width:88px;
+  height:88px;
+  background:radial-gradient(circle at 30% 30%, rgba(34,211,238,.16), rgba(8,22,55,.78));
+  border:1.5px solid rgba(34,211,238,.48);
+  border-radius:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(7px);
+  z-index:2;
+  transition:border-color .3s ease,box-shadow .3s ease;
 }
 
 .node-icon {
@@ -1197,164 +1210,77 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   opacity: 1;
 }
 
-.skill-node:hover .node-content {
-  border-color: var(--pink);
-  box-shadow: 0 0 20px rgba(244, 114, 182, 0.4), inset 0 0 20px rgba(244, 114, 182, 0.1);
-  background: rgba(8, 22, 55, 0.9);
+.skill-node.is-active .node-content,
+.skill-node:hover .node-content{
+  border-color:var(--pink);
+  box-shadow:0 0 20px rgba(244,114,182,.4), inset 0 0 20px rgba(244,114,182,.1);
 }
 
-.skill-node:hover .node-label {
-  color: var(--pink);
-  text-shadow: 0 0 12px rgba(244, 114, 182, 0.6);
+.skill-node.is-active .node-label,
+.skill-node:hover .node-label{
+  color:var(--pink);
+  text-shadow:0 0 12px rgba(244,114,182,.6);
 }
 
-.skill-node:hover .node-outer-ring {
-  border-color: var(--pink);
-  animation-duration: 3s;
+.skill-node.is-active .node-outer-ring,
+.skill-node:hover .node-outer-ring{
+  border-color:var(--pink);
+  animation-duration:3.2s;
 }
 
-.skill-node:hover .node-icon {
-  filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.6));
-  transform: scale(1.15);
+.skill-node.is-active .node-icon,
+.skill-node:hover .node-icon{
+  filter:drop-shadow(0 0 8px rgba(244,114,182,.6));
+  transform:scale(1.15);
 }
 
-/* Floating HUD Panel */
-.ai-hud-panel {
-  position: fixed;
-  right: 20px;
-  bottom: 80px;
-  width: 280px;
-  background: rgba(3, 9, 26, 0.95);
-  border: 1.5px solid rgba(34, 211, 238, 0.4);
-  border-radius: 8px;
-  backdrop-filter: blur(12px);
-  padding: 20px;
-  z-index: 20;
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.33, 0.66, 0.66, 1);
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
-  font-family: var(--mono);
-  font-size: 0.68rem;
+.orbit-status{
+  position:absolute;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%) scale(.96);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px 10px 10px;
+  border-radius:999px;
+  border:1px solid rgba(34,211,238,.32);
+  background:rgba(3,9,26,.66);
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 24px rgba(34,211,238,.15);
+  opacity:0;
+  transition:opacity .25s ease,transform .25s ease,border-color .25s ease;
+  z-index:16;
 }
-
-.ai-hud-panel.active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+.orbit-status.active{
+  opacity:1;
+  transform:translateX(-50%) scale(1);
 }
-
-.hud-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+.orbit-status-ring{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:2px solid rgba(34,211,238,.7);
+  border-top-color:rgba(244,114,182,.95);
+  animation:nodeRingRotate 2.2s linear infinite;
 }
-
-.hud-title {
-  color: var(--cyan);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: 600;
+.orbit-status-content{
+  display:flex;
+  flex-direction:column;
+  line-height:1.2;
 }
-
-.hud-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 8px var(--cyan);
-  animation: hudPulse 1.5s ease-in-out infinite;
+.orbit-status-skill{
+  font-family:var(--mono);
+  font-size:.64rem;
+  letter-spacing:1.4px;
+  color:var(--cyan);
+  text-transform:uppercase;
 }
-
-@keyframes hudPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.hud-content {
-  margin-bottom: 12px;
-}
-
-.hud-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  color: rgba(223, 240, 252, 0.7);
-  letter-spacing: 1px;
-}
-
-.hud-label {
-  color: var(--txt2);
-}
-
-.hud-value {
-  color: var(--pink);
-  text-shadow: 0 0 6px rgba(244, 114, 182, 0.4);
-  font-weight: 600;
-}
-
-.hud-bar {
-  display: inline-block;
-  width: 60px;
-  height: 3px;
-  background: rgba(34, 211, 238, 0.2);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-left: 4px;
-}
-
-.hud-bar-fill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
-  width: 70%;
-  box-shadow: 0 0 6px var(--cyan);
-}
-
-.hud-footer {
-  height: 1px;
-  background: rgba(34, 211, 238, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.hud-scan-line {
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-  animation: hudScan 2s ease-in-out infinite;
-}
-
-@keyframes hudScan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* Particles Container */
-.particles-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: var(--cyan);
-  border-radius: 50%;
-  opacity: 0.6;
-  pointer-events: none;
+.orbit-status-projects{
+  font-family:var(--mono);
+  font-size:.56rem;
+  letter-spacing:1.1px;
+  color:var(--txt2);
 }
 
 /* Responsive Design */
@@ -1364,8 +1290,8 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   }
   
   #neural-core-canvas {
-    width: 280px;
-    height: 280px;
+    width: 260px;
+    height: 260px;
   }
   
   .skill-node {
@@ -1394,7 +1320,7 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
 
 @media (max-width: 768px) {
   .ai-system-container {
-    height: 500px;
+    height: 520px;
   }
   
   #neural-core-canvas {
@@ -1426,12 +1352,14 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
     font-size: 0.44rem;
   }
   
-  .ai-hud-panel {
-    width: 240px;
-    font-size: 0.6rem;
-    right: 10px;
-    bottom: 20px;
-    padding: 15px;
+  .orbit-status{
+    bottom:12px;
+    padding:8px 11px 8px 8px;
+    gap:9px;
+  }
+  .orbit-status-ring{
+    width:30px;
+    height:30px;
   }
 }
 
@@ -1469,8 +1397,15 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
     font-size: 0.4rem;
   }
   
-  .ai-hud-panel {
-    display: none;
+  .orbit-status{
+    bottom:10px;
+    padding:7px 10px 7px 7px;
+  }
+  .orbit-status-skill{
+    font-size:.52rem;
+  }
+  .orbit-status-projects{
+    font-size:.48rem;
   }
 }
 
@@ -2998,33 +2933,13 @@ for name, layer in models.items():
       </div>
     </div>
     
-    <!-- Floating HUD Panel -->
-    <div class="ai-hud-panel">
-      <div class="hud-header">
-        <div class="hud-title">SYSTEM STATUS</div>
-        <div class="hud-indicator"></div>
-      </div>
-      <div class="hud-content">
-        <div class="hud-line">
-          <span class="hud-label">SKILL:</span>
-          <span class="hud-value">—</span>
-        </div>
-        <div class="hud-line">
-          <span class="hud-label">PROJECTS:</span>
-          <span class="hud-value">0+</span>
-        </div>
-        <div class="hud-line">
-          <span class="hud-label">EFFICIENCY:</span>
-          <span class="hud-bar"><span class="hud-bar-fill"></span></span>
-        </div>
-      </div>
-      <div class="hud-footer">
-        <div class="hud-scan-line"></div>
+    <div class="orbit-status" aria-live="polite" aria-atomic="true">
+      <div class="orbit-status-ring" aria-hidden="true"></div>
+      <div class="orbit-status-content">
+        <span class="orbit-status-skill">NEURAL CORE</span>
+        <span class="orbit-status-projects">Hover a skill node</span>
       </div>
     </div>
-    
-    <!-- Particles Container -->
-    <div class="particles-container" aria-hidden="true"></div>
   </div>
 </div>
 </div>
@@ -3101,25 +3016,59 @@ for name, layer in models.items():
 
 <!-- Spline Runtime — NEXBOT robot + Holographic Earth -->
 <script type="module">
-import { Application } from 'https://unpkg.com/@splinetool/runtime@1.9.82/build/runtime.js';
+const NEXBOT_ROOT_MARGIN = '420px';
+const EARTH_ROOT_MARGIN = '300px';
+const splineScenes = [
+  { canvasId: 'nexbot-canvas', file: './nexbot_robot_character_concept.spline', rootMargin: NEXBOT_ROOT_MARGIN },
+  { canvasId: 'earth-canvas', file: './holographic_earth_with_dynamic_lines.spline', rootMargin: EARTH_ROOT_MARGIN }
+];
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const saveDataEnabled = !!(navigator.connection && navigator.connection.saveData);
+const lowPowerMode = prefersReducedMotion || saveDataEnabled;
+let runtimePromise = null;
 
-/* 1. NEXBOT Robot — Hero section */
-const robotCanvas = document.getElementById('nexbot-canvas');
-if(robotCanvas){
-  const app = new Application(robotCanvas);
-  app.load('./nexbot_robot_character_concept.spline').then(() => {
-    console.log('NEXBOT loaded');
-  }).catch(err => console.error('NEXBOT error:', err));
+function getSplineRuntime(){
+  if(!runtimePromise){
+    runtimePromise = import('https://unpkg.com/@splinetool/runtime@1.9.82/build/runtime.js');
+  }
+  return runtimePromise;
 }
 
-/* 2. Holographic Earth — Contact section */
-const earthCanvas = document.getElementById('earth-canvas');
-if(earthCanvas){
-  const app2 = new Application(earthCanvas);
-  app2.load('./holographic_earth_with_dynamic_lines.spline').then(() => {
-    console.log('Earth loaded');
-  }).catch(err => console.error('Earth error:', err));
+function loadSplineScene(canvas, file){
+  if(!canvas || canvas.dataset.splineLoaded === '1') return;
+  canvas.dataset.splineLoaded = '1';
+  getSplineRuntime()
+    .then(({ Application }) => {
+      const app = new Application(canvas);
+      return app.load(file);
+    })
+    .catch(err => {
+      canvas.dataset.splineLoaded = '0';
+      console.error('Spline load error:', file, err);
+    });
 }
+
+splineScenes.forEach(scene => {
+  const canvas = document.getElementById(scene.canvasId);
+  if(!canvas) return;
+  if(lowPowerMode){
+    canvas.setAttribute('aria-label', '3D animation paused to respect reduced motion or data saver mode');
+    if(canvas.parentElement) canvas.parentElement.style.setProperty('opacity', '.5');
+    return;
+  }
+  if(!('IntersectionObserver' in window)){
+    loadSplineScene(canvas, scene.file);
+    return;
+  }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(!entry.isIntersecting) return;
+      loadSplineScene(canvas, scene.file);
+      observer.disconnect();
+    });
+  }, { rootMargin: scene.rootMargin });
+  observer.observe(canvas);
+});
 </script>
 
 <script>
@@ -5350,153 +5299,146 @@ if (cvLink) {
 
 (function(){
   var container = document.getElementById('neural-core-canvas');
-  if(!container) return;
+  if(!container || typeof THREE === 'undefined') return;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+  var camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
   camera.position.z = 3;
 
-  var renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+  var DEFAULT_DEVICE_MEMORY = 8;
+  var LOW_MEMORY_DEVICE = 4;
+  var MAX_RENDER_PIXEL_RATIO = 1.5;
+  var shouldUseLowPowerRenderer = window.matchMedia('(pointer:coarse)').matches || ((navigator.deviceMemory || DEFAULT_DEVICE_MEMORY) <= LOW_MEMORY_DEVICE);
+  var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !shouldUseLowPowerRenderer, powerPreference: shouldUseLowPowerRenderer ? 'low-power' : 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_RENDER_PIXEL_RATIO));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // Create Neural Core (Holographic Orb)
-  var coreGeometry = new THREE.IcosahedronGeometry(1, 4);
+  var coreGeometry = new THREE.IcosahedronGeometry(1, 2);
   var coreMaterial = new THREE.MeshPhongMaterial({
     color: 0x22d3ee,
     emissive: 0x0088ff,
     wireframe: false,
-    shininess: 100
+    shininess: 90
   });
   var core = new THREE.Mesh(coreGeometry, coreMaterial);
   scene.add(core);
 
-  // Wireframe overlay for Neural Core
-  var wireGeo = new THREE.IcosahedronGeometry(1.02, 4);
-  var wireframeMaterial = new THREE.LineBasicMaterial({
-    color: 0x22d3ee,
-    transparent: true,
-    opacity: 0.5
-  });
+  var wireGeo = new THREE.IcosahedronGeometry(1.02, 2);
+  var wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.45 });
   var wireframeGeometry = new THREE.EdgesGeometry(wireGeo);
   var wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
   scene.add(wireframe);
 
-  // Outer glow sphere
-  var glowGeometry = new THREE.IcosahedronGeometry(1.15, 3);
-  var glowMaterial = new THREE.MeshBasicMaterial({
-    color: 0x22d3ee,
-    transparent: true,
-    opacity: 0.1
-  });
+  var glowGeometry = new THREE.IcosahedronGeometry(1.15, 1);
+  var glowMaterial = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.12 });
   var glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
   scene.add(glowSphere);
 
-  // Store core reference globally for color changes
-  window._neuroCoreData = {
-    coreMaterial: coreMaterial,
-    wireframeMaterial: wireframeMaterial,
-    glowMaterial: glowMaterial
-  };
-
-  // Lighting
   var light = new THREE.PointLight(0xffffff, 1);
   light.position.set(3, 3, 3);
   scene.add(light);
+  scene.add(new THREE.AmbientLight(0x0088ff, 0.3));
 
-  var ambientLight = new THREE.AmbientLight(0x0088ff, 0.3);
-  scene.add(ambientLight);
+  var active = false;
+  var rafId = null;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rotationX = 0;
+  var rotationY = 0;
 
-  // Animation variables
-  var coreRotation = {x: 0, y: 0};
+  function applyAccent(hex){
+    coreMaterial.color.setHex(hex);
+    wireframeMaterial.color.setHex(hex);
+    glowMaterial.color.setHex(hex);
+  }
+  window._neuroCoreData = { setAccent: applyAccent, resetAccent: function(){ applyAccent(0x22d3ee); } };
 
-  // Animation loop
-  function animateCore(time) {
-    coreRotation.x += 0.0005;
-    coreRotation.y += 0.0008;
-    
-    core.rotation.x = coreRotation.x;
-    core.rotation.y = coreRotation.y;
+  function animateCore(time){
+    if(!active) return;
+    rotationX += reducedMotion ? 0.0002 : 0.00045;
+    rotationY += reducedMotion ? 0.0003 : 0.00075;
+    core.rotation.x = rotationX;
+    core.rotation.y = rotationY;
     wireframe.rotation.copy(core.rotation);
     glowSphere.rotation.copy(core.rotation);
-
-    // Floating animation
-    core.position.y = Math.sin(time * 0.0005) * 0.2;
-    wireframe.position.y = Math.sin(time * 0.0005) * 0.2;
-    glowSphere.position.y = Math.sin(time * 0.0005) * 0.2;
-
-    // Pulse effect
-    var pulse = 1 + Math.sin(time * 0.001) * 0.1;
+    var floatY = reducedMotion ? 0 : Math.sin(time * 0.00045) * 0.18;
+    core.position.y = floatY;
+    wireframe.position.y = floatY;
+    glowSphere.position.y = floatY;
+    var pulse = reducedMotion ? 1 : (1 + Math.sin(time * 0.001) * 0.08);
     core.scale.set(pulse, pulse, pulse);
-
     renderer.render(scene, camera);
-    requestAnimationFrame(animateCore);
+    rafId = requestAnimationFrame(animateCore);
   }
-  animateCore(0);
 
-  // Handle resize
-  window.addEventListener('resize', function() {
-    camera.aspect = container.clientWidth / container.clientHeight;
+  function setActive(next){
+    if(active === next) return;
+    active = next;
+    if(active && !rafId) rafId = requestAnimationFrame(animateCore);
+    if(!active && rafId){
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  var CORE_VISIBILITY_THRESHOLD_RATIO = 0.12; // Small threshold starts render slightly before full entry to avoid visible stutter.
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ setActive(entry.isIntersecting && !document.hidden); });
+  }, { threshold: CORE_VISIBILITY_THRESHOLD_RATIO });
+  observer.observe(container);
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) setActive(false);
+    else if(container.getBoundingClientRect().top < window.innerHeight && container.getBoundingClientRect().bottom > 0) setActive(true);
+  });
+
+  window.addEventListener('resize', function(){
+    var w = container.clientWidth || 1;
+    var h = container.clientHeight || 1;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(w, h);
   });
 })();
 
 /* ===========================
    SKILL NODES POSITIONING & ANIMATIONS
    =========================== */
-
 (function(){
-  // Delay initialization to ensure DOM is ready
-  setTimeout(function() {
-    var skillNodesContainer = document.querySelector('.skill-nodes');
-    var nodes = document.querySelectorAll('.skill-node');
-    var connectionSvg = document.querySelector('.neural-connections');
-    var hudPanel = document.querySelector('.ai-hud-panel');
-    var coreCenter = document.querySelector('.core-center');
-    var particlesContainer = document.querySelector('.particles-container');
-    // HUD bar scaling controls: 20 projects -> 100% (20 * 5), minimum 30% keeps low counts visible.
-    var PROJECT_MULTIPLIER = 5;
-    var MIN_BAR_WIDTH = 30;
-    var MAX_BAR_WIDTH = 100;
+  var skillNodesContainer = document.querySelector('.skill-nodes');
+  var nodes = Array.prototype.slice.call(document.querySelectorAll('.skill-node'));
+  var connectionSvg = document.querySelector('.neural-connections');
+  var orbitStatus = document.querySelector('.orbit-status');
+  var orbitStatusSkill = orbitStatus ? orbitStatus.querySelector('.orbit-status-skill') : null;
+  var orbitStatusProjects = orbitStatus ? orbitStatus.querySelector('.orbit-status-projects') : null;
+  if(!skillNodesContainer || !connectionSvg || nodes.length === 0) return;
 
-    if(!skillNodesContainer || nodes.length === 0) return;
+  var centerX = 0;
+  var centerY = 0;
+  var baseRadius = 270;
+  var orbitDrift = 0;
+  var activeNodeIndex = -1;
+  var rafId = null;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var running = false;
 
-    var nodeCount = nodes.length;
-    var radius = 280; // Distance from center
-    var containerWidth = skillNodesContainer.parentElement.clientWidth;
-    var containerHeight = skillNodesContainer.parentElement.clientHeight;
-    var centerX = containerWidth / 2;
-    var centerY = containerHeight / 2;
+  nodes.forEach(function(node, i){
+    node.dataset.baseAngle = ((i / nodes.length) * Math.PI * 2 - Math.PI / 2).toString();
+  });
 
-    // Position skill nodes in a circle
-    nodes.forEach(function(node, i) {
-      var angle = (i / nodeCount) * Math.PI * 2 - Math.PI / 2;
-      var x = Math.cos(angle) * radius;
-      var y = Math.sin(angle) * radius;
-      
-      node.style.left = (centerX + x) + 'px';
-      node.style.top = (centerY + y) + 'px';
-      node.style.transform = 'translate(-50%, -50%)';
-      
-      // Store original position for animations
-      node.dataset.angle = angle;
-      node.dataset.x = x;
-      node.dataset.y = y;
-    });
+  function getRadius(){
+    if(window.innerWidth < 500) return 120;
+    if(window.innerWidth < 768) return 150;
+    if(window.innerWidth < 1024) return 210;
+    return baseRadius;
+  }
 
-  // Initialize SVG
-  connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
-  connectionSvg.setAttribute('width', '100%');
-  connectionSvg.setAttribute('height', '100%');
-  connectionSvg.setAttribute('preserveAspectRatio', 'none');
-
-  // Draw SVG connection lines
-  function drawConnections() {
+  function setupSvg(sizeW, sizeH){
+    connectionSvg.setAttribute('viewBox', '0 0 ' + sizeW + ' ' + sizeH);
+    connectionSvg.setAttribute('width', '100%');
+    connectionSvg.setAttribute('height', '100%');
     connectionSvg.innerHTML = '';
-    
-    // Recreate gradient each time
     var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     var gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     gradient.setAttribute('id', 'gradient-cyan');
@@ -5504,185 +5446,135 @@ if (cvLink) {
     gradient.setAttribute('y1', '0%');
     gradient.setAttribute('x2', '100%');
     gradient.setAttribute('y2', '100%');
-    
     var stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
     stop1.setAttribute('stop-color', '#22d3ee');
-    stop1.setAttribute('stop-opacity', '0.2');
-    
+    stop1.setAttribute('stop-opacity', '0.28');
     var stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#38bdf8');
-    stop2.setAttribute('stop-opacity', '0.1');
-    
+    stop2.setAttribute('stop-color', '#f472b6');
+    stop2.setAttribute('stop-opacity', '0.18');
     gradient.appendChild(stop1);
     gradient.appendChild(stop2);
     defs.appendChild(gradient);
     connectionSvg.appendChild(defs);
-
-    nodes.forEach(function(node, i) {
+    nodes.forEach(function(_, i){
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      var x = centerX + parseFloat(node.dataset.x);
-      var y = centerY + parseFloat(node.dataset.y);
-      
+      line.setAttribute('class', 'neural-connection-line');
+      line.dataset.index = String(i);
       line.setAttribute('x1', centerX);
       line.setAttribute('y1', centerY);
-      line.setAttribute('x2', x);
-      line.setAttribute('y2', y);
-      line.setAttribute('class', 'neural-connection-line');
-      line.setAttribute('stroke-width', '1.5');
-      line.setAttribute('stroke-opacity', '0.3');
-      
+      line.setAttribute('stroke-opacity', '0.22');
       connectionSvg.appendChild(line);
     });
   }
-  drawConnections();
 
-  // Create particles
-  function createParticles() {
-    for(var i = 0; i < 15; i++) {
-      var particle = document.createElement('div');
-      particle.className = 'particle';
-      var angle = Math.random() * Math.PI * 2;
-      var distance = Math.random() * 200 + 50;
-      particle.style.left = (centerX + Math.cos(angle) * distance) + 'px';
-      particle.style.top = (centerY + Math.sin(angle) * distance) + 'px';
-      particlesContainer.appendChild(particle);
-      
-      // Animate particles
-      gsap.to(particle, {
-        duration: 3 + Math.random() * 2,
-        left: centerX + Math.cos(angle) * (distance + 100),
-        top: centerY + Math.sin(angle) * (distance + 100),
-        opacity: 0,
-        repeat: -1,
-        repeatDelay: 1
-      });
+  function refreshNodePositions(){
+    var parent = skillNodesContainer.parentElement;
+    var w = parent.clientWidth;
+    var h = parent.clientHeight;
+    centerX = w / 2;
+    centerY = h / 2;
+    setupSvg(w, h);
+    drawOrbit(0);
+  }
+
+  function drawOrbit(delta){
+    if(!reducedMotion) orbitDrift += delta;
+    var radius = getRadius();
+    var lines = connectionSvg.querySelectorAll('.neural-connection-line');
+    nodes.forEach(function(node, i){
+      var baseAngle = parseFloat(node.dataset.baseAngle);
+      var angle = baseAngle + orbitDrift;
+      var x = centerX + Math.cos(angle) * radius;
+      var y = centerY + Math.sin(angle) * radius;
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+      node.style.transform = 'translate(-50%, -50%)';
+      if(lines[i]){
+        lines[i].setAttribute('x1', centerX);
+        lines[i].setAttribute('y1', centerY);
+        lines[i].setAttribute('x2', x);
+        lines[i].setAttribute('y2', y);
+      }
+    });
+  }
+
+  var ORBIT_ROTATION_SPEED = 0.11; // Base orbit speed in radians per second.
+  var MAX_FRAME_DELTA_SECONDS = 0.05; // Cap delta to prevent large jumps during frame drops.
+  var INITIAL_FRAME_DELTA_SECONDS = 0.016; // First-frame fallback approximating 60fps.
+  var lastTick = 0;
+  function tick(now){
+    if(!running) return;
+    var deltaSeconds = lastTick ? Math.min((now - lastTick) / 1000, MAX_FRAME_DELTA_SECONDS) : INITIAL_FRAME_DELTA_SECONDS;
+    lastTick = now;
+    drawOrbit(ORBIT_ROTATION_SPEED * deltaSeconds);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function setRunning(next){
+    if(running === next) return;
+    running = next;
+    if(running && !rafId){
+      lastTick = 0;
+      rafId = requestAnimationFrame(tick);
+    }
+    if(!running && rafId){
+      cancelAnimationFrame(rafId);
+      rafId = null;
+      lastTick = 0;
     }
   }
-  createParticles();
 
-  // Skill node hover interactions
-  nodes.forEach(function(node) {
-    node.addEventListener('mouseenter', function() {
-      var skill = this.dataset.skill;
-      var projects = this.dataset.projects;
-
-      // Dim other nodes
-      nodes.forEach(function(n) {
-        if(n !== node) {
-          gsap.to(n, {opacity: 0.3, duration: 0.3});
-        }
-      });
-
-      // Brighten this node
-      gsap.to(this.querySelector('.node-content'), {
-        boxShadow: '0 0 30px rgba(244, 114, 182, 0.6), inset 0 0 30px rgba(244, 114, 182, 0.15)',
-        duration: 0.3
-      });
-
-      // Animate connection line
-      var lines = document.querySelectorAll('.neural-connection-line');
-      var nodeIndex = Array.prototype.indexOf.call(nodes, this);
-      if(nodeIndex >= 0 && lines[nodeIndex]) {
-        gsap.to(lines[nodeIndex], {attr: {strokeWidth: 3, strokeOpacity: 1}, duration: 0.3});
-      }
-
-      // Change neural core glow color
-      if(window._neuroCoreData) {
-        window._neuroCoreData.coreMaterial.color.setHex(0xf472b6);
-        window._neuroCoreData.wireframeMaterial.color.setHex(0xf472b6);
-        window._neuroCoreData.glowMaterial.color.setHex(0xf472b6);
-      }
-
-      // Update HUD Panel
-      updateHUD(skill, projects);
+  function activateNode(index){
+    activeNodeIndex = index;
+    nodes.forEach(function(node, i){
+      var active = i === index;
+      node.classList.toggle('is-active', active);
+      node.style.opacity = active || index < 0 ? '1' : '0.33';
     });
-
-    node.addEventListener('mouseleave', function() {
-      // Restore other nodes
-      nodes.forEach(function(n) {
-        gsap.to(n, {opacity: 1, duration: 0.3});
-      });
-
-      // Restore connection lines
-      var lines = document.querySelectorAll('.neural-connection-line');
-      lines.forEach(function(line) {
-        gsap.to(line, {attr: {strokeWidth: 1.5, strokeOpacity: 0.3}, duration: 0.3});
-      });
-
-      // Restore neural core color
-      if(window._neuroCoreData) {
-        window._neuroCoreData.wireframeMaterial.color.setHex(0x22d3ee);
-        window._neuroCoreData.coreMaterial.color.setHex(0x22d3ee);
-        window._neuroCoreData.glowMaterial.color.setHex(0x22d3ee);
-      }
-
-      // Hide HUD
-      hudPanel.classList.remove('active');
+    var lines = connectionSvg.querySelectorAll('.neural-connection-line');
+    lines.forEach(function(line){
+      var active = Number(line.dataset.index) === index;
+      line.setAttribute('stroke-width', active ? '2.3' : '1.2');
+      line.setAttribute('stroke-opacity', active ? '0.88' : '0.22');
     });
+    if(index >= 0){
+      var selected = nodes[index];
+      if(orbitStatus && orbitStatusSkill && orbitStatusProjects){
+        orbitStatusSkill.textContent = selected.dataset.skill || 'Skill';
+        orbitStatusProjects.textContent = (selected.dataset.projects || '0+') + ' Projects';
+        orbitStatus.classList.add('active');
+      }
+      if(window._neuroCoreData && typeof window._neuroCoreData.setAccent === 'function'){
+        window._neuroCoreData.setAccent(0xf472b6);
+      }
+    } else {
+      if(orbitStatus) orbitStatus.classList.remove('active');
+      if(window._neuroCoreData && typeof window._neuroCoreData.resetAccent === 'function'){
+        window._neuroCoreData.resetAccent();
+      }
+    }
+  }
+
+  nodes.forEach(function(node, i){
+    node.addEventListener('mouseenter', function(){ activateNode(i); });
+    node.addEventListener('mouseleave', function(){ activateNode(-1); });
+    node.addEventListener('focusin', function(){ activateNode(i); });
+    node.addEventListener('focusout', function(){ activateNode(-1); });
   });
 
-  // Update HUD Panel
-  function updateHUD(skill, projects) {
-    var lines = hudPanel.querySelectorAll('.hud-line');
-    
-    lines[0].querySelector('.hud-value').textContent = skill;
-    lines[1].querySelector('.hud-value').textContent = projects;
-    
-    // Set HUD bar width based on projects count
-    var barFill = hudPanel.querySelector('.hud-bar-fill');
-    // data-projects uses formats like "20+", so strip "+" before numeric parsing.
-    var projectsCount = parseInt(String(projects).replace('+', ''), 10) || 0;
-    // Multiplier 5 maps ~20 projects to 100% (20 * 5), then clamp keeps very low counts readable at 30%.
-    var projectsBarWidth = Math.min(MAX_BAR_WIDTH, Math.max(MIN_BAR_WIDTH, projectsCount * PROJECT_MULTIPLIER));
-    barFill.style.width = projectsBarWidth + '%';
-    
-    hudPanel.classList.add('active');
-  }
-
-  // Responsive positioning
-  function updatePositions() {
-    var containerWidth = skillNodesContainer.parentElement.clientWidth;
-    var containerHeight = skillNodesContainer.parentElement.clientHeight;
-    centerX = containerWidth / 2;
-    centerY = containerHeight / 2;
-    
-    // Update SVG viewBox
-    connectionSvg.setAttribute('viewBox', '0 0 ' + containerWidth + ' ' + containerHeight);
-    
-    // Adjust radius based on screen size
-    var newRadius = radius;
-    if(window.innerWidth < 768) {
-      newRadius = 180;
-    } else if(window.innerWidth < 1024) {
-      newRadius = 230;
-    }
-
-    nodes.forEach(function(node, i) {
-      var angle = parseFloat(node.dataset.angle);
-      var x = Math.cos(angle) * newRadius;
-      var y = Math.sin(angle) * newRadius;
-      
-      gsap.to(node, {
-        left: centerX + x,
-        top: centerY + y,
-        duration: 0.5
-      });
-    });
-
-    drawConnections();
-  }
-
-  window.addEventListener('resize', updatePositions);
-
-  // Initial animation on page load
-  gsap.fromTo(nodes, 
-    {opacity: 0, scale: 0},
-    {opacity: 1, scale: 1, duration: 0.6, stagger: 0.1}
-  );
-  }, 100); // End of setTimeout
-
+  window.addEventListener('resize', refreshNodePositions, { passive: true });
+  var ORBIT_VISIBILITY_THRESHOLD_RATIO = 0.1; // Resume once ~10% is visible to avoid startup lag while still saving CPU off-screen.
+  var containerObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ setRunning(entry.isIntersecting && !document.hidden); });
+  }, { threshold: ORBIT_VISIBILITY_THRESHOLD_RATIO });
+  containerObserver.observe(skillNodesContainer.parentElement);
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) setRunning(false);
+    else if(skillNodesContainer.parentElement.getBoundingClientRect().top < window.innerHeight && skillNodesContainer.parentElement.getBoundingClientRect().bottom > 0) setRunning(true);
+  });
+  refreshNodePositions();
 })();
 
 </script>
