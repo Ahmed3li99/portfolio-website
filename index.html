@@ -109,8 +109,11 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
    =========================== */
 .spline-earth-wrap{
   position:absolute;
-  top:120px;
-  bottom:36px;
+  --earth-offset-top:120px;
+  --earth-offset-bottom:36px;
+  --earth-base-opacity:.9;
+  top:var(--earth-offset-top);
+  bottom:var(--earth-offset-bottom);
   left:50%;
   width:min(980px,100%);
   height:auto;
@@ -122,7 +125,7 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   box-shadow:none;
   pointer-events:none;
   z-index:0;
-  opacity:.9;
+  opacity:var(--earth-base-opacity);
   --earth-mask-w:75%;
   --earth-mask-h:70%;
   --earth-mask-x:50%;
@@ -1597,10 +1600,13 @@ footer span{color:var(--pink)}
   .eyr{text-align:left}
   .cgrid{grid-template-columns:1fr}
   .spline-earth-wrap{
-    top:110px;
-    bottom:26px;
+    --earth-offset-top:110px;
+    --earth-offset-bottom:26px;
+    --earth-base-opacity:.72;
+    top:var(--earth-offset-top);
+    bottom:var(--earth-offset-bottom);
     width:100%;
-    opacity:.72;
+    opacity:var(--earth-base-opacity);
   }
   .proj-grid{grid-template-columns:1fr}
   #scroll-nav{display:none}
