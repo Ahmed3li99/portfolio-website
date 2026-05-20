@@ -2933,7 +2933,7 @@ for name, layer in models.items():
       </div>
     </div>
     
-    <div class="orbit-status" aria-live="polite">
+    <div class="orbit-status" aria-live="polite" role="status">
       <div class="orbit-status-ring" aria-hidden="true"></div>
       <div class="orbit-status-content">
         <span class="orbit-status-skill">NEURAL CORE</span>
@@ -3050,6 +3050,7 @@ splineScenes.forEach(scene => {
   const canvas = document.getElementById(scene.canvasId);
   if(!canvas) return;
   if(lowPowerMode){
+    canvas.setAttribute('aria-label', '3D animation paused to respect reduced motion or data saver mode');
     canvas.closest('#nexbot-canvas-wrap, .spline-earth-wrap')?.style.setProperty('opacity', '.5');
     return;
   }
@@ -5302,7 +5303,8 @@ if (cvLink) {
   var camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
   camera.position.z = 3;
 
-  var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: 'low-power' });
+  var lowPowerGpu = window.matchMedia('(pointer:coarse)').matches || ((navigator.deviceMemory || 8) <= 4);
+  var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: lowPowerGpu ? 'low-power' : 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setClearColor(0x000000, 0);
@@ -5375,9 +5377,10 @@ if (cvLink) {
     }
   }
 
+  var CORE_OBSERVER_THRESHOLD = 0.12; // Start animation after a visible portion of the core is on-screen.
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){ setActive(entry.isIntersecting && !document.hidden); });
-  }, { threshold: 0.12 });
+  }, { threshold: CORE_OBSERVER_THRESHOLD });
   observer.observe(container);
 
   document.addEventListener('visibilitychange', function(){
@@ -5492,9 +5495,10 @@ if (cvLink) {
     });
   }
 
+  var ORBIT_DRIFT_SPEED = 0.0018;
   function tick(){
     if(!running) return;
-    drawOrbit(0.0018);
+    drawOrbit(ORBIT_DRIFT_SPEED);
     rafId = requestAnimationFrame(tick);
   }
 
@@ -5547,9 +5551,10 @@ if (cvLink) {
   });
 
   window.addEventListener('resize', refreshNodePositions, { passive: true });
+  var ORBIT_OBSERVER_THRESHOLD = 0.1; // Keep orbit paused when barely visible to save CPU.
   var containerObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){ setRunning(entry.isIntersecting && !document.hidden); });
-  }, { threshold: 0.1 });
+  }, { threshold: ORBIT_OBSERVER_THRESHOLD });
   containerObserver.observe(skillNodesContainer.parentElement);
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) setRunning(false);
