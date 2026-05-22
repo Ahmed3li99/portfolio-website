@@ -2957,10 +2957,10 @@ const splineScenes = [
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const saveDataEnabled = !!(navigator.connection && navigator.connection.saveData);
 const DEFAULT_DEVICE_MEMORY = 8;
-const LOW_MEMORY_DEVICE = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-heavy scenes.
+const LOW_MEMORY_DEVICE = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-intensive scenes.
 const LOW_CPU_THREADS = 4; // Devices with <=4 logical cores are treated as low-end for smoother scrolling.
 const SPLINE_STATE_NOT_LOADED = '0';
-const SPLINE_STATE_LOADING = '1';
+const SPLINE_STATE_LOADING = '2';
 const SPLINE_STATE_LOADED = '1';
 const deviceMemory = navigator.deviceMemory || DEFAULT_DEVICE_MEMORY;
 const hardwareThreads = navigator.hardwareConcurrency || 8;
@@ -3015,7 +3015,7 @@ splineScenes.forEach(scene => {
   const canvas = document.getElementById(scene.canvasId);
   if(!canvas) return;
   if(strictLowPowerMode || (lowPerformanceDevice && scene.disableOnLowPower)){
-    canvas.setAttribute('aria-label', '3D animation paused to respect reduced motion, data saver, or device performance limits');
+    canvas.setAttribute('aria-label', '3D animation disabled due to reduced motion preference, data saver mode, or device performance constraints');
     if(canvas.parentElement) canvas.parentElement.style.setProperty('opacity', '.5');
     return;
   }
