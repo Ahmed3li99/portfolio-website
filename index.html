@@ -2958,16 +2958,17 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 const saveDataEnabled = !!(navigator.connection && navigator.connection.saveData);
 const DEFAULT_DEVICE_MEMORY = 8;
 const DEFAULT_HARDWARE_THREADS = 8;
-const LOW_MEMORY_DEVICE = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-intensive scenes.
-const LOW_CPU_THREADS = 4; // Devices with <=4 logical cores are treated as low-end for smoother scrolling.
+const LOW_MEMORY_THRESHOLD = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-intensive scenes.
+const LOW_CPU_THREAD_THRESHOLD = 4; // Devices with <=4 logical cores are treated as low-end for smoother scrolling.
 const IDLE_PREWARM_TIMEOUT = 1200;
 const FALLBACK_PREWARM_DELAY = 450;
+const SPLINE_STATE_IDLE = '';
 const SPLINE_STATE_NOT_LOADED = 'not_loaded';
 const SPLINE_STATE_LOADING = 'loading';
 const SPLINE_STATE_LOADED = 'loaded';
 const deviceMemory = navigator.deviceMemory || DEFAULT_DEVICE_MEMORY;
 const hardwareThreads = navigator.hardwareConcurrency || DEFAULT_HARDWARE_THREADS;
-const lowPerformanceDevice = deviceMemory <= LOW_MEMORY_DEVICE || hardwareThreads <= LOW_CPU_THREADS;
+const lowPerformanceDevice = deviceMemory <= LOW_MEMORY_THRESHOLD || hardwareThreads <= LOW_CPU_THREAD_THRESHOLD;
 const strictLowPowerMode = prefersReducedMotion || saveDataEnabled;
 const lowPowerMode = strictLowPowerMode || lowPerformanceDevice;
 let runtimePromise = null;
@@ -2995,7 +2996,7 @@ function loadSplineScene(canvas, file){
       console.error('Spline load error:', file, err);
     })
     .finally(() => {
-      canvas.dataset.splineLoading = SPLINE_STATE_NOT_LOADED;
+      canvas.dataset.splineLoading = SPLINE_STATE_IDLE;
     });
 }
 
@@ -3018,7 +3019,7 @@ splineScenes.forEach(scene => {
   const canvas = document.getElementById(scene.canvasId);
   if(!canvas) return;
   if(strictLowPowerMode || (lowPerformanceDevice && scene.disableOnLowPower)){
-    canvas.setAttribute('aria-label', '3D animation disabled due to reduced motion preference, data saver mode, or device performance constraints');
+    canvas.setAttribute('aria-label', '3D animation disabled for accessibility or performance');
     if(canvas.parentElement) canvas.parentElement.style.setProperty('opacity', '.5');
     return;
   }
