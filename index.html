@@ -2957,8 +2957,11 @@ const splineScenes = [
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const saveDataEnabled = !!(navigator.connection && navigator.connection.saveData);
 const DEFAULT_DEVICE_MEMORY = 8;
-const LOW_MEMORY_DEVICE = 4;
-const LOW_CPU_THREADS = 4;
+const LOW_MEMORY_DEVICE = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-heavy scenes.
+const LOW_CPU_THREADS = 4; // Devices with <=4 logical cores are treated as low-end for smoother scrolling.
+const SPLINE_STATE_NOT_LOADED = '0';
+const SPLINE_STATE_LOADING = '1';
+const SPLINE_STATE_LOADED = '1';
 const deviceMemory = navigator.deviceMemory || DEFAULT_DEVICE_MEMORY;
 const hardwareThreads = navigator.hardwareConcurrency || 8;
 const lowPerformanceDevice = deviceMemory <= LOW_MEMORY_DEVICE || hardwareThreads <= LOW_CPU_THREADS;
@@ -2975,26 +2978,28 @@ function getSplineRuntime(){
 }
 
 function loadSplineScene(canvas, file){
-  if(!canvas || canvas.dataset.splineLoaded === '1' || canvas.dataset.splineLoading === '1') return Promise.resolve();
-  canvas.dataset.splineLoading = '1';
+  if(!canvas || canvas.dataset.splineLoaded === SPLINE_STATE_LOADED || canvas.dataset.splineLoading === SPLINE_STATE_LOADING) return Promise.resolve();
+  canvas.dataset.splineLoading = SPLINE_STATE_LOADING;
   return getSplineRuntime()
     .then(({ Application }) => {
       const app = new Application(canvas);
       return app.load(file).then(() => {
-        canvas.dataset.splineLoaded = '1';
+        canvas.dataset.splineLoaded = SPLINE_STATE_LOADED;
       });
     })
     .catch(err => {
-      canvas.dataset.splineLoaded = '0';
+      canvas.dataset.splineLoaded = SPLINE_STATE_NOT_LOADED;
       console.error('Spline load error:', file, err);
     })
     .finally(() => {
-      canvas.dataset.splineLoading = '0';
+      canvas.dataset.splineLoading = SPLINE_STATE_NOT_LOADED;
     });
 }
 
 function queueSplineSceneLoad(canvas, file){
-  loadQueue = loadQueue.then(() => loadSplineScene(canvas, file)).catch(() => {});
+  loadQueue = loadQueue.then(() => loadSplineScene(canvas, file)).catch(err => {
+    console.warn('Spline queue recovery:', err);
+  });
   return loadQueue;
 }
 
