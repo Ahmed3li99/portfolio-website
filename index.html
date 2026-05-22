@@ -975,6 +975,32 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
   box-shadow:0 0 8px var(--cyan);
 }
 
+/* simple skills layout */
+.skills-simple-grid{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+.skill-category{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 16px;
+}
+.skill-category h3{
+  font-family:var(--disp);
+  font-size:.9rem;
+  letter-spacing:1.2px;
+  color:var(--blue);
+  margin-bottom:10px;
+}
+.skill-category p{
+  color:var(--txt2);
+  font-size:.9rem;
+  line-height:1.75;
+}
+
 /* ===========================
    FUTURISTIC AI INTERFACE
    =========================== */
@@ -2820,125 +2846,31 @@ for name, layer in models.items():
 <div class="dark-bg">
 <div class="sec" id="skills">
   <span class="tag gsap-slide-up">// 05. Skills</span>
-  <h2 class="h2 glitch" data-text="Tech Stack">Tech Stack</h2>
-
-  <!-- Futuristic AI System Interface -->
-  <div class="ai-system-container">
-    <!-- 3D Canvas for Neural Core -->
-    <div id="neural-core-canvas" class="neural-core-canvas"></div>
-    
-    <!-- Skill Nodes Container -->
-    <div class="skill-nodes-wrapper">
-      <!-- Connection SVG -->
-      <svg class="neural-connections" aria-hidden="true"></svg>
-      
-      <!-- Center Glow and Core Label -->
-      <div class="core-center">
-        <div class="core-glow"></div>
-        <div class="core-label">NEURAL CORE</div>
-        <div class="core-pulse"></div>
-      </div>
-      
-      <!-- Skill Nodes -->
-      <div class="skill-nodes">
-        <div class="skill-node" data-skill="Python" data-projects="20+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🐍</div>
-            <div class="node-label">Python</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="TensorFlow" data-projects="12+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🔥</div>
-            <div class="node-label">TensorFlow</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="Machine Learning" data-projects="15+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🤖</div>
-            <div class="node-label">Machine Learning</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="Data Analysis" data-projects="18+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">📊</div>
-            <div class="node-label">Data Analysis</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="SQL" data-projects="20+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🗄️</div>
-            <div class="node-label">SQL</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="React" data-projects="8+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">⚛️</div>
-            <div class="node-label">React</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="Next.js" data-projects="6+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">▲</div>
-            <div class="node-label">Next.js</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="Node.js" data-projects="10+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🟢</div>
-            <div class="node-label">Node.js</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="APIs" data-projects="14+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🔌</div>
-            <div class="node-label">APIs</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-        
-        <div class="skill-node" data-skill="AI Systems" data-projects="9+">
-          <div class="node-outer-ring"></div>
-          <div class="node-content">
-            <div class="node-icon">🧠</div>
-            <div class="node-label">AI Systems</div>
-          </div>
-          <div class="node-glow"></div>
-        </div>
-      </div>
+  <h2 class="h2 glitch" data-text="Technical Skills">Technical Skills</h2>
+  <div class="skills-simple-grid">
+    <div class="skill-category">
+      <h3>Programming</h3>
+      <p>Python, SQL</p>
     </div>
-    
-    <div class="orbit-status" aria-live="polite" aria-atomic="true">
-      <div class="orbit-status-ring" aria-hidden="true"></div>
-      <div class="orbit-status-content">
-        <span class="orbit-status-skill">NEURAL CORE</span>
-        <span class="orbit-status-projects">Hover a skill node</span>
-      </div>
+    <div class="skill-category">
+      <h3>Data Analysis</h3>
+      <p>Pandas, NumPy, Data Cleaning, Exploratory Data Analysis (EDA), Data Visualization, Statistical Analysis</p>
+    </div>
+    <div class="skill-category">
+      <h3>Machine Learning</h3>
+      <p>scikit-learn, Classification, Regression, Feature Engineering, Model Evaluation, ROC-AUC, Confusion Matrix</p>
+    </div>
+    <div class="skill-category">
+      <h3>Deep Learning</h3>
+      <p>TensorFlow, Keras, CNN, RNN, LSTM, GRU, Neural Networks</p>
+    </div>
+    <div class="skill-category">
+      <h3>Visualization</h3>
+      <p>Matplotlib, Seaborn</p>
+    </div>
+    <div class="skill-category">
+      <h3>Tools</h3>
+      <p>Git, GitHub, Jupyter Notebook, IBM Cloud</p>
     </div>
   </div>
 </div>
