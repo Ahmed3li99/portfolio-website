@@ -2957,13 +2957,16 @@ const splineScenes = [
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const saveDataEnabled = !!(navigator.connection && navigator.connection.saveData);
 const DEFAULT_DEVICE_MEMORY = 8;
+const DEFAULT_HARDWARE_THREADS = 8;
 const LOW_MEMORY_DEVICE = 4; // Devices with <=4GB RAM are treated as low-end for WebGL-intensive scenes.
 const LOW_CPU_THREADS = 4; // Devices with <=4 logical cores are treated as low-end for smoother scrolling.
+const IDLE_PREWARM_TIMEOUT = 1200;
+const FALLBACK_PREWARM_DELAY = 450;
 const SPLINE_STATE_NOT_LOADED = 'not_loaded';
 const SPLINE_STATE_LOADING = 'loading';
 const SPLINE_STATE_LOADED = 'loaded';
 const deviceMemory = navigator.deviceMemory || DEFAULT_DEVICE_MEMORY;
-const hardwareThreads = navigator.hardwareConcurrency || 8;
+const hardwareThreads = navigator.hardwareConcurrency || DEFAULT_HARDWARE_THREADS;
 const lowPerformanceDevice = deviceMemory <= LOW_MEMORY_DEVICE || hardwareThreads <= LOW_CPU_THREADS;
 const strictLowPowerMode = prefersReducedMotion || saveDataEnabled;
 const lowPowerMode = strictLowPowerMode || lowPerformanceDevice;
@@ -3005,9 +3008,9 @@ function queueSplineSceneLoad(canvas, file){
 
 if(!lowPowerMode){
   if('requestIdleCallback' in window){
-    requestIdleCallback(() => { getSplineRuntime(); }, { timeout: 1200 });
+    requestIdleCallback(() => { getSplineRuntime(); }, { timeout: IDLE_PREWARM_TIMEOUT });
   } else {
-    setTimeout(() => { getSplineRuntime(); }, 450);
+    setTimeout(() => { getSplineRuntime(); }, FALLBACK_PREWARM_DELAY);
   }
 }
 
