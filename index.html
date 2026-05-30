@@ -10,6 +10,8 @@
 <meta property="og:image" content="profile_avatar.jpeg">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://ahmed3li99.github.io/portfolio-website/">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -100,11 +102,67 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   z-index:2;
   pointer-events:auto;
   overflow:hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #nexbot-canvas{
   width:100%;height:100%;
   display:block;
   background:transparent !important;
+}
+
+/* Fallback profile graphic for hero when spline is disabled */
+.hero-fallback-graphic {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.spline-disabled-active .hero-fallback-graphic {
+  display: flex;
+}
+
+.spline-disabled-active #nexbot-canvas {
+  display: none !important;
+}
+
+.fallback-ring {
+  position: relative;
+  width: min(240px, 60vw);
+  height: min(240px, 60vw);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+}
+
+.fallback-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--pink), var(--blue), var(--cyan), var(--pink));
+  animation: spin 6s linear infinite;
+  z-index: 0;
+  box-shadow: var(--glow);
+}
+
+.fallback-ring img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 15%;
+  border: 5px solid var(--bg);
+  display: block;
 }
 .hero-grid{position:relative;z-index:3;pointer-events:none}
 .hero-grid > div:first-child{pointer-events:auto}
@@ -149,6 +207,32 @@ a:hover ~ #cursor, button:hover ~ #cursor{transform:translate(-50%,-50%) scale(1
   width:100%;height:100%;
   display:block;
   background:transparent !important;
+}
+
+/* Fallback holographic earth graphic when spline is disabled */
+.earth-fallback-graphic {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 40px;
+}
+
+.spline-earth-wrap.spline-disabled-active .earth-fallback-graphic {
+  display: flex;
+}
+
+.spline-earth-wrap.spline-disabled-active #earth-canvas {
+  display: none !important;
+}
+
+.fallback-earth-icon {
+  font-size: min(150px, 35vw);
+  color: rgba(34, 211, 238, 0.2);
+  filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.35));
+  animation: spin 30s linear infinite;
 }
 #contact{
   position:relative;
@@ -893,6 +977,50 @@ nav.scrolled{padding:10px 48px;background:rgba(3,9,26,.97)}
 }
 .ghlink:hover{color:var(--blue)}
 .ghlink svg{width:16px;height:16px;fill:currentColor}
+
+/* Repo stats custom styling */
+.repo-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--txt2);
+  background: rgba(0, 8, 24, 0.4);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.repo-stats:hover {
+  border-color: var(--blue);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.repo-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.repo-stats i {
+  font-size: .7rem;
+}
+
+.repo-stats .fa-star {
+  color: var(--orange);
+}
+
+.repo-stats .fa-code-fork {
+  color: var(--blue);
+}
+
+.repo-stats .fa-circle {
+  font-size: 0.4rem;
+  color: var(--cyan);
+}
+
 .pbtn{
   padding:7px 16px;border-radius:6px;background:transparent;
   border:1px solid var(--pink);color:var(--pink);
@@ -2298,6 +2426,11 @@ body.light .sandbox-chart-panel {
   <!-- NEXBOT 3D ROBOT — Spline Runtime, right-aligned, transparent bg -->
   <div id="nexbot-canvas-wrap">
     <canvas id="nexbot-canvas"></canvas>
+    <div class="hero-fallback-graphic">
+      <div class="fallback-ring">
+        <img src="profile_avatar.jpeg" alt="Ahmed Ali profile photo" loading="lazy" />
+      </div>
+    </div>
   </div>
 
   <div class="hero-grid">
@@ -2511,9 +2644,14 @@ body.light .sandbox-chart-panel {
             <h3 class="gs-title">Breast Cancer Classification</h3>
             <p class="gs-desc">ML models to classify tumors as benign or malignant. Decision Tree vs Logistic Regression compared with ROC/AUC metrics.</p>
             <div class="gs-tags"><span class="tt">Python</span><span class="tt">Scikit-learn</span><span class="tt">Pandas</span></div>
-            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center">
               <a href="https://github.com/A7med3li99/breast-cancer-classification-ml" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:.65rem;padding:9px 18px">GitHub &#8599;</a>
               <button class="btn btn-blue open-modal-btn" data-project="breast-cancer" style="font-size:.65rem;padding:9px 18px"><i class="fa-solid fa-chart-column"></i> Compare Metrics</button>
+              <div class="repo-stats" data-repo="A7med3li99/breast-cancer-classification-ml">
+                <span class="repo-stars" title="Stars"><i class="fa-regular fa-star"></i> <span class="stars-val">—</span></span>
+                <span class="repo-forks" title="Forks"><i class="fa-solid fa-code-fork"></i> <span class="forks-val">—</span></span>
+                <span class="repo-lang" title="Language"><i class="fa-solid fa-circle"></i> <span class="lang-val">—</span></span>
+              </div>
             </div>
           </div>
           <div class="gs-code"><pre># Decision Tree vs Logistic Regression
@@ -2534,9 +2672,14 @@ print("LR AUC:", roc_auc_score(y_test, lr.predict_proba(X_test)[:,1]))</pre></di
             <h3 class="gs-title">Applied Deep Learning &#8212; TensorFlow</h3>
             <p class="gs-desc">CNN, RNN, LSTM, GRU architectures for image classification and time-series forecasting with performance visualizations.</p>
             <div class="gs-tags"><span class="tt">TensorFlow</span><span class="tt">Deep Learning</span><span class="tt">LSTM/GRU</span></div>
-            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center">
               <a href="https://github.com/A7med3li99/RNN-LSTM-Prediction-Project" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:.65rem;padding:9px 18px">GitHub &#8599;</a>
               <button class="btn btn-blue open-modal-btn" data-project="deep-learning" style="font-size:.65rem;padding:9px 18px"><i class="fa-solid fa-chart-line"></i> Performance</button>
+              <div class="repo-stats" data-repo="A7med3li99/RNN-LSTM-Prediction-Project">
+                <span class="repo-stars" title="Stars"><i class="fa-regular fa-star"></i> <span class="stars-val">—</span></span>
+                <span class="repo-forks" title="Forks"><i class="fa-solid fa-code-fork"></i> <span class="forks-val">—</span></span>
+                <span class="repo-lang" title="Language"><i class="fa-solid fa-circle"></i> <span class="lang-val">—</span></span>
+              </div>
             </div>
           </div>
           <div class="gs-code"><pre>model = tf.keras.Sequential([
@@ -2557,9 +2700,14 @@ model.compile(optimizer="adam",
             <h3 class="gs-title">Sequence &amp; Image Models</h3>
             <p class="gs-desc">Hands-on notebooks comparing CNN, RNN, LSTM, and GRU on core deep learning tasks with clean structure for reuse.</p>
             <div class="gs-tags"><span class="tt">CNN</span><span class="tt">RNN</span><span class="tt">Python</span></div>
-            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center">
               <a href="https://github.com/A7med3li99/Sequence-Image-Models" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:.65rem;padding:9px 18px">GitHub &#8599;</a>
               <button class="btn btn-blue open-modal-btn" data-project="sequence-models" style="font-size:.65rem;padding:9px 18px"><i class="fa-solid fa-chart-bar"></i> Benchmarks</button>
+              <div class="repo-stats" data-repo="A7med3li99/Sequence-Image-Models">
+                <span class="repo-stars" title="Stars"><i class="fa-regular fa-star"></i> <span class="stars-val">—</span></span>
+                <span class="repo-forks" title="Forks"><i class="fa-solid fa-code-fork"></i> <span class="forks-val">—</span></span>
+                <span class="repo-lang" title="Language"><i class="fa-solid fa-circle"></i> <span class="lang-val">—</span></span>
+              </div>
             </div>
           </div>
           <div class="gs-code"><pre>models = {
@@ -2737,6 +2885,9 @@ for name, layer in models.items():
   <!-- 3D Holographic Earth — Spline Runtime -->
   <div class="spline-earth-wrap" aria-label="3D holographic earth">
     <canvas id="earth-canvas"></canvas>
+    <div class="earth-fallback-graphic">
+      <i class="fa-solid fa-earth-americas fallback-earth-icon"></i>
+    </div>
   </div>
 
   <div class="cgrid">
@@ -2825,7 +2976,8 @@ const SPLINE_STATE_LOADED = 'loaded';
 const deviceMemory = navigator.deviceMemory || DEFAULT_DEVICE_MEMORY;
 const hardwareThreads = navigator.hardwareConcurrency || DEFAULT_HARDWARE_THREADS;
 const lowPerformanceDevice = deviceMemory <= LOW_MEMORY_THRESHOLD || hardwareThreads <= LOW_CPU_THREAD_THRESHOLD;
-const strictLowPowerMode = prefersReducedMotion || saveDataEnabled;
+const isMobileWidth = window.innerWidth < 768;
+const strictLowPowerMode = prefersReducedMotion || saveDataEnabled || isMobileWidth;
 const lowPowerMode = strictLowPowerMode || lowPerformanceDevice;
 let runtimePromise = null;
 let loadQueue = Promise.resolve();
@@ -2876,7 +3028,9 @@ splineScenes.forEach(scene => {
   if(!canvas) return;
   if(strictLowPowerMode || (lowPerformanceDevice && scene.disableOnLowPower)){
     canvas.setAttribute('aria-label', '3D animation disabled for accessibility or performance');
-    if(canvas.parentElement) canvas.parentElement.style.setProperty('opacity', '.5');
+    if(canvas.parentElement) {
+      canvas.parentElement.classList.add('spline-disabled-active');
+    }
     return;
   }
   if(!('IntersectionObserver' in window)){
@@ -2910,6 +3064,13 @@ splineScenes.forEach(scene => {
     h = canvas.height = window.innerHeight;
     var fontSize = 14;
     columns = Math.floor(w / fontSize);
+    
+    // Optimize column count for mobile and low performance devices
+    const isMobileOrLowPower = window.innerWidth < 768 || (typeof lowPowerMode !== 'undefined' && lowPowerMode);
+    if (isMobileOrLowPower) {
+      columns = Math.floor(columns * 0.45);
+    }
+
     drops = [];
     for(var i = 0; i < columns; i++) drops[i] = Math.random() * -100;
   }
@@ -2921,8 +3082,21 @@ splineScenes.forEach(scene => {
     active = !document.hidden;
   });
 
-  function draw(){
-    if(!active) return;
+  var lastTime = 0;
+  var fpsInterval = 60; // Throttled render interval (approx 60ms)
+  var rafId;
+
+  function draw(time){
+    if(!active) {
+      rafId = requestAnimationFrame(draw);
+      return;
+    }
+    rafId = requestAnimationFrame(draw);
+
+    var elapsed = time - lastTime;
+    if (elapsed < fpsInterval) return;
+    lastTime = time - (elapsed % fpsInterval);
+
     ctx.fillStyle = 'rgba(3,9,26,0.06)';
     ctx.fillRect(0, 0, w, h);
     ctx.font = '14px JetBrains Mono, monospace';
@@ -2937,7 +3111,7 @@ splineScenes.forEach(scene => {
       drops[i]++;
     }
   }
-  setInterval(draw, 60);
+  rafId = requestAnimationFrame(draw);
 })();
 
 /* -----------------------------------------------
@@ -3324,7 +3498,7 @@ splineScenes.forEach(scene => {
       setTimeout(function(){ loader.remove(); }, 700);
     }
   }
-  window.addEventListener('load', function(){ setTimeout(dismissLoader, 2400); });
+  window.addEventListener('load', function(){ setTimeout(dismissLoader, 300); });
   setTimeout(dismissLoader, 5000);
 })();
 
@@ -3535,19 +3709,25 @@ if (typeof gsap !== 'undefined') {
       const pulse = 0.6 + 0.4 * Math.sin(this.pulse + t * 0.001);
       const alpha = 0.35 + pulse * 0.55;
 
+      // Draw glow pass
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, (this.size + pulse * 0.8) * 3, 0, Math.PI * 2);
+      ctx.fillStyle = this.hue === 'pink'
+        ? `rgba(244,114,182,${alpha * 0.18})`
+        : `rgba(56,189,248,${alpha * 0.18})`;
+      ctx.fill();
+
+      // Draw solid core pass
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size + pulse * 0.8, 0, Math.PI * 2);
       ctx.fillStyle = this.hue === 'pink'
         ? `rgba(244,114,182,${alpha})`
         : `rgba(56,189,248,${alpha})`;
-      ctx.shadowBlur = 14;
-      ctx.shadowColor = this.hue === 'pink' ? 'rgba(244,114,182,.8)' : 'rgba(56,189,248,.8)';
       ctx.fill();
-      ctx.shadowBlur = 0;
     }
   }
 
-  const COUNT = 120;
+  const COUNT = 70;
   for (let i = 0; i < COUNT; i++) nodes.push(new Node(i));
 
   function drawNetwork(t) {
@@ -4266,7 +4446,86 @@ if (cvLink) {
 
   // Initialize sandbox chart after loader dismissed
   window.addEventListener('load', () => {
-    setTimeout(updateSandbox, 2500);
+    setTimeout(updateSandbox, 400);
+  });
+})();
+
+/* -----------------------------------------------
+   GITHUB REPO STATS DYNAMIC FETCHING
+----------------------------------------------- */
+(function () {
+  const CACHE_KEY_PREFIX = 'repo_stats_';
+  const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours in ms
+
+  document.querySelectorAll('.repo-stats').forEach(container => {
+    const repo = container.getAttribute('data-repo');
+    if (!repo) return;
+
+    const cacheKey = CACHE_KEY_PREFIX + repo.replace(/\//g, '_');
+    const starsEl = container.querySelector('.stars-val');
+    const forksEl = container.querySelector('.forks-val');
+    const langEl = container.querySelector('.lang-val');
+
+    function updateDOM(stats) {
+      if (starsEl) starsEl.textContent = stats.stars;
+      if (forksEl) forksEl.textContent = stats.forks;
+      if (langEl) langEl.textContent = stats.language;
+    }
+
+    // Try load from cache
+    try {
+      const cachedData = localStorage.getItem(cacheKey);
+      if (cachedData) {
+        const parsed = JSON.parse(cachedData);
+        const now = Date.now();
+        if (now - parsed.timestamp < CACHE_TTL) {
+          updateDOM(parsed.data);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('LocalStorage error reading cache:', e);
+    }
+
+    // Fetch from Github API
+    fetch(`https://api.github.com/repos/${repo}`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP status ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        const stats = {
+          stars: data.stargazers_count,
+          forks: data.forks_count,
+          language: data.language || 'Python'
+        };
+        
+        // Save cache
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify({
+            timestamp: Date.now(),
+            data: stats
+          }));
+        } catch (e) {
+          console.warn('LocalStorage error writing cache:', e);
+        }
+
+        updateDOM(stats);
+      })
+      .catch(err => {
+        console.error(`Failed to fetch stats for ${repo}:`, err);
+        // On failure, fall back to cached data (even if expired) or show defaults
+        try {
+          const cachedData = localStorage.getItem(cacheKey);
+          if (cachedData) {
+            const parsed = JSON.parse(cachedData);
+            updateDOM(parsed.data);
+            return;
+          }
+        } catch (e) {}
+        // Final fallback
+        updateDOM({ stars: 0, forks: 0, language: 'Python' });
+      });
   });
 })();
 </script>
